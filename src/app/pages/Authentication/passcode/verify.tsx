@@ -256,15 +256,15 @@ export default function PasscodeVerifyPage() {
                   "Log in"
                 )}
               </Button>
-                            <Button
-              type="button"
-              variant="link"
-              className="h-auto w-full text-center px-1 text-xs"
-              onClick={handleTryDifferentEmail}
-              disabled={isLoading}
-            >
-              Try with a different email
-            </Button>
+              <Button
+                type="button"
+                variant="link"
+                className="h-auto w-full text-center px-1 text-xs"
+                onClick={handleTryDifferentEmail}
+                disabled={isLoading}
+              >
+                Try with a different email
+              </Button>
             </CardFooter>
           </form>
         </Card>

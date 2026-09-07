@@ -266,8 +266,9 @@ export type AddProductsProps = {
 };
 
 export type ProductEditProps = {
-  product: ApiProduct;
+  product: ApiProduct | null;
   open: boolean;
+  loading: boolean;
   onOpenChange: (open: boolean) => void;
   onUpdated?: (product: ApiProduct) => void;
 };
@@ -275,6 +276,7 @@ export type ProductEditProps = {
 export type ProductViewProps = {
   product: ApiProduct | null;
   open: boolean;
+  loading: boolean;
   onOpenChange: (open: boolean) => void;
   onEdit?: (product: ApiProduct) => void;
 };
@@ -312,7 +314,6 @@ export interface ImageOverlayControlsProps {
   isPrimary: boolean;
   onSetPrimary: () => void;
 }
-
 
 export interface ImageDropzoneProps {
   isSubmitting: boolean;

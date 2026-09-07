@@ -157,13 +157,13 @@ div#root {
 }
 
 @keyframes shimmer {
-  from {
+  0% {
     transform: translateX(-100%);
   }
-  to {
-    transform: translateX(100vw);
+  100% {
+    transform: translateX(400%);
   }
 }
 .animate-shimmer {
-  animation: shimmer 2s linear infinite;
+  animation: shimmer 1.5s linear infinite;
 }

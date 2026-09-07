@@ -183,7 +183,6 @@ export function ProductTableRow({
               align="end"
               onPointerDown={(event) => event.stopPropagation()}
               onClick={(event) => event.stopPropagation()}
-              
             >
               {product.status !== "archived" && (
                 <DropdownMenuItem

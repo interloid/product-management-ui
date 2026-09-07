@@ -244,7 +244,9 @@ export default function LoginPage({
                         autoComplete="current-password"
                         required
                         className={`h-10 px-3.5! focus-visible:border-primary focus-visible:ring-primary/20 text-[13px]! ${
-                          showPassword ? "tracking-normal" : "tracking-[10px]  font-bold"
+                          showPassword
+                            ? "tracking-normal"
+                            : "tracking-[10px]  font-bold"
                         }`}
                       />
                       <button

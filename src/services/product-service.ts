@@ -53,6 +53,16 @@ export async function getProducts({
   };
 }
 
+export async function getProduct(id: string): Promise<ApiProduct> {
+  const response = await apiRequest<{
+    success: boolean;
+    message: string;
+    data: ApiProduct;
+  }>(`/api/v1/products/${id}`);
+
+  return response.data;
+}
+
 export async function createProduct(formData: FormData): Promise<ApiProduct> {
   const response = await apiRequest<{
     success: boolean;

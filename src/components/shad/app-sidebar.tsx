@@ -64,7 +64,11 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
   return (
-    <Sidebar collapsible="icon" {...props} className="shrink-0 h-full flex gap-5!">
+    <Sidebar
+      collapsible="icon"
+      {...props}
+      className="shrink-0 h-full flex gap-5!"
+    >
       <SidebarTitle />
 
       <SidebarContent className="gap-0 mt-2">

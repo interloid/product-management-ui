@@ -8,6 +8,7 @@ import { useSearch } from "@/context/use-search";
 import {
   archiveProduct as archiveProductApi,
   deleteProduct as deleteProductApi,
+  getProduct,
   getProducts,
 } from "@/services/product-service";
 import type {
@@ -42,11 +43,14 @@ export default function ProductsPage() {
     field: "updated",
     order: "desc",
   });
-
   const [viewProduct, setViewProduct] = useState<ApiProduct | null>(null);
   const [viewOpen, setViewOpen] = useState(false);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewProductId, setViewProductId] = useState<string | null>(null);
   const [editProduct, setEditProduct] = useState<ApiProduct | null>(null);
+  const [editProductId, setEditProductId] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [editLoading, setEditLoading] = useState(false);
 
   useEffect(() => {
     let ignore = false;
@@ -180,18 +184,96 @@ export default function ProductsPage() {
 
   const openEdit = useCallback((product: ApiProduct) => {
     setViewOpen(false);
-    setEditProduct(product);
+    setViewProduct(null);
+    setViewProductId(null);
+
+    setEditProductId(product.id);
+    setEditProduct(null);
+    setEditLoading(true);
     setEditOpen(true);
   }, []);
 
+  useEffect(() => {
+    if (!editOpen || !editProductId) {
+      return;
+    }
+
+    let ignore = false;
+
+    getProduct(editProductId)
+      .then((response) => {
+        if (!ignore) {
+          setEditProduct(response);
+        }
+      })
+      .catch((error) => {
+        if (!ignore) {
+          toast.error(
+            error instanceof Error ? error.message : "Failed to load product",
+          );
+          setEditOpen(false);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setEditLoading(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [editOpen, editProductId]);
+
   const openView = useCallback((product: ApiProduct) => {
-    setViewProduct(product);
+    setEditOpen(false);
+    setEditProduct(null);
+    setEditProductId(null);
+
+    setViewProductId(product.id);
+    setViewProduct(null);
+    setViewLoading(true);
     setViewOpen(true);
   }, []);
+  useEffect(() => {
+    if (!viewOpen || !viewProductId) {
+      return;
+    }
+
+    let ignore = false;
+
+    const frame = requestAnimationFrame(() => {
+      getProduct(viewProductId)
+        .then((response) => {
+          if (!ignore) {
+            setViewProduct(response);
+          }
+        })
+        .catch((error) => {
+          if (!ignore) {
+            toast.error(
+              error instanceof Error ? error.message : "Failed to load product",
+            );
+            setViewOpen(false);
+          }
+        })
+        .finally(() => {
+          if (!ignore) {
+            setViewLoading(false);
+          }
+        });
+    });
+
+    return () => {
+      ignore = true;
+      cancelAnimationFrame(frame);
+    };
+  }, [viewOpen, viewProductId]);
 
   const handleProductUpdated = useCallback(() => {
     setEditOpen(false);
     setEditProduct(null);
+    setEditProductId(null);
     refresh();
   }, [refresh]);
 
@@ -250,18 +332,18 @@ export default function ProductsPage() {
         <ProductView
           product={viewProduct}
           open={viewOpen}
+          loading={viewLoading}
           onOpenChange={setViewOpen}
           onEdit={openEdit}
         />
-        {editProduct && (
-          <ProductEdit
-            key={editProduct.id}
-            product={editProduct}
-            open={editOpen}
-            onOpenChange={setEditOpen}
-            onUpdated={handleProductUpdated}
-          />
-        )}
+        <ProductEdit
+          key={editProduct?.id ?? "loading"}
+          product={editProduct}
+          open={editOpen}
+          loading={editLoading}
+          onOpenChange={setEditOpen}
+          onUpdated={handleProductUpdated}
+        />
       </div>
       <TablePagination
         page={page}

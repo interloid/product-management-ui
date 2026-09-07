@@ -8,9 +8,7 @@ export function useIsMobile() {
       : false,
   );
   React.useEffect(() => {
-    const mql = window.matchMedia(
-      `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
-    );
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
     const onChange = () => {
       setIsMobile(mql.matches);
     };
