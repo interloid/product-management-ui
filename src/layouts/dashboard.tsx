@@ -34,7 +34,6 @@ export default function DashboardLayout() {
     <SearchContext.Provider value={value}>
       <SidebarProvider>
         <AppSidebar user={user} />
-
         <SidebarInset>
           <Header user={user} productCount={productCount} />
           <main className="flex flex-1 flex-col justify-between p-3 sm:p-4 h-full">

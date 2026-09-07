@@ -43,7 +43,7 @@ import { useProductImages } from "@/hooks/use-product-images";
 const blankForm: ProductForm = {
   name: "",
   sku: "",
-  category: "",
+  category: "", 
   price: "",
   stock: "",
   status: "active",
@@ -189,12 +189,6 @@ export default function AddProducts({ onProductCreated }: AddProductsProps) {
 
       for (const image of orderedImages) {
         formData.append(PRODUCT_FORM_FIELDS.IMAGES, image.file);
-      }
-      if (primaryNewImage) {
-        formData.append(
-          PRODUCT_FORM_FIELDS.PRIMARY_IMAGE_ID,
-          primaryNewImage.id,
-        );
       }
 
       await createProduct(formData);

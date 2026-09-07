@@ -9,7 +9,7 @@ export function ImagePreviewDialog({
 }: ImagePreviewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl overflow-hidden p-2">
+      <DialogContent className="max-w-3xl! w-fit overflow-hidden p-2">
         {image && (
           <div className="flex max-h-[80vh] items-center justify-center overflow-hidden rounded-md bg-muted">
             <img

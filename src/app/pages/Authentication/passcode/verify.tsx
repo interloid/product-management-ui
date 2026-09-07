@@ -17,46 +17,12 @@ import {
 import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import type { ApiErrorResponse, PasscodeLocationState } from "@/types/auth";
+import type { PasscodeLocationState } from "@/types/auth";
 import interloidLogo from "@/assets/interloid-logo.png";
 import { cn } from "@/lib/utils";
+import { getPasscodeErrorMessage } from "@/lib/error-messsege";
 
 const OTP_LENGTH = 6;
-
-function formatAttemptMessage(
-  remainingAttempts: number,
-  retryAfterSeconds: number,
-): string {
-  if (remainingAttempts === 0) {
-    const minutes = Math.ceil(retryAfterSeconds / 60);
-
-    return `Invalid passcode. Try again after ${minutes} minute${
-      minutes === 1 ? "" : "s"
-    }.`;
-  }
-
-  if (retryAfterSeconds > 0) {
-    const minutes = Math.ceil(retryAfterSeconds / 60);
-
-    return `Invalid passcode. ${remainingAttempts} attempt${
-      remainingAttempts === 1 ? "" : "s"
-    } left before a ${minutes}-minute cooldown.`;
-  }
-
-  return `Invalid passcode. ${remainingAttempts} attempt${
-    remainingAttempts === 1 ? "" : "s"
-  } remaining.`;
-}
-
-function isApiErrorResponse(error: unknown): error is ApiErrorResponse {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "success" in error &&
-    "message" in error &&
-    typeof error.message === "string"
-  );
-}
 
 function isPasscodeLocationState(
   state: unknown,
@@ -113,33 +79,10 @@ export default function PasscodeVerifyPage() {
         replace: true,
       });
     } catch (error) {
-      console.error("Passcode verification failed:", error);
+  console.error("Passcode verification failed:", error);
 
-      setPasscode("");
-      setPasscodeError(null);
-
-      if (isApiErrorResponse(error)) {
-        const details = error.error?.details;
-
-        if (details?.remaining_attempts !== undefined) {
-          setPasscodeError(
-            formatAttemptMessage(
-              details.remaining_attempts,
-              details.retry_after_seconds ?? 0,
-            ),
-          );
-        } else {
-          setPasscodeError(
-            error.message || "Invalid passcode. Please try again.",
-          );
-        }
-        return;
-      }
-      setPasscodeError(
-        error instanceof Error
-          ? error.message
-          : "Invalid passcode. Please try again.",
-      );
+  setPasscode("");
+  setPasscodeError(getPasscodeErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

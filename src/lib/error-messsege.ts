@@ -1,3 +1,6 @@
+import type { PasscodeErrorDetails } from "@/types/auth";
+import { ApiError } from "@/types/data-type";
+
 export function getUserFriendlyErrorMessage(
   error: unknown,
   fallback = "Something went wrong. Please try again.",
@@ -37,36 +40,48 @@ export function getUserFriendlyErrorMessage(
   return fallback;
 }
 
-export function getPasscodeErrorMessage(error: unknown): string {
-  if (!(error instanceof Error)) {
-    return "Invalid passcode.";
+function isPasscodeDetails(value: unknown): value is PasscodeErrorDetails {
+  if (typeof value !== "object" || value === null) {
+    return false;
   }
+  return (
+    (!("attempts_used" in value) ||
+      typeof value.attempts_used === "number") &&
+    (!("max_attempts" in value) ||
+      typeof value.max_attempts === "number") &&
+    (!("remaining_attempts" in value) ||
+      typeof value.remaining_attempts === "number") &&
+    (!("retry_after_seconds" in value) ||
+      typeof value.retry_after_seconds === "number")
+  );
+}
 
-  try {
-    const parsed = JSON.parse(error.message);
+export function getPasscodeErrorMessage(error: unknown): string {
+  if (!(error instanceof ApiError)) {
+    return error instanceof Error ? error.message : "Invalid passcode.";
+  }
+  const details = error.details;
 
-    const details = parsed?.error?.details;
-
-    if (details) {
-      const { remaining_attempts, retry_after_seconds } = details;
-
-      if (remaining_attempts !== undefined) {
-        if (remaining_attempts === 0 && retry_after_seconds) {
-          const minutes = Math.ceil(retry_after_seconds / 60);
-
-          return `Invalid passcode. Try again after ${minutes} minute${
-            minutes === 1 ? "" : "s"
-          }.`;
-        }
-
-        return `Invalid passcode. ${remaining_attempts} attempt${
-          remaining_attempts === 1 ? "" : "s"
-        } left before a ${Math.ceil(retry_after_seconds / 60)}-minute cooldown.`;
-      }
-    }
-
-    return parsed?.message || "Invalid passcode.";
-  } catch {
+  if (!isPasscodeDetails(details)) {
     return error.message || "Invalid passcode.";
   }
+
+  const remainingAttempts = details.remaining_attempts;
+  const retryAfterSeconds = details.retry_after_seconds ?? 0;
+
+  if (remainingAttempts === 0 && retryAfterSeconds > 0) {
+    const minutes = Math.ceil(retryAfterSeconds / 60);
+
+    return `Too many failed attempts. Try again after ${minutes} minute${
+      minutes === 1 ? "" : "s"
+    }.`;
+  }
+
+  if (remainingAttempts !== undefined) {
+    return `Invalid passcode. ${remainingAttempts} attempt${
+      remainingAttempts === 1 ? "" : "s"
+    } remaining.`;
+  }
+
+  return error.message || "Invalid passcode.";
 }
