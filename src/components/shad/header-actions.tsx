@@ -12,7 +12,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
   const initials = getInitials(user?.name ?? "");
 
   return (
-    <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:w-3/4 lg:w-1/2 2xl:w-1/4 ">
+    <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:w-3/4 lg:w-1/2 xl:w-1/2 2xl:w-1/4">  
       <Input
         type="search"
         placeholder="Search name or SKU..."

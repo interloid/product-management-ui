@@ -22,8 +22,8 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
 
   return (
     <header className="flex min-h-16 w-full flex-col border-b sm:min-h-16 sm:flex-row sm:items-center">
-      <div className="flex min-h-16 flex-1 items-center gap-2 px-3 sm:px-4 md:w-fit">
-        <div className="flex min-w-0 flex-1 items-center gap-2 md:w-3/4">
+      <div className="flex min-h-16 flex-1 items-center gap-2 px-3 sm:px-4 md:w-1/2">
+        <div className="flex flex-1 items-center gap-2 md:w-1/4 lg:w-1/4 xl:w-1/4">
           <MobileMenuButton />
           <h1 className="line-clamp-1 w-fit text-sm font-medium">
             {title}
