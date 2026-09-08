@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { waitForImageReady } from "@/features/products/product-utils";
 import type { ProductImageProps } from "@/types/data-type";
 
 export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
@@ -9,7 +10,7 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
   if (!src || hasError) {
     return (
       <div
-        className={`size-10 shrink-0 overflow-hidden rounded-md border bg-muted ${className}`}
+        className={`size-10 shrink-0 overflow-hidden rounded-md border bg-muted-foreground/30 ${className}`}
       >
         <div
           className="size-full"
@@ -23,11 +24,11 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
   }
   return (
     <div
-      className={`relative size-10 shrink-0 overflow-hidden rounded-md border bg-muted ${className}`}
+      className={`relative size-10 shrink-0 overflow-hidden rounded-md border bg-muted-foreground/30 ${className}`}
     >
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted">
-          <Spinner className="size-4" />
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted-foreground">
+          <Spinner className="size-4 text-background" />
         </div>
       )}
       <img
@@ -35,12 +36,12 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
         alt={alt ?? "Product"}
         width={40}
         height={40}
-        loading="lazy"
+        loading="eager"
         decoding="async"
-        className={`size-full object-cover transition-opacity duration-200 ${
-          isLoading ? "opacity-0" : "opacity-100"
-        }`}
-        onLoad={() => setIsLoading(false)}
+        className="size-full object-cover"
+        onLoad={(e) =>
+          waitForImageReady(e.currentTarget, () => setIsLoading(false))
+        }
         onError={() => {
           setIsLoading(false);
           setHasError(true);

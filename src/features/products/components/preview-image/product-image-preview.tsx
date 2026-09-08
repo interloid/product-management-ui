@@ -1,9 +1,9 @@
-import { Eye, LoaderCircle } from "lucide-react";
+import { Eye } from "lucide-react";
 import { useState } from "react";
-
 import { ImagePreviewDialog } from "./image-preview-dialog";
-
 import type { ProductImagePreviewProps } from "@/types/data-type";
+import { Spinner } from "@/components/ui/spinner";
+import { waitForImageReady } from "@/features/products/product-utils";
 
 export function ProductImagePreview({
   src,
@@ -14,8 +14,8 @@ export function ProductImagePreview({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const handleLoad = () => {
-    setIsLoading(false);
+  const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    waitForImageReady(e.currentTarget, () => setIsLoading(false));
   };
 
   const handleError = () => {
@@ -38,19 +38,17 @@ export function ProductImagePreview({
           decoding="async"
           onLoad={handleLoad}
           onError={handleError}
-          className={`h-full w-full object-cover transition-all duration-200 ${
-            isLoading ? "scale-95 opacity-0" : "scale-100 opacity-100"
-          } group-hover:scale-[1.02]`}
+          className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
         />
         {isLoading && (
-          <span className="absolute inset-0 flex items-center justify-center bg-muted">
-            <LoaderCircle className="size-5 animate-spin text-muted-foreground" />
+          <span className="absolute inset-0 flex items-center justify-center bg-muted-foreground">
+            <Spinner className="size-5 text-background" />
           </span>
         )}
 
         {hasError && (
-          <span className="absolute inset-0 flex items-center justify-center bg-muted">
-            <span className="text-[10px] font-medium text-muted-foreground">
+          <span className="absolute inset-0 flex items-center justify-center bg-muted-foreground">
+            <span className="text-[10px] font-medium text-background">
               Failed to load image
             </span>
           </span>

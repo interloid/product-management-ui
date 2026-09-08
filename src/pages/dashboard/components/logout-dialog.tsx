@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/features/auth/use-auth";
+import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import type { LogoutDialogProps } from "@/types/data-type";
 
 export function LogoutDialog({ trigger }: LogoutDialogProps) {
@@ -25,7 +26,7 @@ export function LogoutDialog({ trigger }: LogoutDialogProps) {
       setIsLoggingOut(true);
       await logout();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to log out");
+      toast.error(getUserFriendlyErrorMessage(error, "Failed to log out"));
     } finally {
       setIsLoggingOut(false);
     }

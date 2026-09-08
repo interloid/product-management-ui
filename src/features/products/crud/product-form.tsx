@@ -119,6 +119,7 @@ export function ProductForm(props: ProductFormProps) {
     isDragging,
     totalImageCount,
     remainingSlots,
+    primaryExistingImageId,
     primaryNewImage,
     isDirty: isImageDirty,
     handleImageChange,
@@ -192,6 +193,13 @@ export function ProductForm(props: ProductFormProps) {
         mode === "edit" ? [...removedImageIds] : [],
       );
 
+      if (mode === "edit" && primaryExistingImageId) {
+        formData.append(
+          PRODUCT_FORM_FIELDS.PRIMARY_IMAGE_ID,
+          primaryExistingImageId,
+        );
+      }
+
       const orderedImages = primaryNewImage
         ? [
             primaryNewImage,
@@ -250,7 +258,7 @@ export function ProductForm(props: ProductFormProps) {
         <div className="flex-1 overflow-y-auto p-5">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
-              <div className="aspect-16/10 overflow-hidden rounded-lg border bg-muted">
+              <div className="aspect-16/10 overflow-hidden rounded-lg border bg-border">
                 {primaryImage?.url ? (
                   <ProductImagePreview
                     src={primaryImage.url}
@@ -340,7 +348,7 @@ export function ProductForm(props: ProductFormProps) {
                     key={image.id}
                     src={image.url}
                     alt={`${product?.name ?? "Product"} image`}
-                    isPrimary={image.is_primary}
+                    isPrimary={primaryExistingImageId === image.id}
                     mode="existing"
                     onRemove={
                       isEdit

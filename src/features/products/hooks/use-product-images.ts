@@ -31,20 +31,21 @@ export function useProductImages({
   isSubmitting = false,
   existingImages = [],
 }: UseProductImagesProps = {}) {
-  const [newImages, setNewImages] =
-    useState<ProductImage[]>([]);
+  const [newImages, setNewImages] = useState<ProductImage[]>([]);
 
-  const [removedImageIds, setRemovedImageIds] =
-    useState<Set<string>>(new Set());
+  const [removedImageIds, setRemovedImageIds] = useState<Set<string>>(
+    new Set(),
+  );
 
-  const [imageError, setImageError] =
-    useState<ImageError | null>(null);
+  const [primaryExistingImageId, setPrimaryExistingImageId] = useState<
+    string | null
+  >(() => existingImages.find((image) => image.is_primary)?.id ?? null);
 
-  const [isDragging, setIsDragging] =
-    useState(false);
+  const [imageError, setImageError] = useState<ImageError | null>(null);
 
-  const newImagesRef =
-    useRef<ProductImage[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const newImagesRef = useRef<ProductImage[]>([]);
 
   useEffect(() => {
     newImagesRef.current = newImages;
@@ -52,70 +53,44 @@ export function useProductImages({
 
   useEffect(() => {
     return () => {
-      revokeImageUrls(
-        newImagesRef.current,
-      );
+      revokeImageUrls(newImagesRef.current);
     };
   }, []);
 
   const activeExistingImages = useMemo(
-    () =>
-      existingImages.filter(
-        (image) =>
-          !removedImageIds.has(image.id),
-      ),
-    [
-      existingImages,
-      removedImageIds,
-    ],
+    () => existingImages.filter((image) => !removedImageIds.has(image.id)),
+    [existingImages, removedImageIds],
   );
 
   const removedExistingImages = useMemo(
-    () =>
-      existingImages.filter(
-        (image) =>
-          removedImageIds.has(image.id),
-      ),
-    [
-      existingImages,
-      removedImageIds,
-    ],
+    () => existingImages.filter((image) => removedImageIds.has(image.id)),
+    [existingImages, removedImageIds],
   );
 
-  const totalImageCount =
-    activeExistingImages.length +
-    newImages.length;
+  const totalImageCount = activeExistingImages.length + newImages.length;
 
-  const remainingSlots = Math.max(
-    maxImages - totalImageCount,
-    0,
+  const remainingSlots = Math.max(maxImages - totalImageCount, 0);
+
+  const primaryExistingImage = activeExistingImages.find(
+    (image) => image.id === primaryExistingImageId,
   );
 
-  const primaryExistingImage =
-    activeExistingImages.find(
-      (image) =>
-        image.is_primary,
-    );
-
-  const primaryNewImage =
-    newImages.find(
-      (image) =>
-        image.isPrimary,
-    );
+  const primaryNewImage = newImages.find((image) => image.isPrimary);
 
   const currentPrimaryImageId =
-    primaryExistingImage?.id ?? null;
+    primaryExistingImageId ?? primaryNewImage?.id ?? null;
+
+  const initialPrimaryExistingImageId = useRef(
+    existingImages.find((image) => image.is_primary)?.id ?? null,
+  );
 
   const isDirty =
     newImages.length > 0 ||
-    removedImageIds.size > 0;
+    removedImageIds.size > 0 ||
+    primaryExistingImageId !== initialPrimaryExistingImageId.current;
 
-  function processFiles(
-    fileList: FileList | File[],
-  ) {
-    const files = Array.from(
-      fileList,
-    );
+  function processFiles(fileList: FileList | File[]) {
+    const files = Array.from(fileList);
 
     if (files.length === 0) {
       return;
@@ -131,140 +106,91 @@ export function useProductImages({
       return;
     }
 
-    let firstError:
-      | ImageError
-      | null = null;
+    let firstError: ImageError | null = null;
 
-    if (
-      files.length >
-      remainingSlots
-    ) {
+    if (files.length > remainingSlots) {
       firstError = {
         message: `You can only add ${remainingSlots} more image${
-          remainingSlots === 1
-            ? ""
-            : "s"
+          remainingSlots === 1 ? "" : "s"
         }.`,
       };
     }
 
-    const filesToProcess =
-      files.slice(
-        0,
-        remainingSlots,
-      );
+    const filesToProcess = files.slice(0, remainingSlots);
 
-    const addedImages:
-      ProductImage[] = [];
+    const addedImages: ProductImage[] = [];
 
     for (const file of filesToProcess) {
-      const validationError =
-        validateImage(file);
+      const validationError = validateImage(file);
 
       if (validationError) {
-        firstError ??=
-          validationError;
+        firstError ??= validationError;
 
         continue;
       }
 
       const shouldBecomePrimary =
-        activeExistingImages.length ===
-          0 &&
+        activeExistingImages.length === 0 &&
         newImages.length === 0 &&
         addedImages.length === 0;
 
       addedImages.push({
         id: crypto.randomUUID(),
         file,
-        previewUrl:
-          URL.createObjectURL(
-            file,
-          ),
-        isPrimary:
-          shouldBecomePrimary,
+        previewUrl: URL.createObjectURL(file),
+        isPrimary: shouldBecomePrimary,
       });
     }
 
     if (addedImages.length > 0) {
-      setNewImages(
-        (previous) => [
-          ...previous,
-          ...addedImages,
-        ],
-      );
+      setNewImages((previous) => [...previous, ...addedImages]);
     }
 
-    setImageError(
-      firstError,
-    );
+    setImageError(firstError);
   }
 
-  function handleImageChange(
-    event: ChangeEvent<HTMLInputElement>,
-  ) {
-    processFiles(
-      event.target.files ?? [],
-    );
+  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+    processFiles(event.target.files ?? []);
 
     event.target.value = "";
   }
 
-  function handleDragEnter(
-    event: DragEvent<HTMLLabelElement>,
-  ) {
+  function handleDragEnter(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (
-      isSubmitting ||
-      remainingSlots <= 0
-    ) {
+    if (isSubmitting || remainingSlots <= 0) {
       return;
     }
 
     setIsDragging(true);
   }
 
-  function handleDragOver(
-    event: DragEvent<HTMLLabelElement>,
-  ) {
+  function handleDragOver(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (
-      isSubmitting ||
-      remainingSlots <= 0
-    ) {
+    if (isSubmitting || remainingSlots <= 0) {
       return;
     }
 
-    event.dataTransfer.dropEffect =
-      "copy";
+    event.dataTransfer.dropEffect = "copy";
 
     setIsDragging(true);
   }
 
-  function handleDragLeave(
-    event: DragEvent<HTMLLabelElement>,
-  ) {
+  function handleDragLeave(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (
-      event.currentTarget.contains(
-        event.relatedTarget as Node,
-      )
-    ) {
+    if (event.currentTarget.contains(event.relatedTarget as Node)) {
       return;
     }
 
     setIsDragging(false);
   }
 
-  function handleDrop(
-    event: DragEvent<HTMLLabelElement>,
-  ) {
+  function handleDrop(event: DragEvent<HTMLLabelElement>) {
     event.preventDefault();
     event.stopPropagation();
 
@@ -274,135 +200,85 @@ export function useProductImages({
       return;
     }
 
-    processFiles(
-      event.dataTransfer.files,
-    );
+    processFiles(event.dataTransfer.files);
   }
 
   function removeImage(id: string) {
-    const image =
-      newImages.find(
-        (item) =>
-          item.id === id,
-      );
+    const image = newImages.find((item) => item.id === id);
 
     if (!image) {
       return;
     }
 
-    URL.revokeObjectURL(
-      image.previewUrl,
-    );
+    URL.revokeObjectURL(image.previewUrl);
 
-    const remainingImages =
-      newImages.filter(
-        (item) =>
-          item.id !== id,
-      );
+    const remainingImages = newImages.filter((item) => item.id !== id);
 
     if (image.isPrimary) {
-      const fallback =
-        remainingImages[0];
+      const fallback = remainingImages[0];
 
       if (fallback) {
         setNewImages(
-          remainingImages.map(
-            (item) => ({
-              ...item,
-              isPrimary:
-                item.id ===
-                fallback.id,
-            }),
-          ),
+          remainingImages.map((item) => ({
+            ...item,
+            isPrimary: item.id === fallback.id,
+          })),
         );
 
         return;
       }
 
-      if (
-        activeExistingImages.length >
-        0
-      ) {
-        setExistingImagePrimary(
-          activeExistingImages[0].id,
-        );
+      if (activeExistingImages.length > 0) {
+        setExistingImagePrimary(activeExistingImages[0].id);
       }
     }
 
-    setNewImages(
-      remainingImages,
-    );
+    setNewImages(remainingImages);
   }
 
-  function setPrimaryImage(
-    id: string,
-  ) {
-    const imageExists =
-      newImages.some(
-        (image) =>
-          image.id === id,
-      );
+  function setPrimaryImage(id: string) {
+    const imageExists = newImages.some((image) => image.id === id);
 
     if (!imageExists) {
       return;
     }
 
-    setNewImages(
-      (images) =>
-        images.map(
-          (image) => ({
-            ...image,
-            isPrimary:
-              image.id === id,
-          }),
-        ),
+    setPrimaryExistingImageId(null);
+
+    setNewImages((images) =>
+      images.map((image) => ({
+        ...image,
+        isPrimary: image.id === id,
+      })),
     );
   }
-
-  function setExistingImagePrimary(
-    id: string,
-  ) {
-    const imageExists =
-      activeExistingImages.some(
-        (image) =>
-          image.id === id,
-      );
+  function setExistingImagePrimary(id: string) {
+    const imageExists = activeExistingImages.some((image) => image.id === id);
 
     if (!imageExists) {
       return;
     }
 
-    setNewImages(
-      (images) =>
-        images.map(
-          (image) => ({
-            ...image,
-            isPrimary: false,
-          }),
-        ),
+    setPrimaryExistingImageId(id);
+
+    setNewImages((images) =>
+      images.map((image) => ({
+        ...image,
+        isPrimary: false,
+      })),
     );
   }
 
-  function toggleRemoveExistingImage(
-    id: string,
-  ) {
-    const image =
-      existingImages.find(
-        (item) =>
-          item.id === id,
-      );
+  function toggleRemoveExistingImage(id: string) {
+    const image = existingImages.find((item) => item.id === id);
 
     if (!image) {
       return;
     }
 
-    const isRemoving =
-      !removedImageIds.has(id);
+    const isRemoving = !removedImageIds.has(id);
 
-    const nextRemovedIds =
-      new Set(
-        removedImageIds,
-      );
+    const nextRemovedIds = new Set(removedImageIds);
 
     if (isRemoving) {
       nextRemovedIds.add(id);
@@ -410,49 +286,33 @@ export function useProductImages({
       nextRemovedIds.delete(id);
     }
 
-    setRemovedImageIds(
-      nextRemovedIds,
-    );
+    setRemovedImageIds(nextRemovedIds);
 
-    if (
-      isRemoving &&
-      image.is_primary
-    ) {
-      const fallbackExisting =
-        existingImages.find(
-          (item) =>
-            item.id !== id &&
-            !nextRemovedIds.has(
-              item.id,
-            ),
-        );
+    if (isRemoving && primaryExistingImageId === id) {
+      const fallbackExisting = existingImages.find(
+        (item) => item.id !== id && !nextRemovedIds.has(item.id),
+      );
 
       if (fallbackExisting) {
-        setExistingImagePrimary(
-          fallbackExisting.id,
-        );
+        setExistingImagePrimary(fallbackExisting.id);
         return;
       }
 
-      const fallbackNew =
-        newImages[0];
+      const fallbackNew = newImages[0];
 
       if (fallbackNew) {
-        setPrimaryImage(
-          fallbackNew.id,
-        );
+        setPrimaryImage(fallbackNew.id);
       }
     }
   }
 
   function clearImages() {
-    revokeImageUrls(
-      newImages,
-    );
+    revokeImageUrls(newImages);
 
     setNewImages([]);
-    setRemovedImageIds(
-      new Set(),
+    setRemovedImageIds(new Set());
+    setPrimaryExistingImageId(
+      existingImages.find((image) => image.is_primary)?.id ?? null,
     );
     setImageError(null);
     setIsDragging(false);
@@ -460,41 +320,29 @@ export function useProductImages({
 
   return {
     newImages,
-
     existingImages,
-
     activeExistingImages,
     removedExistingImages,
-
     removedImageIds,
-
     imageError,
     isDragging,
-
     totalImageCount,
     remainingSlots,
-
     primaryExistingImage,
+    primaryExistingImageId,
     primaryNewImage,
-
     currentPrimaryImageId,
-
     isDirty,
-
     handleImageChange,
     handleDragEnter,
     handleDragOver,
     handleDragLeave,
     handleDrop,
-
     removeImage,
     setPrimaryImage,
-
     setExistingImagePrimary,
     toggleRemoveExistingImage,
-
     clearImages,
-
     setNewImages,
     setRemovedImageIds,
     setImageError,

@@ -43,11 +43,7 @@ export function getUserFriendlyErrorMessage(
       return "Something went wrong on the server. Please try again later.";
     }
 
-    return error.message || fallback;
-  }
-
-  if (error instanceof Error) {
-    return error.message || fallback;
+    return fallback;
   }
 
   return fallback;

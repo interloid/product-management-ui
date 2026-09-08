@@ -20,6 +20,8 @@ import { ProductListSkeleton } from "@/components/shared/product-list-skeleton";
 import { TablePagination } from "@/components/shared/table-pagination";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/features/products/components/product-filters";
+import { ProductTableSkeleton } from "@/features/products/components/product-table/product-table-skeleton";
+import { getUserFriendlyErrorMessage } from "@/lib/errors";
 
 type ProductFormMode = "view" | "edit";
 
@@ -36,6 +38,7 @@ export default function ProductsPage() {
     useSearch();
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const [category, setCategory] = useState<ProductCategoryFilter>("All");
@@ -84,6 +87,8 @@ export default function ProductsPage() {
         setProducts(response.products);
         setProductCount(response.total);
         setTotalPages(response.totalPages);
+
+        setIsInitialLoad(false);
       } catch (error) {
         if (!ignore) {
           const message =
@@ -167,7 +172,7 @@ export default function ProductsPage() {
         refresh();
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Failed to delete product",
+          getUserFriendlyErrorMessage(error, "Failed to delete product"),
         );
       }
     },
@@ -183,7 +188,7 @@ export default function ProductsPage() {
         refresh();
       } catch (error) {
         toast.error(
-          error instanceof Error ? error.message : "Failed to archive product",
+          getUserFriendlyErrorMessage(error, "Failed to archive product"),
         );
       }
     },
@@ -194,7 +199,7 @@ export default function ProductsPage() {
     (product: ApiProduct, mode: ProductFormMode) => {
       setProductForm({
         mode,
-        product: null,
+        product,
         productId: product.id,
         open: true,
         loading: true,
@@ -223,10 +228,11 @@ export default function ProductsPage() {
     }
 
     let ignore = false;
+    const productId = productForm.productId;
 
     async function loadProduct() {
       try {
-        const response = await getProduct(productForm.productId!);
+        const response = await getProduct(productId);
 
         if (!ignore) {
           setProductForm((current) => ({
@@ -238,7 +244,7 @@ export default function ProductsPage() {
       } catch (error) {
         if (!ignore) {
           toast.error(
-            error instanceof Error ? error.message : "Failed to load product",
+            getUserFriendlyErrorMessage(error, "Failed to load product"),
           );
 
           setProductForm((current) => ({
@@ -249,11 +255,13 @@ export default function ProductsPage() {
         }
       }
     }
+
     loadProduct();
+
     return () => {
       ignore = true;
     };
-  }, [productForm.open, productForm.productId]);
+  }, [productForm.open, productForm.productId, productForm.mode]);
 
   const handleProductUpdated = useCallback(() => {
     setProductForm({
@@ -311,33 +319,40 @@ export default function ProductsPage() {
           onReset={resetFilters}
         />
         <div className="relative">
-          <div
-            className={
-              isLoading
-                ? "pointer-events-none opacity-50 transition-opacity"
-                : "opacity-100 transition-opacity"
-            }
-          >
-            <ProductTable
-              products={products}
-              onEdit={openEdit}
-              onView={openView}
-              archiveId={archiveId}
-              deleteId={deleteId}
-              sort={sort}
-              onSort={handleSort}
-              onArchive={setArchiveId}
-              onCancelArchive={() => setArchiveId(null)}
-              onConfirmArchive={handleArchiveProduct}
-              onDelete={setDeleteId}
-              onCancelDelete={() => setDeleteId(null)}
-              onConfirmDelete={handleDeleteProduct}
-            />
-          </div>
-          {isLoading && <ProductListSkeleton />}
+          {isInitialLoad ? (
+            <ProductTableSkeleton />
+          ) : (
+            <>
+              <div
+                className={
+                  isLoading
+                    ? "pointer-events-none opacity-50 transition-opacity"
+                    : "opacity-100 transition-opacity"
+                }
+              >
+                <ProductTable
+                  products={products}
+                  onEdit={openEdit}
+                  onView={openView}
+                  archiveId={archiveId}
+                  deleteId={deleteId}
+                  sort={sort}
+                  onSort={handleSort}
+                  onArchive={setArchiveId}
+                  onCancelArchive={() => setArchiveId(null)}
+                  onConfirmArchive={handleArchiveProduct}
+                  onDelete={setDeleteId}
+                  onCancelDelete={() => setDeleteId(null)}
+                  onConfirmDelete={handleDeleteProduct}
+                />
+              </div>
+
+              {isLoading && <ProductListSkeleton />}
+            </>
+          )}
         </div>
         <ProductForm
-          key={`${productForm.mode}-${productForm.product?.id ?? "loading"}`}
+          key={`${productForm.mode}-${productForm.product?.id ?? "loading"}-${productForm.loading ? "loading" : "ready"}`}
           mode={productForm.mode}
           product={productForm.product}
           open={productForm.open}
