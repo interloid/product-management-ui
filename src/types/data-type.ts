@@ -389,3 +389,14 @@ export type ProductActionConfirmationRowProps = {
   onCancel: () => void;
   onConfirm: () => void;
 };
+
+export type ProductFormProps = {
+  mode: "add" | "edit" | "view";
+  product?: ApiProduct | null;
+  open: boolean;
+  loading?: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreated?: () => void;
+  onUpdated?: (product: ApiProduct) => void;
+  onEdit?: (product: ApiProduct) => void;
+};

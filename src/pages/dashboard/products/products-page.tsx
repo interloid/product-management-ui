@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { ProductTable } from "@/features/products/components/product-table/product-table";
-import { ProductView } from "@/features/products/crud/product-form";
-import { ProductEdit } from "@/features/products/crud/product-form";
+import { ProductForm } from "@/features/products/crud/product-form";
 import { useSearch } from "@/features/search/use-search";
 import {
   archiveProduct as archiveProductApi,
@@ -21,6 +20,16 @@ import { ProductListSkeleton } from "@/components/shared/product-list-skeleton";
 import { TablePagination } from "@/components/shared/table-pagination";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/features/products/components/product-filters";
+
+type ProductFormMode = "view" | "edit";
+
+type ProductFormState = {
+  mode: ProductFormMode;
+  product: ApiProduct | null;
+  productId: string | null;
+  open: boolean;
+  loading: boolean;
+};
 
 export default function ProductsPage() {
   const { searchQuery, refreshKey, refresh, productCount, setProductCount } =
@@ -43,14 +52,13 @@ export default function ProductsPage() {
     field: null,
     order: "desc",
   });
-  const [viewProduct, setViewProduct] = useState<ApiProduct | null>(null);
-  const [viewOpen, setViewOpen] = useState(false);
-  const [viewLoading, setViewLoading] = useState(false);
-  const [viewProductId, setViewProductId] = useState<string | null>(null);
-  const [editProduct, setEditProduct] = useState<ApiProduct | null>(null);
-  const [editProductId, setEditProductId] = useState<string | null>(null);
-  const [editOpen, setEditOpen] = useState(false);
-  const [editLoading, setEditLoading] = useState(false);
+  const [productForm, setProductForm] = useState<ProductFormState>({
+    mode: "view",
+    product: null,
+    productId: null,
+    open: false,
+    loading: false,
+  });
 
   useEffect(() => {
     let ignore = false;
@@ -182,101 +190,103 @@ export default function ProductsPage() {
     [refresh],
   );
 
-  const openEdit = useCallback((product: ApiProduct) => {
-    setViewOpen(false);
-    setViewProduct(null);
-    setViewProductId(null);
+  const openProductForm = useCallback(
+    (product: ApiProduct, mode: ProductFormMode) => {
+      setProductForm({
+        mode,
+        product: null,
+        productId: product.id,
+        open: true,
+        loading: true,
+      });
+    },
+    [],
+  );
 
-    setEditProductId(product.id);
-    setEditProduct(null);
-    setEditLoading(true);
-    setEditOpen(true);
-  }, []);
+  const openView = useCallback(
+    (product: ApiProduct) => {
+      openProductForm(product, "view");
+    },
+    [openProductForm],
+  );
+
+  const openEdit = useCallback(
+    (product: ApiProduct) => {
+      openProductForm(product, "edit");
+    },
+    [openProductForm],
+  );
 
   useEffect(() => {
-    if (!editOpen || !editProductId) {
+    if (!productForm.open || !productForm.productId) {
       return;
     }
 
     let ignore = false;
 
-    getProduct(editProductId)
-      .then((response) => {
+    async function loadProduct() {
+      try {
+        const response = await getProduct(productForm.productId!);
+
         if (!ignore) {
-          setEditProduct(response);
+          setProductForm((current) => ({
+            ...current,
+            product: response,
+            loading: false,
+          }));
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         if (!ignore) {
           toast.error(
             error instanceof Error ? error.message : "Failed to load product",
           );
-          setEditOpen(false);
+
+          setProductForm((current) => ({
+            ...current,
+            open: false,
+            loading: false,
+          }));
         }
-      })
-      .finally(() => {
-        if (!ignore) {
-          setEditLoading(false);
-        }
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, [editOpen, editProductId]);
-
-  const openView = useCallback((product: ApiProduct) => {
-    setEditOpen(false);
-    setEditProduct(null);
-    setEditProductId(null);
-
-    setViewProductId(product.id);
-    setViewProduct(null);
-    setViewLoading(true);
-    setViewOpen(true);
-  }, []);
-  useEffect(() => {
-    if (!viewOpen || !viewProductId) {
-      return;
+      }
     }
 
-    let ignore = false;
-
-    const frame = requestAnimationFrame(() => {
-      getProduct(viewProductId)
-        .then((response) => {
-          if (!ignore) {
-            setViewProduct(response);
-          }
-        })
-        .catch((error) => {
-          if (!ignore) {
-            toast.error(
-              error instanceof Error ? error.message : "Failed to load product",
-            );
-            setViewOpen(false);
-          }
-        })
-        .finally(() => {
-          if (!ignore) {
-            setViewLoading(false);
-          }
-        });
-    });
+    loadProduct();
 
     return () => {
       ignore = true;
-      cancelAnimationFrame(frame);
     };
-  }, [viewOpen, viewProductId]);
+  }, [productForm.open, productForm.productId]);
 
   const handleProductUpdated = useCallback(() => {
-    setEditOpen(false);
-    setEditProduct(null);
-    setEditProductId(null);
+    setProductForm({
+      mode: "view",
+      product: null,
+      productId: null,
+      open: false,
+      loading: false,
+    });
+
     refresh();
   }, [refresh]);
 
+  const handleProductFormOpenChange = useCallback((open: boolean) => {
+    if (open) {
+      setProductForm((current) => ({
+        ...current,
+        open: true,
+      }));
+
+      return;
+    }
+
+    setProductForm({
+      mode: "view",
+      product: null,
+      productId: null,
+      open: false,
+      loading: false,
+    });
+  }, []);
   if (loadError) {
     return (
       <div className="flex min-h-50 items-center justify-center">
@@ -330,19 +340,14 @@ export default function ProductsPage() {
 
           {isLoading && <ProductListSkeleton />}
         </div>
-        <ProductView
-          product={viewProduct}
-          open={viewOpen}
-          loading={viewLoading}
-          onOpenChange={setViewOpen}
+        <ProductForm
+          key={`${productForm.mode}-${productForm.productId ?? "loading"}`}
+          mode={productForm.mode}
+          product={productForm.product}
+          open={productForm.open}
+          loading={productForm.loading}
+          onOpenChange={handleProductFormOpenChange}
           onEdit={openEdit}
-        />
-        <ProductEdit
-          key={editProduct?.id ?? "loading"}
-          product={editProduct}
-          open={editOpen}
-          loading={editLoading}
-          onOpenChange={setEditOpen}
           onUpdated={handleProductUpdated}
         />
       </div>

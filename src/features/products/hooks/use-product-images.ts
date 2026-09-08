@@ -1,211 +1,503 @@
-import { useCallback, useState, type ChangeEvent, type DragEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+} from "react";
+
+import type {
+  ApiProductImage,
+  ImageError,
+  ProductImage,
+} from "@/types/data-type";
+
+import { revokeImageUrls } from "@/lib/utils";
+
 import {
   MAX_IMAGES,
   validateImage,
 } from "../crud/components/product-constants";
-import type { ImageError, ProductImage, UseProductImagesOptions, UseProductImagesReturn } from "@/types/data-type";
+
+type UseProductImagesProps = {
+  maxImages?: number;
+  isSubmitting?: boolean;
+  existingImages?: ApiProductImage[];
+};
 
 export function useProductImages({
   maxImages = MAX_IMAGES,
   isSubmitting = false,
-  shouldAutoSetPrimary,
-}: UseProductImagesOptions = {}): UseProductImagesReturn {
-  const [images, setImages] = useState<ProductImage[]>([]);
-  const [imageError, setImageError] = useState<ImageError | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  existingImages = [],
+}: UseProductImagesProps = {}) {
+  const [newImages, setNewImages] =
+    useState<ProductImage[]>([]);
 
-  const remainingSlots = Math.max(maxImages - images.length, 0);
+  const [removedImageIds, setRemovedImageIds] =
+    useState<Set<string>>(new Set());
 
-  const processFiles = useCallback(
-    (fileList: FileList | File[]) => {
-      const selectedFiles = Array.from(fileList);
+  const [imageError, setImageError] =
+    useState<ImageError | null>(null);
 
-      if (selectedFiles.length === 0 || isSubmitting) {
-        return;
-      }
+  const [isDragging, setIsDragging] =
+    useState(false);
 
-      setImageError(null);
+  const newImagesRef =
+    useRef<ProductImage[]>([]);
 
-      const availableSlots = Math.max(maxImages - images.length, 0);
+  useEffect(() => {
+    newImagesRef.current = newImages;
+  }, [newImages]);
 
-      if (availableSlots <= 0) {
-        setImageError({
-          message: `You can upload a maximum of ${maxImages} images.`,
-        });
-        return;
-      }
+  useEffect(() => {
+    return () => {
+      revokeImageUrls(
+        newImagesRef.current,
+      );
+    };
+  }, []);
 
-      let firstError: ImageError | null = null;
-
-      if (selectedFiles.length > availableSlots) {
-        firstError = {
-          message: `You can only add ${availableSlots} more image${
-            availableSlots === 1 ? "" : "s"
-          }.`,
-        };
-      }
-
-      const filesToProcess = selectedFiles.slice(0, availableSlots);
-
-      const addedImages: ProductImage[] = [];
-
-      for (const file of filesToProcess) {
-        const validationError = validateImage(file);
-
-        if (validationError) {
-          firstError ??= validationError;
-          continue;
-        }
-
-        addedImages.push({
-          id: crypto.randomUUID(),
-          file,
-          previewUrl: URL.createObjectURL(file),
-          isPrimary:
-            (shouldAutoSetPrimary?.() ?? false) &&
-            images.length === 0 &&
-            addedImages.length === 0,
-        });
-      }
-
-      if (addedImages.length > 0) {
-        setImages((previous) => [...previous, ...addedImages]);
-      }
-
-      setImageError(firstError);
-    },
-    [images, isSubmitting, maxImages, shouldAutoSetPrimary],
+  const activeExistingImages = useMemo(
+    () =>
+      existingImages.filter(
+        (image) =>
+          !removedImageIds.has(image.id),
+      ),
+    [
+      existingImages,
+      removedImageIds,
+    ],
   );
 
-  const handleImageChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      processFiles(event.target.files ?? []);
-      event.target.value = "";
-    },
-    [processFiles],
+  const removedExistingImages = useMemo(
+    () =>
+      existingImages.filter(
+        (image) =>
+          removedImageIds.has(image.id),
+      ),
+    [
+      existingImages,
+      removedImageIds,
+    ],
   );
 
-  const handleDragEnter = useCallback(
-    (event: DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
+  const totalImageCount =
+    activeExistingImages.length +
+    newImages.length;
 
-      if (isSubmitting || remainingSlots <= 0) {
-        return;
+  const remainingSlots = Math.max(
+    maxImages - totalImageCount,
+    0,
+  );
+
+  const primaryExistingImage =
+    activeExistingImages.find(
+      (image) =>
+        image.is_primary,
+    );
+
+  const primaryNewImage =
+    newImages.find(
+      (image) =>
+        image.isPrimary,
+    );
+
+  const currentPrimaryImageId =
+    primaryExistingImage?.id ?? null;
+
+  const isDirty =
+    newImages.length > 0 ||
+    removedImageIds.size > 0;
+
+  function processFiles(
+    fileList: FileList | File[],
+  ) {
+    const files = Array.from(
+      fileList,
+    );
+
+    if (files.length === 0) {
+      return;
+    }
+
+    setImageError(null);
+
+    if (remainingSlots <= 0) {
+      setImageError({
+        message: `You can upload a maximum of ${maxImages} images.`,
+      });
+
+      return;
+    }
+
+    let firstError:
+      | ImageError
+      | null = null;
+
+    if (
+      files.length >
+      remainingSlots
+    ) {
+      firstError = {
+        message: `You can only add ${remainingSlots} more image${
+          remainingSlots === 1
+            ? ""
+            : "s"
+        }.`,
+      };
+    }
+
+    const filesToProcess =
+      files.slice(
+        0,
+        remainingSlots,
+      );
+
+    const addedImages:
+      ProductImage[] = [];
+
+    for (const file of filesToProcess) {
+      const validationError =
+        validateImage(file);
+
+      if (validationError) {
+        firstError ??=
+          validationError;
+
+        continue;
       }
 
-      setIsDragging(true);
-    },
-    [isSubmitting, remainingSlots],
-  );
+      const shouldBecomePrimary =
+        activeExistingImages.length ===
+          0 &&
+        newImages.length === 0 &&
+        addedImages.length === 0;
 
-  const handleDragOver = useCallback(
-    (event: DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
+      addedImages.push({
+        id: crypto.randomUUID(),
+        file,
+        previewUrl:
+          URL.createObjectURL(
+            file,
+          ),
+        isPrimary:
+          shouldBecomePrimary,
+      });
+    }
 
-      if (isSubmitting || remainingSlots <= 0) {
-        return;
-      }
+    if (addedImages.length > 0) {
+      setNewImages(
+        (previous) => [
+          ...previous,
+          ...addedImages,
+        ],
+      );
+    }
 
-      event.dataTransfer.dropEffect = "copy";
-      setIsDragging(true);
-    },
-    [isSubmitting, remainingSlots],
-  );
+    setImageError(
+      firstError,
+    );
+  }
 
-  const handleDragLeave = useCallback((event: DragEvent<HTMLLabelElement>) => {
+  function handleImageChange(
+    event: ChangeEvent<HTMLInputElement>,
+  ) {
+    processFiles(
+      event.target.files ?? [],
+    );
+
+    event.target.value = "";
+  }
+
+  function handleDragEnter(
+    event: DragEvent<HTMLLabelElement>,
+  ) {
     event.preventDefault();
     event.stopPropagation();
 
-    if (event.currentTarget.contains(event.relatedTarget as Node | null)) {
+    if (
+      isSubmitting ||
+      remainingSlots <= 0
+    ) {
+      return;
+    }
+
+    setIsDragging(true);
+  }
+
+  function handleDragOver(
+    event: DragEvent<HTMLLabelElement>,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      isSubmitting ||
+      remainingSlots <= 0
+    ) {
+      return;
+    }
+
+    event.dataTransfer.dropEffect =
+      "copy";
+
+    setIsDragging(true);
+  }
+
+  function handleDragLeave(
+    event: DragEvent<HTMLLabelElement>,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      event.currentTarget.contains(
+        event.relatedTarget as Node,
+      )
+    ) {
       return;
     }
 
     setIsDragging(false);
-  }, []);
+  }
 
-  const handleDrop = useCallback(
-    (event: DragEvent<HTMLLabelElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
+  function handleDrop(
+    event: DragEvent<HTMLLabelElement>,
+  ) {
+    event.preventDefault();
+    event.stopPropagation();
 
-      setIsDragging(false);
+    setIsDragging(false);
 
-      if (isSubmitting) {
+    if (isSubmitting) {
+      return;
+    }
+
+    processFiles(
+      event.dataTransfer.files,
+    );
+  }
+
+  function removeImage(id: string) {
+    const image =
+      newImages.find(
+        (item) =>
+          item.id === id,
+      );
+
+    if (!image) {
+      return;
+    }
+
+    URL.revokeObjectURL(
+      image.previewUrl,
+    );
+
+    const remainingImages =
+      newImages.filter(
+        (item) =>
+          item.id !== id,
+      );
+
+    if (image.isPrimary) {
+      const fallback =
+        remainingImages[0];
+
+      if (fallback) {
+        setNewImages(
+          remainingImages.map(
+            (item) => ({
+              ...item,
+              isPrimary:
+                item.id ===
+                fallback.id,
+            }),
+          ),
+        );
+
         return;
       }
 
-      if (remainingSlots <= 0) {
-        setImageError({
-          message: `Maximum ${maxImages} images allowed.`,
-        });
+      if (
+        activeExistingImages.length >
+        0
+      ) {
+        setExistingImagePrimary(
+          activeExistingImages[0].id,
+        );
+      }
+    }
+
+    setNewImages(
+      remainingImages,
+    );
+  }
+
+  function setPrimaryImage(
+    id: string,
+  ) {
+    const imageExists =
+      newImages.some(
+        (image) =>
+          image.id === id,
+      );
+
+    if (!imageExists) {
+      return;
+    }
+
+    setNewImages(
+      (images) =>
+        images.map(
+          (image) => ({
+            ...image,
+            isPrimary:
+              image.id === id,
+          }),
+        ),
+    );
+  }
+
+  function setExistingImagePrimary(
+    id: string,
+  ) {
+    const imageExists =
+      activeExistingImages.some(
+        (image) =>
+          image.id === id,
+      );
+
+    if (!imageExists) {
+      return;
+    }
+
+    setNewImages(
+      (images) =>
+        images.map(
+          (image) => ({
+            ...image,
+            isPrimary: false,
+          }),
+        ),
+    );
+  }
+
+  function toggleRemoveExistingImage(
+    id: string,
+  ) {
+    const image =
+      existingImages.find(
+        (item) =>
+          item.id === id,
+      );
+
+    if (!image) {
+      return;
+    }
+
+    const isRemoving =
+      !removedImageIds.has(id);
+
+    const nextRemovedIds =
+      new Set(
+        removedImageIds,
+      );
+
+    if (isRemoving) {
+      nextRemovedIds.add(id);
+    } else {
+      nextRemovedIds.delete(id);
+    }
+
+    setRemovedImageIds(
+      nextRemovedIds,
+    );
+
+    if (
+      isRemoving &&
+      image.is_primary
+    ) {
+      const fallbackExisting =
+        existingImages.find(
+          (item) =>
+            item.id !== id &&
+            !nextRemovedIds.has(
+              item.id,
+            ),
+        );
+
+      if (fallbackExisting) {
+        setExistingImagePrimary(
+          fallbackExisting.id,
+        );
         return;
       }
 
-      processFiles(event.dataTransfer.files);
-    },
-    [isSubmitting, maxImages, processFiles, remainingSlots],
-  );
+      const fallbackNew =
+        newImages[0];
 
-  const removeImage = useCallback((id: string) => {
-    setImages((previous) => {
-      const image = previous.find((item) => item.id === id);
-
-      if (!image) {
-        return previous;
+      if (fallbackNew) {
+        setPrimaryImage(
+          fallbackNew.id,
+        );
       }
+    }
+  }
 
-      URL.revokeObjectURL(image.previewUrl);
-
-      return previous.filter((item) => item.id !== id);
-    });
-  }, []);
-
-  const setPrimaryImage = useCallback((id: string) => {
-    setImages((previous) =>
-      previous.map((image) => ({
-        ...image,
-        isPrimary: image.id === id,
-      })),
+  function clearImages() {
+    revokeImageUrls(
+      newImages,
     );
-  }, []);
 
-  const clearPrimaryImage = useCallback(() => {
-    setImages((previous) =>
-      previous.map((image) => ({
-        ...image,
-        isPrimary: false,
-      })),
+    setNewImages([]);
+    setRemovedImageIds(
+      new Set(),
     );
-  }, []);
-
-  const clearImages = useCallback(() => {
-    setImages((previous) => {
-      previous.forEach((image) => {
-        URL.revokeObjectURL(image.previewUrl);
-      });
-
-      return [];
-    });
-
     setImageError(null);
     setIsDragging(false);
-  }, []);
+  }
 
   return {
-    images,
+    newImages,
+
+    existingImages,
+
+    activeExistingImages,
+    removedExistingImages,
+
+    removedImageIds,
+
     imageError,
     isDragging,
+
+    totalImageCount,
     remainingSlots,
+
+    primaryExistingImage,
+    primaryNewImage,
+
+    currentPrimaryImageId,
+
+    isDirty,
+
     handleImageChange,
     handleDragEnter,
     handleDragOver,
     handleDragLeave,
     handleDrop,
+
     removeImage,
     setPrimaryImage,
-    clearPrimaryImage,
+
+    setExistingImagePrimary,
+    toggleRemoveExistingImage,
+
     clearImages,
+
+    setNewImages,
+    setRemovedImageIds,
+    setImageError,
+    setIsDragging,
   };
 }

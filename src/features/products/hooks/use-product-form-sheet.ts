@@ -2,26 +2,25 @@ import { useMemo, useState } from "react";
 import { validateProductFields } from "../crud/components/product-validation";
 import type { FormError, ProductForm } from "@/types/data-type";
 
-export function useProductFormSheet<T extends ProductForm | null>({
-  initialForm,
-  onOpenChange,
-  isDirtyExtra = false,
-  onReset,
-}: {
+type UseProductFormSheetOptions<T extends ProductForm> = {
   initialForm: T;
   onOpenChange: (open: boolean) => void;
   isDirtyExtra?: boolean;
   onReset?: () => void;
-}) {
+};
+
+export function useProductFormSheet<T extends ProductForm>({
+  initialForm,
+  onOpenChange,
+  isDirtyExtra = false,
+  onReset,
+}: UseProductFormSheetOptions<T>) {
   const [form, setForm] = useState<T>(initialForm);
   const [errors, setErrors] = useState<FormError>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
   const isDirty = useMemo(() => {
-    if (!form || !initialForm) {
-      return false;
-    }
-
     return (
       isDirtyExtra ||
       form.name !== initialForm.name ||
@@ -38,16 +37,10 @@ export function useProductFormSheet<T extends ProductForm | null>({
     field: K,
     value: ProductForm[K],
   ) {
-    setForm((previous) => {
-      if (!previous) {
-        return previous;
-      }
-
-      return {
-        ...previous,
-        [field]: value,
-      };
-    });
+    setForm((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
 
     setErrors((previous) => {
       if (!previous[field]) {
@@ -62,13 +55,19 @@ export function useProductFormSheet<T extends ProductForm | null>({
   }
 
   function validateForm() {
-    if (!form) {
-      return false;
-    }
-
     const validationErrors = validateProductFields(form);
+
     setErrors(validationErrors);
+
     return Object.keys(validationErrors).length === 0;
+  }
+
+  function resetForm() {
+    onReset?.();
+    setForm(initialForm);
+    setErrors({});
+    setIsSubmitting(false);
+    setShowDiscardDialog(false);
   }
 
   function handleSheetOpenChange(nextOpen: boolean) {
@@ -78,9 +77,7 @@ export function useProductFormSheet<T extends ProductForm | null>({
     }
 
     if (!isDirty) {
-      onReset?.();
-      setForm(initialForm);
-      setErrors({});
+      resetForm();
       onOpenChange(false);
       return;
     }
@@ -93,10 +90,7 @@ export function useProductFormSheet<T extends ProductForm | null>({
   }
 
   function handleDiscardAndClose() {
-    onReset?.();
-    setForm(initialForm);
-    setErrors({});
-    setShowDiscardDialog(false);
+    resetForm();
     onOpenChange(false);
   }
 
@@ -105,11 +99,19 @@ export function useProductFormSheet<T extends ProductForm | null>({
     setForm,
     errors,
     setErrors,
+
+    isSubmitting,
+    setIsSubmitting,
+
     isDirty,
+
     showDiscardDialog,
     setShowDiscardDialog,
+
     updateField,
     validateForm,
+    resetForm,
+
     handleKeepEditing,
     handleDiscardAndClose,
     handleSheetOpenChange,
