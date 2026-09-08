@@ -107,11 +107,9 @@ export function useProductFormSheet<T extends ProductForm>({
 
     showDiscardDialog,
     setShowDiscardDialog,
-
     updateField,
     validateForm,
     resetForm,
-
     handleKeepEditing,
     handleDiscardAndClose,
     handleSheetOpenChange,

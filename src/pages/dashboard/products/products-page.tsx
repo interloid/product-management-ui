@@ -249,9 +249,7 @@ export default function ProductsPage() {
         }
       }
     }
-
     loadProduct();
-
     return () => {
       ignore = true;
     };
@@ -265,7 +263,6 @@ export default function ProductsPage() {
       open: false,
       loading: false,
     });
-
     refresh();
   }, [refresh]);
 
@@ -337,11 +334,10 @@ export default function ProductsPage() {
               onConfirmDelete={handleDeleteProduct}
             />
           </div>
-
           {isLoading && <ProductListSkeleton />}
         </div>
         <ProductForm
-          key={`${productForm.mode}-${productForm.productId ?? "loading"}`}
+          key={`${productForm.mode}-${productForm.product?.id ?? "loading"}`}
           mode={productForm.mode}
           product={productForm.product}
           open={productForm.open}

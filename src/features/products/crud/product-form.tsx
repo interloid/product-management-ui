@@ -119,7 +119,6 @@ export function ProductForm(props: ProductFormProps) {
     isDragging,
     totalImageCount,
     remainingSlots,
-    primaryExistingImage,
     primaryNewImage,
     isDirty: isImageDirty,
     handleImageChange,
@@ -204,22 +203,12 @@ export function ProductForm(props: ProductFormProps) {
         formData.append(PRODUCT_FORM_FIELDS.IMAGES, image.file);
       }
 
-      if (mode === "edit" && primaryExistingImage) {
-        formData.append(
-          PRODUCT_FORM_FIELDS.PRIMARY_IMAGE_ID,
-          primaryExistingImage.id,
-        );
-      }
-
       if (mode === "add") {
         await createProduct(formData);
-
         toast.success("Product created successfully");
-
         resetProductForm();
         onOpenChange(false);
         props.onCreated?.();
-
         return;
       }
 
@@ -241,9 +230,7 @@ export function ProductForm(props: ProductFormProps) {
     if (loading || !product) {
       return <ProductViewSkeleton />;
     }
-
     const primaryImage = getPrimaryImage(product);
-
     return (
       <>
         <SheetHeader className="border-b px-5 py-4">
@@ -321,7 +308,6 @@ export function ProductForm(props: ProductFormProps) {
 
   function renderForm() {
     const isEdit = mode === "edit";
-
     if (isEdit && (loading || !product)) {
       return <ProductEditSkeleton />;
     }
