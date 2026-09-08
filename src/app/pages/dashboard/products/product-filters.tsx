@@ -28,13 +28,17 @@ export function ProductFilters({
   category,
   status,
   priceRange,
+  sort,
   onCategoryChange,
   onStatusChange,
   onPriceChange,
   onReset,
 }: ProductFiltersProps) {
   const isDefaultFilters =
-    category === "All" && status === "All" && priceRange === "all";
+    category === "All" &&
+    status === "All" &&
+    priceRange === "all" &&
+    sort.field === null;
 
   return (
     <div className="flex flex-wrap items-center gap-2">

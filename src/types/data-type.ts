@@ -43,7 +43,7 @@ export type ProductSortField =
 export type SortOrder = "asc" | "desc";
 
 export type ProductSort = {
-  field: ProductSortField;
+  field: ProductSortField | null;
   order: SortOrder;
 };
 
@@ -211,6 +211,7 @@ export type ProductFiltersProps = {
   category: ProductCategoryFilter;
   status: ProductStatusFilter;
   priceRange: string;
+  sort: ProductSort;
   onCategoryChange: (value: ProductCategoryFilter) => void;
   onStatusChange: (value: ProductStatusFilter) => void;
   onPriceChange: (value: string) => void;

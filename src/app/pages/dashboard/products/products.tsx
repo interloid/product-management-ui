@@ -2,8 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { ProductFilters } from "@/app/pages/dashboard/products/product-filters";
 import { ProductTable } from "./productTable/product-table";
-import { ProductView } from "./crud-operations/view-product";
-import ProductEdit from "./crud-operations/edit-product";
+import { ProductView } from "./crud-operations/product-form";
+import { ProductEdit } from "./crud-operations/product-form";
 import { useSearch } from "@/context/use-search";
 import {
   archiveProduct as archiveProductApi,
@@ -40,7 +40,7 @@ export default function ProductsPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
   const [sort, setSort] = useState<ProductSort>({
-    field: "updated",
+    field: null,
     order: "desc",
   });
   const [viewProduct, setViewProduct] = useState<ApiProduct | null>(null);
@@ -67,7 +67,7 @@ export default function ProductsPage() {
           category,
           search: debouncedSearch,
           priceRange,
-          sort: sort.field,
+          sort: sort.field ?? undefined,
           order: sort.order,
         });
 
@@ -137,6 +137,7 @@ export default function ProductsPage() {
     setCategory("All");
     setStatus("All");
     setPriceRange("all");
+    setSort({ field: null, order: "desc" });
     setPage(1);
   }, []);
 
@@ -297,6 +298,7 @@ export default function ProductsPage() {
           category={category}
           status={status}
           priceRange={priceRange}
+          sort={sort}
           onCategoryChange={updateCategory}
           onStatusChange={updateStatus}
           onPriceChange={updatePrice}
