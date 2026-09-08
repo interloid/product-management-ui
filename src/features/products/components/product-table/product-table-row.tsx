@@ -15,10 +15,11 @@ import {
   getStatusClassName,
   getStatusLabel,
 } from "@/lib/converters";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { getPrimaryImage } from "@/features/products/product-utils";
+import { ProductActionConfirmationRow } from "./product-action-confirmation-row";
 
-export function ProductTableRow({
+export const ProductTableRow = memo(function ProductTableRow({
   product,
   isArchiving,
   isDeleting,
@@ -36,79 +37,28 @@ export function ProductTableRow({
 
   if (isArchiving) {
     return (
-      <TableRow className="bg-red-50 hover:bg-red-50">
-        <TableCell
-          colSpan={8}
-          className="border-l-2 border-l-cancel-button-background py-4"
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center md:items-start sm:justify-between">
-            <div className="flex items-center gap-3 min-w-0">
-              <ProductImage src={primaryImage?.url} alt={product.name} />
-              <div className="min-w-0">
-                <p className="truncate text-sm font-medium text-start">
-                  Archive &quot;{product.name}&quot;?
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  It disappears from the active list.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onCancelArchive}
-                className="hover:bg-primary-hover hover:border-primary"
-              >
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                className="bg-red-600 text-white hover:bg-red-700"
-                onClick={onConfirmArchive}
-              >
-                Yes, archive
-              </Button>
-            </div>
-          </div>
-        </TableCell>
-      </TableRow>
+      <ProductActionConfirmationRow
+        image={primaryImage?.url}
+        alt={product.name}
+        title={`Archive "${product.name}"?`}
+        description="It disappears from the active list."
+        confirmLabel="Yes, archive"
+        onCancel={onCancelArchive}
+        onConfirm={onConfirmArchive}
+      />
     );
   }
   if (isDeleting) {
     return (
-      <TableRow className="bg-red-50 hover:bg-red-50">
-        <TableCell
-          colSpan={8}
-          className="border-l-2 border-l-cancel-button-background py-4"
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3 min-w-0">
-              <ProductImage src={primaryImage?.url} alt={product.name} />
-              <div className="min-w-0">
-                <p className="truncate text-sm text-start font-medium">
-                  Delete &quot;{product.name}&quot;?
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  This permanently removes the product.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={onCancelDelete}>
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                className="bg-red-600 text-white hover:bg-red-700"
-                onClick={onConfirmDelete}
-              >
-                Yes, delete
-              </Button>
-            </div>
-          </div>
-        </TableCell>
-      </TableRow>
+      <ProductActionConfirmationRow
+        image={primaryImage?.url}
+        alt={product.name}
+        title={`Delete "${product.name}"?`}
+        description="This permanently removes the product."
+        confirmLabel="Yes, delete"
+        onCancel={onCancelDelete}
+        onConfirm={onConfirmDelete}
+      />
     );
   }
   return (
@@ -227,4 +177,4 @@ export function ProductTableRow({
       </TableCell>
     </TableRow>
   );
-}
+});

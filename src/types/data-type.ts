@@ -350,7 +350,6 @@ export interface UnsavedChangesDialogProps {
   onDiscard: () => void;
 }
 
-
 export interface UseProductImagesOptions {
   maxImages?: number;
   isSubmitting?: boolean;
@@ -380,3 +379,13 @@ export interface ImageErrorBannerProps {
 export interface LogoutDialogProps {
   trigger: React.ReactNode;
 }
+
+export type ProductActionConfirmationRowProps = {
+  image?: string;
+  alt: string;
+  title: string;
+  description: string;
+  confirmLabel: string;
+  onCancel: () => void;
+  onConfirm: () => void;
+};

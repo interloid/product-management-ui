@@ -777,7 +777,6 @@ export function ProductEdit({
                   </SheetTitle>
                 </div>
               </SheetHeader>
-
               <form onSubmit={handleSubmit} className="contents" noValidate>
                 <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-5">
                   <ProductFormFields
@@ -786,10 +785,8 @@ export function ProductEdit({
                     errors={errors}
                     onFieldChange={updateField}
                   />
-
                   <div className="grid gap-3">
                     <ProductImageHeader count={activeImageCount} />
-
                     <ProductImageGrid>
                       {activeExistingImages.map((image) => (
                         <ProductImageTile
@@ -856,7 +853,6 @@ export function ProductEdit({
                     onChange={(value) => updateField("description", value)}
                   />
                 </div>
-
                 <ProductFormActions
                   isSubmitting={isSubmitting}
                   submitLabel="Save changes"

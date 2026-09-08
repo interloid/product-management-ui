@@ -3,9 +3,9 @@ import type { HeaderActionsProps } from "@/types/data-type";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { LogoutDialog } from "./logout-dialog";
-import {AddProducts}  from "@/features/products/crud/product-form";
 import { getInitials } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { AddProducts } from "@/features/products/crud/product-form";
 
 export function HeaderActions({ user }: HeaderActionsProps) {
   const { searchQuery, setSearchQuery, refresh } = useSearch();
