@@ -303,17 +303,14 @@ export function AddProducts({ onProductCreated }: AddProductsProps) {
                     />
                   )}
                 </ProductImageGrid>
-
                 {imageError && <ImageErrorBanner error={imageError} />}
               </div>
-
               <ProductDescriptionField
                 id="add-product-description"
                 value={form.description}
                 onChange={(value) => updateField("description", value)}
               />
             </div>
-
             <ProductFormActions
               isSubmitting={isSubmitting}
               submitLabel="Create product"
@@ -322,7 +319,6 @@ export function AddProducts({ onProductCreated }: AddProductsProps) {
           </form>
         </SheetContent>
       </Sheet>
-
       <UnsavedChangesDialog
         open={showDiscardDialog}
         onOpenChange={setShowDiscardDialog}

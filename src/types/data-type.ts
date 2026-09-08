@@ -12,11 +12,6 @@ export type NavMainProps = {
   items: NavItem[];
 };
 
-export type EmptyPageProps = {
-  title?: string;
-  description?: string;
-};
-
 export type ProductCategory =
   | "Lighting"
   | "Apparel"

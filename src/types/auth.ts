@@ -49,16 +49,6 @@ export interface PasscodeErrorDetails {
   retry_after_seconds?: number;
 }
 
-export interface ApiErrorResponse {
-  success: false;
-  message: string;
-  error?: {
-    code?: string;
-    details?: PasscodeErrorDetails;
-  };
-  request_id?: string;
-}
-
 export type OAuthProvider = "google" | "github" | "microsoft";
 
 export type AuthStatus = "loading" | "authenticated" | "unauthenticated";
