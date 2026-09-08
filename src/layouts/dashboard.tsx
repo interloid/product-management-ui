@@ -1,11 +1,11 @@
-import { AppSidebar } from "@/components/shad/app-sidebar";
-import Header from "@/components/shad/header";
+import { AppSidebar } from "@/pages/dashboard/components/app-sidebar";
+import Header from "@/pages/dashboard/components/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useCallback, useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { SearchContext } from "@/context/search";
-import { useAuth } from "@/hooks/useAuth";
-import { AppFooter } from "@/components/shad/app-footer";
+import { SearchContext } from "@/features/search/search-context";
+import { useAuth } from "@/features/auth/use-auth";
+import { AppFooter } from "@/components/shared/app-footer";
 
 export default function DashboardLayout() {
   const [searchQuery, setSearchQuery] = useState("");

@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
-import type { DragEvent, ReactNode } from "react";
+import type { ChangeEvent, ComponentType, DragEvent, ReactNode } from "react";
 import type { AuthUser } from "./auth";
+import { Sidebar } from "@/components/ui/sidebar";
 
 type NavItem = {
   title: string;
@@ -327,4 +328,55 @@ export interface ImageDropzoneProps {
   onDragLeave: (event: DragEvent<HTMLLabelElement>) => void;
   onDrop: (event: DragEvent<HTMLLabelElement>) => void;
   children: ReactNode;
+}
+
+export type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user: AuthUser | null;
+};
+
+export type EmptyPageProps = {
+  icon?: ComponentType<{
+    className?: string;
+  }>;
+  title?: string;
+  description?: string;
+  children?: ReactNode;
+};
+
+export interface UnsavedChangesDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onKeepEditing: () => void;
+  onDiscard: () => void;
+}
+
+
+export interface UseProductImagesOptions {
+  maxImages?: number;
+  isSubmitting?: boolean;
+  shouldAutoSetPrimary?: () => boolean;
+}
+
+export interface UseProductImagesReturn {
+  images: ProductImage[];
+  imageError: ImageError | null;
+  isDragging: boolean;
+  remainingSlots: number;
+  handleImageChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  handleDragEnter: (event: DragEvent<HTMLLabelElement>) => void;
+  handleDragOver: (event: DragEvent<HTMLLabelElement>) => void;
+  handleDragLeave: (event: DragEvent<HTMLLabelElement>) => void;
+  handleDrop: (event: DragEvent<HTMLLabelElement>) => void;
+  removeImage: (id: string) => void;
+  setPrimaryImage: (id: string) => void;
+  clearPrimaryImage: () => void;
+  clearImages: () => void;
+}
+
+export interface ImageErrorBannerProps {
+  error: ImageError;
+}
+
+export interface LogoutDialogProps {
+  trigger: React.ReactNode;
 }
