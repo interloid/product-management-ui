@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
-import { ProductTable } from "@/app/pages/dashboard/products/productTable/product-table";
+import { ProductTable } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table";
 import { ProductForm } from "@/app/pages/dashboard/products/crud-operations/product-form";
 import { useSearch } from "@/context/use-search";
 import {
@@ -21,8 +21,8 @@ import type {
 import { ProductListSkeleton } from "@/components/shad/product-list-skeleton";
 import { TablePagination } from "@/components/shad/table-pagination";
 import { Button } from "@/components/ui/button";
-import { ProductFilters } from "@/app/pages/dashboard/products/product-filters";
-import { ProductTableSkeleton } from "@/app/pages/dashboard/products/productTable/product-table-skeleton";
+import { ProductFilters } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters";
+import { ProductTableSkeleton } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table-skeleton";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import { ApiError } from "@/types/data-type";
 

@@ -30,13 +30,13 @@ import { useProductImages } from "@/hooks/use-product-images";
 import { useProductFormSheet } from "./product-utils/use-product-form-sheet";
 import { appendProductFormData } from "./product-utils/product-form-data";
 
-import { PRODUCT_FORM_FIELDS } from "./product-components/product-form-fields";
-import { MAX_IMAGES } from "./product-components/product-constants";
+import { PRODUCT_FORM_FIELDS } from "./product-utils/product-form-fields";
+import { MAX_IMAGES } from "./product-utils/product-constants";
 import { ImageErrorBanner } from "./product-components/image-error-banner";
 import { ProductEditSkeleton } from "./product-components/product-edit-skeleton";
 import { ProductViewSkeleton } from "./product-components/product-view-skeleton";
 
-import { ProductImagePreview } from "../preview-image/product-image-preview";
+import { ProductImagePreview } from "./product-components/product-image-preview";
 
 import {
   ProductDescriptionField,
@@ -47,7 +47,7 @@ import {
   ProductImageGrid,
   ProductImageHeader,
   ProductImageTile,
-} from "./product-utils/product-form-ui";
+} from "./product-components/product-form-ui";
 
 const blankForm: ProductFormData = {
   name: "",

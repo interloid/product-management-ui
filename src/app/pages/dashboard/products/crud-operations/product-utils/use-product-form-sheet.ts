@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { validateProductFields } from "../product-components/product-validation";
+import { validateProductFields } from "./product-validation";
 import type { FormError, ProductForm, UseProductFormSheetOptions } from "@/types/data-type";
 
 export function useProductFormSheet<T extends ProductForm>({
