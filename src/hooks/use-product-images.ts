@@ -90,6 +90,10 @@ export function useProductImages({
     primaryExistingImageId !== initialPrimaryExistingImageId.current;
 
   function processFiles(fileList: FileList | File[]) {
+    if (isSubmitting) {
+      return;
+    }
+
     const files = Array.from(fileList);
 
     if (files.length === 0) {
@@ -204,6 +208,10 @@ export function useProductImages({
   }
 
   function removeImage(id: string) {
+    if (isSubmitting) {
+      return;
+    }
+
     const image = newImages.find((item) => item.id === id);
 
     if (!image) {
@@ -237,6 +245,10 @@ export function useProductImages({
   }
 
   function setPrimaryImage(id: string) {
+    if (isSubmitting) {
+      return;
+    }
+
     const imageExists = newImages.some((image) => image.id === id);
 
     if (!imageExists) {
@@ -252,7 +264,12 @@ export function useProductImages({
       })),
     );
   }
+
   function setExistingImagePrimary(id: string) {
+    if (isSubmitting) {
+      return;
+    }
+
     const imageExists = activeExistingImages.some((image) => image.id === id);
 
     if (!imageExists) {
@@ -270,6 +287,10 @@ export function useProductImages({
   }
 
   function toggleRemoveExistingImage(id: string) {
+    if (isSubmitting) {
+      return;
+    }
+
     const image = existingImages.find((item) => item.id === id);
 
     if (!image) {
@@ -302,7 +323,10 @@ export function useProductImages({
 
       if (fallbackNew) {
         setPrimaryImage(fallbackNew.id);
+        return;
       }
+
+      setPrimaryExistingImageId(null);
     }
   }
 

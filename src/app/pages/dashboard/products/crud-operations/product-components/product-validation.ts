@@ -1,5 +1,37 @@
 import type { FormError, ProductForm } from "@/types/data-type";
 
+function parseRequiredNumber(
+  value: string,
+  fieldLabel: string,
+  options?: { integer?: boolean; allowZero?: boolean },
+): string | undefined {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return `This ${fieldLabel.toLowerCase()} is required.`;
+  }
+
+  const parsed = Number(trimmed);
+
+  if (!Number.isFinite(parsed)) {
+    return `${fieldLabel} must be a valid number.`;
+  }
+
+  if (parsed < 0) {
+    return `${fieldLabel} cannot be negative.`;
+  }
+
+  if (!options?.allowZero && parsed === 0) {
+    return `${fieldLabel} cannot be zero.`;
+  }
+
+  if (options?.integer && !Number.isInteger(parsed)) {
+    return `${fieldLabel} must be a whole number.`;
+  }
+
+  return undefined;
+}
+
 export function validateProductFields(form: ProductForm): FormError {
   const errors: FormError = {};
 
@@ -15,20 +47,17 @@ export function validateProductFields(form: ProductForm): FormError {
     errors.category = "This category is required.";
   }
 
-  if (!form.price.trim()) {
-    errors.price = "This price is required.";
-  } else if (Number(form.price) < 0) {
-    errors.price = "Price cannot be negative.";
-  } else if (Number(form.price) === 0) {
-    errors.price = "Price cannot be zero";
+  const priceError = parseRequiredNumber(form.price, "Price");
+  if (priceError) {
+    errors.price = priceError;
   }
 
-  if (!form.stock.trim()) {
-    errors.stock = "This stock is required.";
-  } else if (Number(form.stock) < 0) {
-    errors.stock = "Stock cannot be negative.";
-  } else if (Number(form.stock) === 0) {
-    errors.stock = "Stock cannot be zero.";
+  const stockError = parseRequiredNumber(form.stock, "Stock", {
+    integer: true,
+    allowZero: true,
+  });
+  if (stockError) {
+    errors.stock = stockError;
   }
 
   return errors;

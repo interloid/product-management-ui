@@ -8,6 +8,7 @@ import LoadingScreen from "@/components/shad/loading-screen";
 import { ToasterMessage } from "@/components/shad/toaster";
 import { ErrorBoundary } from "@/components/shad/error-boundary";
 import { NotFoundPage } from "@/app/pages/not-found";
+import { useAuth } from "@/hooks/use-auth";
 const LoginForm = lazy(() => import("@/app/pages/Authentication/login"));
 const Callback = lazy(() => import("@/app/pages/Authentication/callback"));
 const DashboardLayout = lazy(() => import("@/layouts/dashboard"));
@@ -25,6 +26,21 @@ const PasscodeRequestPage = lazy(
 const PasscodeVerifyPage = lazy(
   () => import("@/app/pages/Authentication/passcode/verify"),
 );
+
+function RootRedirect() {
+  const { status } = useAuth();
+
+  if (status === "loading") {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <Navigate
+      to={status === "authenticated" ? "/products" : "/login"}
+      replace
+    />
+  );
+}
 
 export default function App() {
   return (
@@ -54,7 +70,7 @@ export default function App() {
                       <Route path="/settings" element={<Settings />} />
                     </Route>
                   </Route>
-                  <Route path="/" element={<Navigate to="/login" replace />} />
+                  <Route path="/" element={<RootRedirect />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </Suspense>

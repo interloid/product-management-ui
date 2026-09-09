@@ -8,6 +8,30 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 const API_TIMEOUT = 15_000;
 
+const CREDENTIAL_AUTH_ENDPOINTS = new Set([
+  "/api/v1/auth/login",
+  "/api/v1/auth/passcode/request",
+  "/api/v1/auth/passcode/verify",
+]);
+
+type SessionExpiredListener = () => void;
+
+let sessionExpiredListener: SessionExpiredListener | null = null;
+
+export function setSessionExpiredListener(
+  listener: SessionExpiredListener | null,
+) {
+  sessionExpiredListener = listener;
+}
+
+function notifySessionExpired(endpoint: string) {
+  if (CREDENTIAL_AUTH_ENDPOINTS.has(endpoint)) {
+    return;
+  }
+
+  sessionExpiredListener?.();
+}
+
 if (!API_BASE_URL && import.meta.env.PROD) {
   console.error(
     "VITE_API_BASE_URL is not configured. API calls will use relative paths.",
@@ -107,6 +131,10 @@ export async function apiRequest<T>(
       : await response.text();
 
     if (!response.ok) {
+      if (response.status === 401) {
+        notifySessionExpired(endpoint);
+      }
+
       throw new ApiError(
         getApiErrorMessage(data, response.status),
         response.status,

@@ -36,18 +36,20 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
         </div>
         <HeaderActions user={user} />
       </div>
-      <div className="flex items-center border-t px-3 py-2 sm:hidden sm:border-t-0 sm:px-4 sm:py-0">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder="Search name or SKU..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="h-9 w-full cursor-pointer pl-9 focus-visible:border-primary focus-visible:ring-primary/20"
-          />
+      {pathname === "/products" && (
+        <div className="flex items-center border-t px-3 py-2 sm:hidden sm:border-t-0 sm:px-4 sm:py-0">
+          <div className="relative w-full">
+            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search name or SKU..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-9 w-full cursor-pointer pl-9 focus-visible:border-primary focus-visible:ring-primary/20"
+            />
+          </div>
         </div>
-      </div>
+      )}
     </header>
   );
 }

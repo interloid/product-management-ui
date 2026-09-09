@@ -22,8 +22,7 @@ export function waitForImageReady(
 ): void {
   img
     .decode()
-    .catch(() => undefined)
-    .then(() => {
+    .finally(() => {
       waitForImagePaint(callback);
     });
 }

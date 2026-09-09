@@ -103,10 +103,11 @@ export function ProductForm(props: ProductFormProps) {
   const [existingImages, setExistingImages] = useState(
     () => product?.images ?? [],
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const imageState = useProductImages({
     existingImages,
-    isSubmitting: false,
+    isSubmitting,
     maxImages: MAX_IMAGES,
   });
 
@@ -119,7 +120,7 @@ export function ProductForm(props: ProductFormProps) {
     isDragging,
     totalImageCount,
     remainingSlots,
-    primaryExistingImageId,
+    primaryExistingImage,
     primaryNewImage,
     isDirty: isImageDirty,
     handleImageChange,
@@ -143,14 +144,13 @@ export function ProductForm(props: ProductFormProps) {
     onReset: () => {
       clearImages();
       setExistingImages(product?.images ?? []);
+      setIsSubmitting(false);
     },
   });
 
   const {
     form,
     errors,
-    isSubmitting,
-    setIsSubmitting,
     showDiscardDialog,
     setShowDiscardDialog,
     updateField,
@@ -164,6 +164,7 @@ export function ProductForm(props: ProductFormProps) {
   function resetProductForm() {
     clearImages();
     setExistingImages(product?.images ?? []);
+    setIsSubmitting(false);
     resetForm();
   }
 
@@ -193,10 +194,10 @@ export function ProductForm(props: ProductFormProps) {
         mode === "edit" ? [...removedImageIds] : [],
       );
 
-      if (mode === "edit" && primaryExistingImageId) {
+      if (mode === "edit" && primaryExistingImage) {
         formData.append(
           PRODUCT_FORM_FIELDS.PRIMARY_IMAGE_ID,
-          primaryExistingImageId,
+          primaryExistingImage.id,
         );
       }
 
@@ -348,7 +349,7 @@ export function ProductForm(props: ProductFormProps) {
                     key={image.id}
                     src={image.url}
                     alt={`${product?.name ?? "Product"} image`}
-                    isPrimary={primaryExistingImageId === image.id}
+                    isPrimary={primaryExistingImage?.id === image.id}
                     mode="existing"
                     onRemove={
                       isEdit

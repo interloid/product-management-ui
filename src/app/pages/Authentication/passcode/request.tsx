@@ -65,7 +65,7 @@ export default function PasscodeRequestPage() {
         <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
       <div className="w-full max-w-lg">
-        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0, 0, 0, 0.04) 0px 1px 2px]">
+        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0,_0,_0,_0.04)_0px_1px_2px]">
           <Tabs defaultValue="Passcode" className="w-full">
             <TabsList className="h-10! w-full">
               <TabsTrigger
@@ -95,7 +95,7 @@ export default function PasscodeRequestPage() {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                className="h-10 focus-visible:border-primary focus-visible:primary-3 focus-visible:ring-primary/20"
+                className="h-10 focus-visible:border-primary focus-visible:ring-primary/20"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 disabled={isLoading}

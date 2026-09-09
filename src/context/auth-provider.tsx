@@ -13,18 +13,32 @@ import type {
 } from "@/types/auth";
 import { ApiError } from "@/types/data-type";
 import { AuthContext } from "./auth-context";
+import { setSessionExpiredListener } from "@/lib/api";
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [status, setStatus] = useState<AuthStatus>("loading");
   const [user, setUser] = useState<AuthUser | null>(null);
   const [sessionError, setSessionError] = useState<string | null>(null);
-  const checkAuth = useCallback(async () => {
+
+  const clearSession = useCallback(() => {
+    setUser(null);
+    setStatus("unauthenticated");
+    setSessionError(null);
+  }, []);
+
+  const checkAuth = useCallback(async (options?: { ignore?: () => boolean }) => {
+    const shouldIgnore = () => options?.ignore?.() ?? false;
+
     try {
       const response = await getCurrentSession();
       const apiUser = response?.data?.user;
 
       if (!apiUser?.id || !apiUser?.email) {
         throw new Error("Invalid user data");
+      }
+
+      if (shouldIgnore()) {
+        return true;
       }
 
       const userData: AuthUser = {
@@ -37,16 +51,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setSessionError(null);
       return true;
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        setUser(null);
-        setStatus("unauthenticated");
-        setSessionError(null);
-
+      if (shouldIgnore()) {
         return false;
       }
 
-      setSessionError("Unable to check your session. Please retry.");
+      setUser(null);
+      setStatus("unauthenticated");
 
+      if (error instanceof ApiError && error.status === 401) {
+        setSessionError(null);
+        return false;
+      }
+
+      setSessionError("Unable to check your session. Please try again.");
       return false;
     }
   }, []);
@@ -73,7 +90,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const loginWithPasscode = useCallback(
     async (email: string, passcode: string) => {
       await loginWithPasscodeService(email, passcode);
-      await checkAuth();
+
+      const isAuthenticated = await checkAuth();
+
+      if (!isAuthenticated) {
+        throw new Error(
+          "Passcode accepted, but we couldn't verify your session. Please try again.",
+        );
+      }
     },
     [checkAuth],
   );
@@ -81,60 +105,41 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const logout = useCallback(async () => {
     try {
       await logoutService();
-    } finally {
-      setUser(null);
-      setStatus("unauthenticated");
-      setSessionError(null);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        clearSession();
+        return;
+      }
+
+      throw error;
     }
-  }, []);
+
+    clearSession();
+  }, [clearSession]);
+
+  useEffect(() => {
+    setSessionExpiredListener(clearSession);
+
+    return () => {
+      setSessionExpiredListener(null);
+    };
+  }, [clearSession]);
 
   useEffect(() => {
     let cancelled = false;
 
-    const initializeAuth = async () => {
-      try {
-        const response = await getCurrentSession();
-        const apiUser = response?.data?.user;
-
-        if (!apiUser?.id || !apiUser?.email) {
-          throw new Error("Invalid user data");
-        }
-
-        if (cancelled) {
-          return;
-        }
-
-        const userData: AuthUser = {
-          id: apiUser.id,
-          email: apiUser.email,
-          name: `${apiUser.first_name ?? ""} ${apiUser.last_name ?? ""}`.trim(),
-        };
-
-        setUser(userData);
-        setStatus("authenticated");
-        setSessionError(null);
-      } catch (error) {
-        if (cancelled) {
-          return;
-        }
-
-        if (error instanceof ApiError && error.status === 401) {
-          setUser(null);
-          setStatus("unauthenticated");
-          setSessionError(null);
-          return;
-        }
-
-        setSessionError("Unable to check your session. Please retry.");
-      }
-    };
+    async function initializeAuth() {
+      await checkAuth({
+        ignore: () => cancelled,
+      });
+    }
 
     void initializeAuth();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [checkAuth]);
 
   const value = useMemo(
     () => ({
@@ -147,15 +152,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       checkAuth,
       logout,
     }),
-    [
-      status,
-      user,
-      sessionError,
-      login,
-      loginWithPasscode,
-      checkAuth,
-      logout,
-    ],
+    [status, user, sessionError, login, loginWithPasscode, checkAuth, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

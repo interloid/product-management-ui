@@ -26,7 +26,9 @@ import { FaGithub } from "react-icons/fa";
 import MicrosoftLogo from "@/components/icons/microsoft-logo";
 import { Eye, EyeOff } from "lucide-react";
 import { isAuthError, type OAuthProvider } from "@/types/auth";
+import { ApiError } from "@/types/data-type";
 import interloidLogo from "@/assets/interloid-logo.png";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LoginPage({
   className,
@@ -34,7 +36,7 @@ export default function LoginPage({
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, sessionError, checkAuth } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +44,7 @@ export default function LoginPage({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [providerLoading, setProviderLoading] = useState<string | null>(null);
+  const [isRetryingSession, setIsRetryingSession] = useState(false);
 
   const validateForm = () => {
     if (!email.trim()) {
@@ -49,9 +52,6 @@ export default function LoginPage({
     }
     if (!password) {
       return "Password is required.";
-    }
-    if (password.length < 6) {
-      return "Password must be at least 6 characters.";
     }
     return null;
   };
@@ -81,6 +81,26 @@ export default function LoginPage({
         replace: true,
       });
     } catch (error) {
+      if (error instanceof ApiError) {
+        if (error.status === 401) {
+          setError("Invalid username or password.");
+          return;
+        }
+
+        if (error.status >= 500) {
+          setError("Something went wrong. Please try again later.");
+          return;
+        }
+
+        setError(error.message || "Unable to log in. Please try again.");
+        return;
+      }
+
+      if (error instanceof TypeError && error.message === "Failed to fetch") {
+        setError("Unable to connect to the server. Please try again.");
+        return;
+      }
+
       if (!isAuthError(error)) {
         setError("Unable to log in. Please try again.");
         return;
@@ -107,18 +127,24 @@ export default function LoginPage({
     }
   };
 
-  const handleProviderLogin = async (provider: OAuthProvider) => {
-    setProviderLoading(provider);
-
-    await new Promise<void>((resolve) => {
-      requestAnimationFrame(() => resolve());
-    });
+  const handleRetrySession = async () => {
+    setIsRetryingSession(true);
 
     try {
-      await loginWithProvider(provider);
-    } catch {
-      setProviderLoading(null);
+      const isAuthenticated = await checkAuth();
+
+      if (isAuthenticated) {
+        navigate("/products", { replace: true });
+      }
+    } finally {
+      setIsRetryingSession(false);
     }
+  };
+
+  const handleProviderLogin = (provider: OAuthProvider) => {
+    setError("");
+    setProviderLoading(provider);
+    loginWithProvider(provider);
   };
   return (
     <div className="flex min-h-full w-full items-center justify-center p-6 md:p-10">
@@ -133,7 +159,7 @@ export default function LoginPage({
       </div>
       <div className="w-full max-w-lg">
         <div className={cn("flex flex-col gap-6", className)} {...props}>
-          <Card className="gap-4 px-2 py-8 rounded-[10px] shadow-[rgba(0, 0, 0, 0.04) 0px 1px 2px]">
+          <Card className="gap-4 px-2 py-8 rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
             <CardHeader>
               <CardTitle className="text-xl font-semibold">Sign in</CardTitle>
               <CardDescription className="text-muted-text">
@@ -141,6 +167,31 @@ export default function LoginPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {sessionError && (
+                <Alert variant="destructive" className="mb-4">
+                  <AlertTitle className="font-bold">Session error</AlertTitle>
+                  <AlertDescription className="flex flex-col gap-2 text-xs">
+                    <span>{sessionError}</span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-fit"
+                      disabled={isRetryingSession}
+                      onClick={handleRetrySession}
+                    >
+                      {isRetryingSession ? (
+                        <>
+                          <Spinner className="size-4" />
+                          Retrying...
+                        </>
+                      ) : (
+                        "Retry session check"
+                      )}
+                    </Button>
+                  </AlertDescription>
+                </Alert>
+              )}
               <form onSubmit={handleSubmit} noValidate>
                 <FieldGroup className="gap-4">
                   <Field className="flex-col h-fit py-1 gap-2">

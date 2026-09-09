@@ -14,6 +14,7 @@ export function ProductTable({
   products,
   archiveId,
   deleteId,
+  isActionPending = false,
   sort,
   onSort,
   onView,
@@ -72,6 +73,7 @@ export function ProductTable({
                   product={product}
                   isArchiving={archiveId === product.id}
                   isDeleting={deleteId === product.id}
+                  isActionPending={isActionPending}
                   onView={() => onView(product)}
                   onEdit={() => onEdit(product)}
                   onArchive={() => onArchive(product.id)}

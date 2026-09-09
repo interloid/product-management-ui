@@ -170,7 +170,7 @@ export function ProductFormFields({
           />
         </ProductField>
 
-        <ProductField id={`${idPrefix}-stock`} label="Stock" error={errors.stock}>
+        <ProductField id={`${idPrefix}-stock`} label="Stock" required error={errors.stock}>
           <Input
             id={`${idPrefix}-stock`}
             type="number"

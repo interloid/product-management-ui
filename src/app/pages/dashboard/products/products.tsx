@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { ProductTable } from "@/app/pages/dashboard/products/productTable/product-table";
 import { ProductForm } from "@/app/pages/dashboard/products/crud-operations/product-form";
@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/app/pages/dashboard/products/product-filters";
 import { ProductTableSkeleton } from "@/app/pages/dashboard/products/productTable/product-table-skeleton";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
+import { ApiError } from "@/types/data-type";
 
 type ProductFormMode = "view" | "edit";
 
@@ -50,6 +51,8 @@ export default function ProductsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [archiveId, setArchiveId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isActionPending, setIsActionPending] = useState(false);
+  const isActionPendingRef = useRef(false);
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
   const [sort, setSort] = useState<ProductSort>({
     field: null,
@@ -88,11 +91,17 @@ export default function ProductsPage() {
         setProductCount(response.total);
         setTotalPages(response.totalPages);
 
+        if (response.totalPages > 0 && page > response.totalPages) {
+          setPage(response.totalPages);
+        } else if (response.totalPages === 0 && page !== 1) {
+          setPage(1);
+        }
+
         setIsInitialLoad(false);
       } catch (error) {
         if (!ignore) {
           const message =
-            error instanceof Error && error.message.includes("Authentication")
+            error instanceof ApiError && error.status === 401
               ? "Your session has expired. Please sign in again."
               : "Unable to load products. Please try again.";
           setLoadError(message);
@@ -166,6 +175,13 @@ export default function ProductsPage() {
 
   const handleDeleteProduct = useCallback(
     async (id: string) => {
+      if (isActionPendingRef.current) {
+        return;
+      }
+
+      isActionPendingRef.current = true;
+      setIsActionPending(true);
+
       try {
         await deleteProductApi(id);
         setDeleteId(null);
@@ -175,6 +191,9 @@ export default function ProductsPage() {
         toast.error(
           getUserFriendlyErrorMessage(error, "Failed to delete product"),
         );
+      } finally {
+        isActionPendingRef.current = false;
+        setIsActionPending(false);
       }
     },
     [refresh],
@@ -182,6 +201,13 @@ export default function ProductsPage() {
 
   const handleArchiveProduct = useCallback(
     async (id: string) => {
+      if (isActionPendingRef.current) {
+        return;
+      }
+
+      isActionPendingRef.current = true;
+      setIsActionPending(true);
+
       try {
         await archiveProductApi(id);
         setArchiveId(null);
@@ -191,6 +217,9 @@ export default function ProductsPage() {
         toast.error(
           getUserFriendlyErrorMessage(error, "Failed to archive product"),
         );
+      } finally {
+        isActionPendingRef.current = false;
+        setIsActionPending(false);
       }
     },
     [refresh],
@@ -337,6 +366,7 @@ export default function ProductsPage() {
                   onView={openView}
                   archiveId={archiveId}
                   deleteId={deleteId}
+                  isActionPending={isActionPending}
                   sort={sort}
                   onSort={handleSort}
                   onArchive={setArchiveId}
@@ -353,7 +383,7 @@ export default function ProductsPage() {
           )}
         </div>
         <ProductForm
-          key={`${productForm.mode}-${productForm.product?.id ?? "loading"}-${productForm.loading ? "loading" : "ready"}`}
+          key={`${productForm.mode}-${productForm.product?.id ?? "new"}-${productForm.loading ? "loading" : "ready"}`}
           mode={productForm.mode}
           product={productForm.product}
           open={productForm.open}

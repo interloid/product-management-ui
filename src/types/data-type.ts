@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { ComponentType, ReactNode } from "react";
 import type { AuthUser } from "./auth";
-import { Sidebar } from "@/components/ui/sidebar";
+import type { Sidebar } from "@/components/ui/sidebar";
 
 type NavItem = {
   title: string;
@@ -177,6 +177,7 @@ export interface ProductTableRowProps {
   product: ApiProduct;
   isArchiving: boolean;
   isDeleting: boolean;
+  isActionPending?: boolean;
   onView: () => void;
   onEdit: () => void;
   onArchive: () => void;
@@ -191,6 +192,7 @@ export type ProductTableProps = {
   products: ApiProduct[];
   archiveId: string | null;
   deleteId: string | null;
+  isActionPending?: boolean;
   sort: ProductSort;
   onSort: (field: ProductSortField) => void;
   onView: (product: ApiProduct) => void;
@@ -319,6 +321,7 @@ export type ProductActionConfirmationRowProps = {
   title: string;
   description: string;
   confirmLabel: string;
+  isPending?: boolean;
   onCancel: () => void;
   onConfirm: () => void;
 };

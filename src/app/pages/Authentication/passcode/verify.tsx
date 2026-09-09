@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 import {
@@ -44,6 +44,12 @@ export default function PasscodeVerifyPage() {
   const [passcode, setPasscode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [passcodeError, setPasscodeError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/passcode", { replace: true });
+    }
+  }, [email, navigate]);
 
   const handlePasscodeChange = (value: string) => {
     const numericValue = value.replace(/\D/g, "").slice(0, OTP_LENGTH);
@@ -104,7 +110,7 @@ export default function PasscodeVerifyPage() {
         <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
       <div className="w-full max-w-lg">
-        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0, 0, 0, 0.04) 0px 1px 2px]">
+        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0,_0,_0,_0.04)_0px_1px_2px]">
           <Tabs defaultValue="Passcode" className="w-full">
             <TabsList className="h-10! w-full">
               <TabsTrigger
@@ -161,7 +167,7 @@ export default function PasscodeVerifyPage() {
                       className={cn(
                         "relative w-full",
                         !passcode[index] &&
-                          "after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:text-lg after:text-muted-foreground after:content-['•']",
+                          "after:absolute after:left-1/2 after:top-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:text-lg after:text-muted-foreground after:content-['⋅']",
                         passcodeError
                           ? "border-destructive data-[active=true]:border-destructive data-[active=true]:ring-destructive/20"
                           : "data-[active=true]:border-primary data-[active=true]:ring-primary/20",

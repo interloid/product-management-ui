@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Spinner } from "@/components/ui/spinner";
 import { ProductImage } from "./product-image";
 import type { ProductActionConfirmationRowProps } from "@/types/data-type";
 
@@ -9,6 +10,7 @@ export function ProductActionConfirmationRow({
   title,
   description,
   confirmLabel,
+  isPending = false,
   onCancel,
   onConfirm,
 }: ProductActionConfirmationRowProps) {
@@ -38,6 +40,7 @@ export function ProductActionConfirmationRow({
               variant="outline"
               size="sm"
               onClick={onCancel}
+              disabled={isPending}
               className="hover:border-primary hover:bg-primary-hover"
             >
               Cancel
@@ -47,8 +50,16 @@ export function ProductActionConfirmationRow({
               size="sm"
               className="bg-red-600 text-white hover:bg-red-700"
               onClick={onConfirm}
+              disabled={isPending}
             >
-              {confirmLabel}
+              {isPending ? (
+                <>
+                  <Spinner className="size-3.5" />
+                  Working…
+                </>
+              ) : (
+                confirmLabel
+              )}
             </Button>
           </div>
         </div>

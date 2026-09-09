@@ -23,6 +23,7 @@ export const ProductTableRow = memo(function ProductTableRow({
   product,
   isArchiving,
   isDeleting,
+  isActionPending = false,
   onEdit,
   onView,
   onArchive,
@@ -43,6 +44,7 @@ export const ProductTableRow = memo(function ProductTableRow({
         title={`Archive "${product.name}"?`}
         description="It disappears from the active list."
         confirmLabel="Yes, archive"
+        isPending={isActionPending}
         onCancel={onCancelArchive}
         onConfirm={onConfirmArchive}
       />
@@ -56,6 +58,7 @@ export const ProductTableRow = memo(function ProductTableRow({
         title={`Delete "${product.name}"?`}
         description="This permanently removes the product."
         confirmLabel="Yes, delete"
+        isPending={isActionPending}
         onCancel={onCancelDelete}
         onConfirm={onConfirmDelete}
       />
@@ -106,7 +109,7 @@ export const ProductTableRow = memo(function ProductTableRow({
           <Button
             variant="outline"
             size="sm"
-            className="h-8 hover:bg-primary-hover hover:border-primary focus-visible:primary-3 focus-visible:ring-primary/20"
+            className="h-8 hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20"
             onClick={(event) => {
               event.stopPropagation();
               onView();
@@ -119,7 +122,7 @@ export const ProductTableRow = memo(function ProductTableRow({
               <Button
                 variant="outline"
                 size="icon"
-                className="size-8 hover:bg-primary-hover hover:border-primary focus-visible:primary-3 focus-visible:ring-primary/20"
+                className="size-8 hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20"
                 onClick={(event) => {
                   event.stopPropagation();
                 }}

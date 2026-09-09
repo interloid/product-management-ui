@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useSearch } from "@/context/use-search";
 import type { HeaderActionsProps } from "@/types/data-type";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -11,34 +12,40 @@ import { ProductForm } from "@/app/pages/dashboard/products/crud-operations/prod
 export function HeaderActions({ user }: HeaderActionsProps) {
   const { searchQuery, setSearchQuery, refresh } = useSearch();
   const [addOpen, setAddOpen] = useState(false);
+  const { pathname } = useLocation();
 
+  const isProductsPage = pathname === "/products";
   const initials = getInitials(user?.name ?? "");
 
   return (
-    <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2 md:w-3/4 lg:w-3/4 xl:w-3/4 2xl:w-1/2">
-      <Input
-        type="search"
-        placeholder="Search name or SKU..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="hidden h-9 w-1/2 cursor-pointer focus-visible:border-primary focus-visible:ring-primary/20 sm:flex md:w-full"
-      />
+    <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 md:w-3/4 lg:w-3/4 xl:w-3/4 2xl:w-1/2">
+      {isProductsPage && (
+        <>
+          <Input
+            type="search"
+            placeholder="Search name or SKU..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="hidden h-9 w-1/2 cursor-pointer focus-visible:border-primary focus-visible:ring-primary/20 sm:flex md:w-full"
+          />
 
-      <Button
-        type="button"
-        className="cursor-pointer whitespace-nowrap px-2.5 sm:px-4"
-        onClick={() => setAddOpen(true)}
-      >
-        <span className="hidden sm:inline">Add Product</span>
-        <span className="sm:hidden">Add</span>
-      </Button>
+          <Button
+            type="button"
+            className="cursor-pointer whitespace-nowrap px-2.5 sm:px-4"
+            onClick={() => setAddOpen(true)}
+          >
+            <span className="hidden sm:inline">Add Product</span>
+            <span className="sm:hidden">Add</span>
+          </Button>
 
-      <ProductForm
-        mode="add"
-        open={addOpen}
-        onOpenChange={setAddOpen}
-        onCreated={refresh}
-      />
+          <ProductForm
+            mode="add"
+            open={addOpen}
+            onOpenChange={setAddOpen}
+            onCreated={refresh}
+          />
+        </>
+      )}
 
       <Avatar className="hidden size-9 lg:flex">
         <AvatarImage
