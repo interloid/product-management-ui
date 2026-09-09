@@ -1,13 +1,6 @@
 import { useMemo, useState } from "react";
 import { validateProductFields } from "../product-components/product-validation";
-import type { FormError, ProductForm } from "@/types/data-type";
-
-type UseProductFormSheetOptions<T extends ProductForm> = {
-  initialForm: T;
-  onOpenChange: (open: boolean) => void;
-  isDirtyExtra?: boolean;
-  onReset?: () => void;
-};
+import type { FormError, ProductForm, UseProductFormSheetOptions } from "@/types/data-type";
 
 export function useProductFormSheet<T extends ProductForm>({
   initialForm,

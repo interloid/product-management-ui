@@ -8,21 +8,29 @@ export function getPrimaryImage(
   );
 }
 
-export function waitForImagePaint(callback: () => void): void {
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      callback();
-    });
-  });
-}
-
 export function waitForImageReady(
   img: HTMLImageElement,
   callback: () => void,
-): void {
-  img
-    .decode()
-    .finally(() => {
-      waitForImagePaint(callback);
+): () => void {
+  let cancelled = false;
+  let rafId: number | undefined;
+
+  function paint() {
+    if (cancelled) return;
+    rafId = requestAnimationFrame(() => {
+      if (cancelled) return;
+      rafId = requestAnimationFrame(() => {
+        if (!cancelled) callback();
+      });
     });
+  }
+
+  img.decode().finally(paint);
+
+  return () => {
+    cancelled = true;
+    if (rafId !== undefined) {
+      cancelAnimationFrame(rafId);
+    }
+  };
 }

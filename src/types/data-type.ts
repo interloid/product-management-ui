@@ -193,6 +193,7 @@ export type ProductTableProps = {
   archiveId: string | null;
   deleteId: string | null;
   isActionPending?: boolean;
+  showNoResults?: boolean;
   sort: ProductSort;
   onSort: (field: ProductSortField) => void;
   onView: (product: ApiProduct) => void;
@@ -288,7 +289,7 @@ export interface ImageErrorBannerProps {
 
 export interface ImageOverlayControlsProps {
   isPrimary: boolean;
-  onSetPrimary: () => void;
+  onSetPrimary?: () => void;
 }
 
 export type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
@@ -335,4 +336,33 @@ export type ProductFormProps = {
   onCreated?: () => void;
   onUpdated?: (product: ApiProduct) => void;
   onEdit?: (product: ApiProduct) => void;
+};
+
+export type ProductFormMode = "view" | "edit";
+
+export type ProductFormState = {
+  mode: ProductFormMode;
+  product: ApiProduct | null;
+  productId: string | null;
+  open: boolean;
+  loading: boolean;
+};
+
+export type UseProductFormSheetOptions<T extends ProductForm> = {
+  initialForm: T;
+  onOpenChange: (open: boolean) => void;
+  isDirtyExtra?: boolean;
+  onReset?: () => void;
+};
+
+
+export type FormFieldChange = <K extends keyof ProductForm>(
+  field: K,
+  value: ProductForm[K],
+) => void;
+
+export type UseProductImagesProps = {
+  maxImages?: number;
+  isSubmitting?: boolean;
+  existingImages?: ApiProductImage[];
 };

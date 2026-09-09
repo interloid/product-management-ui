@@ -12,6 +12,7 @@ import type { ProductTableRowProps } from "@/types/data-type";
 import { ProductImage } from "./product-image";
 import {
   formatDateTime,
+  formatPrice,
   getStatusClassName,
   getStatusLabel,
 } from "@/lib/converters";
@@ -90,7 +91,7 @@ export const ProductTableRow = memo(function ProductTableRow({
         {product.category_name}
       </TableCell>
       <TableCell className="text-center font-mono text-sm">
-        ${Number(product.price).toFixed(2)}
+        {formatPrice(product.price)}
       </TableCell>
       <TableCell className="text-center text-sm">{product.stock}</TableCell>
       <TableCell>

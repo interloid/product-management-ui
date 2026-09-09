@@ -1,5 +1,5 @@
 import { Eye } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImagePreviewDialog } from "./image-preview-dialog";
 import type { ProductImagePreviewProps } from "@/types/data-type";
 import { Spinner } from "@/components/ui/spinner";
@@ -13,12 +13,22 @@ export function ProductImagePreview({
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const cancelLoadRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => cancelLoadRef.current?.();
+  }, []);
 
   const handleLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    waitForImageReady(e.currentTarget, () => setIsLoading(false));
+    cancelLoadRef.current?.();
+    cancelLoadRef.current = waitForImageReady(e.currentTarget, () =>
+      setIsLoading(false),
+    );
   };
 
   const handleError = () => {
+    cancelLoadRef.current?.();
+    cancelLoadRef.current = null;
     setIsLoading(false);
     setHasError(true);
   };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
@@ -9,6 +9,11 @@ import type { ImagePreviewDialogProps } from "@/types/data-type";
 function PreviewImage({ src, alt }: { src: string; alt: string }) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const cancelLoadRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => cancelLoadRef.current?.();
+  }, []);
 
   return (
     <div className="relative flex min-h-72 min-w-72 max-h-[80vh] items-center justify-center overflow-hidden rounded-md bg-muted-foreground/30">
@@ -17,10 +22,15 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
         alt={alt}
         loading="eager"
         decoding="async"
-        onLoad={(e) =>
-          waitForImageReady(e.currentTarget, () => setIsLoading(false))
-        }
+        onLoad={(e) => {
+          cancelLoadRef.current?.();
+          cancelLoadRef.current = waitForImageReady(e.currentTarget, () =>
+            setIsLoading(false),
+          );
+        }}
         onError={() => {
+          cancelLoadRef.current?.();
+          cancelLoadRef.current = null;
           setIsLoading(false);
           setHasError(true);
         }}

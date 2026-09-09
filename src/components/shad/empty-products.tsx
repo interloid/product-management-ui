@@ -1,7 +1,11 @@
 import { PackageOpen } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
 
-export default function EmptyProductTableRow() {
+export default function EmptyProductTableRow({
+  showNoResults = false,
+}: {
+  showNoResults?: boolean;
+}) {
   return (
     <TableRow>
       <TableCell colSpan={8} className="h-100 p-5">
@@ -9,7 +13,11 @@ export default function EmptyProductTableRow() {
           <div className="mb-1 flex size-11 items-center justify-center rounded-md border bg-background">
             <PackageOpen className="size-5 text-muted-foreground" />
           </div>
-          <h3 className="text-[15px] font-semibold">No products yet</h3>
+          <h3 className="text-[15px] font-semibold">
+            {showNoResults
+              ? "No products match your search or filters"
+              : "No products yet"}
+          </h3>
         </div>
       </TableCell>
     </TableRow>

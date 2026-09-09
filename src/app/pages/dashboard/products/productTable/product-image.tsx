@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 import type { ProductImageProps } from "@/types/data-type";
@@ -6,6 +6,11 @@ import type { ProductImageProps } from "@/types/data-type";
 export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
   const [isLoading, setIsLoading] = useState(Boolean(src));
   const [hasError, setHasError] = useState(false);
+  const cancelLoadRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    return () => cancelLoadRef.current?.();
+  }, []);
 
   if (!src || hasError) {
     return (
@@ -39,10 +44,15 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
         loading="eager"
         decoding="async"
         className="size-full object-cover"
-        onLoad={(e) =>
-          waitForImageReady(e.currentTarget, () => setIsLoading(false))
-        }
+        onLoad={(e) => {
+          cancelLoadRef.current?.();
+          cancelLoadRef.current = waitForImageReady(e.currentTarget, () =>
+            setIsLoading(false),
+          );
+        }}
         onError={() => {
+          cancelLoadRef.current?.();
+          cancelLoadRef.current = null;
           setIsLoading(false);
           setHasError(true);
         }}

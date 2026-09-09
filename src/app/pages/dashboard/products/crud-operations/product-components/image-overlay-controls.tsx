@@ -8,7 +8,7 @@ export function ImageOverlayControls({
     <span className="absolute bottom-1.5 left-1.5 z-20 rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground shadow-sm">
       Primary
     </span>
-  ) : (
+  ) : onSetPrimary ? (
     <button
       type="button"
       onClick={onSetPrimary}
@@ -16,5 +16,5 @@ export function ImageOverlayControls({
     >
       Set primary
     </button>
-  );
+  ) : null;
 }

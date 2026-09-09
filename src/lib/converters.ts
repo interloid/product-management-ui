@@ -25,8 +25,19 @@ export function getStatusClassName(status: string) {
   }
 }
 
+export function formatPrice(value: string | number): string {
+  const price = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(price) ? `$${price.toFixed(2)}` : "—";
+}
+
 export function formatDateTime(dateString: string): string {
-  return new Date(dateString).toLocaleString("en-IN", {
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
+
+  return date.toLocaleString("en-IN", {
     day: "2-digit",
     month: "short",
     year: "numeric",

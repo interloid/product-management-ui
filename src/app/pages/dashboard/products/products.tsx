@@ -12,6 +12,8 @@ import {
 import type {
   ApiProduct,
   ProductCategoryFilter,
+  ProductFormMode,
+  ProductFormState,
   ProductSort,
   ProductSortField,
   ProductStatusFilter,
@@ -23,16 +25,6 @@ import { ProductFilters } from "@/app/pages/dashboard/products/product-filters";
 import { ProductTableSkeleton } from "@/app/pages/dashboard/products/productTable/product-table-skeleton";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import { ApiError } from "@/types/data-type";
-
-type ProductFormMode = "view" | "edit";
-
-type ProductFormState = {
-  mode: ProductFormMode;
-  product: ApiProduct | null;
-  productId: string | null;
-  open: boolean;
-  loading: boolean;
-};
 
 export default function ProductsPage() {
   const { searchQuery, refreshKey, refresh, productCount, setProductCount } =
@@ -66,6 +58,14 @@ export default function ProductsPage() {
     loading: false,
   });
 
+  const showNoResults =
+    category !== "All" ||
+    status !== "All" ||
+    priceRange !== "all" ||
+    debouncedSearch.trim() !== "" ||
+    sort.field !== null ||
+    page > 1;
+
   useEffect(() => {
     let ignore = false;
 
@@ -87,16 +87,21 @@ export default function ProductsPage() {
 
         if (ignore) return;
 
-        setProducts(response.products);
-        setProductCount(response.total);
-        setTotalPages(response.totalPages);
-
         if (response.totalPages > 0 && page > response.totalPages) {
           setPage(response.totalPages);
-        } else if (response.totalPages === 0 && page !== 1) {
-          setPage(1);
+          return;
         }
 
+        if (response.totalPages === 0 && page !== 1) {
+          setPage(1);
+          return;
+        }
+
+        setProducts(response.products);
+        setProductCount((current) =>
+          current === response.total ? current : response.total,
+        );
+        setTotalPages(response.totalPages);
         setIsInitialLoad(false);
       } catch (error) {
         if (!ignore) {
@@ -133,6 +138,8 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      setArchiveId(null);
+      setDeleteId(null);
       setDebouncedSearch(searchQuery);
       setPage(1);
     }, 500);
@@ -141,21 +148,29 @@ export default function ProductsPage() {
   }, [searchQuery]);
 
   const updateCategory = useCallback((value: ProductCategoryFilter) => {
+    setArchiveId(null);
+    setDeleteId(null);
     setCategory(value);
     setPage(1);
   }, []);
 
   const updateStatus = useCallback((value: ProductStatusFilter) => {
+    setArchiveId(null);
+    setDeleteId(null);
     setStatus(value);
     setPage(1);
   }, []);
 
   const updatePrice = useCallback((value: string) => {
+    setArchiveId(null);
+    setDeleteId(null);
     setPriceRange(value);
     setPage(1);
   }, []);
 
   const resetFilters = useCallback(() => {
+    setArchiveId(null);
+    setDeleteId(null);
     setCategory("All");
     setStatus("All");
     setPriceRange("all");
@@ -164,6 +179,8 @@ export default function ProductsPage() {
   }, []);
 
   const handleSort = useCallback((field: ProductSortField) => {
+    setArchiveId(null);
+    setDeleteId(null);
     setSort((current) => ({
       field,
       order:
@@ -367,6 +384,7 @@ export default function ProductsPage() {
                   archiveId={archiveId}
                   deleteId={deleteId}
                   isActionPending={isActionPending}
+                  showNoResults={showNoResults}
                   sort={sort}
                   onSort={handleSort}
                   onArchive={setArchiveId}
@@ -398,8 +416,16 @@ export default function ProductsPage() {
         pageSize={pageSize}
         productCount={productCount}
         totalPages={totalPages}
-        setPage={setPage}
-        setPageSize={setPageSize}
+        setPage={(value) => {
+          setArchiveId(null);
+          setDeleteId(null);
+          setPage(value);
+        }}
+        setPageSize={(value) => {
+          setArchiveId(null);
+          setDeleteId(null);
+          setPageSize(value);
+        }}
       />
     </>
   );

@@ -15,6 +15,7 @@ export function ProductTable({
   archiveId,
   deleteId,
   isActionPending = false,
+  showNoResults = false,
   sort,
   onSort,
   onView,
@@ -85,7 +86,7 @@ export function ProductTable({
                 />
               ))
             ) : (
-              <EmptyProductTableRow />
+              <EmptyProductTableRow showNoResults={showNoResults} />
             )}
           </TableBody>
         </Table>

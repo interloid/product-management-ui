@@ -21,6 +21,7 @@ import {
   statuses,
   type ApiProduct,
   type FormError,
+  type FormFieldChange,
   type ProductCategory,
   type ProductForm,
   type ProductStatus,
@@ -69,11 +70,6 @@ function ProductField({
     </div>
   );
 }
-
-type FormFieldChange = <K extends keyof ProductForm>(
-  field: K,
-  value: ProductForm[K],
-) => void;
 
 export function ProductFormFields({
   idPrefix,
@@ -332,7 +328,7 @@ export function ProductImageTile({
       {mode !== "view" && (
         <ImageOverlayControls
           isPrimary={isPrimary}
-          onSetPrimary={onSetPrimary ?? (() => {})}
+          onSetPrimary={onSetPrimary}
         />
       )}
     </div>

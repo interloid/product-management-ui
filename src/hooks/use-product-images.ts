@@ -8,9 +8,9 @@ import {
 } from "react";
 
 import type {
-  ApiProductImage,
   ImageError,
   ProductImage,
+  UseProductImagesProps,
 } from "@/types/data-type";
 
 import { revokeImageUrls } from "@/lib/utils";
@@ -19,12 +19,6 @@ import {
   MAX_IMAGES,
   validateImage,
 } from "@/app/pages/dashboard/products/crud-operations/product-components/product-constants";
-
-type UseProductImagesProps = {
-  maxImages?: number;
-  isSubmitting?: boolean;
-  existingImages?: ApiProductImage[];
-};
 
 export function useProductImages({
   maxImages = MAX_IMAGES,

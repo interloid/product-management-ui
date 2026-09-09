@@ -40,13 +40,18 @@ export async function getProducts({
   }
 
   if (priceRange !== "all") {
+    const isOpenEnded = priceRange.endsWith("+");
     const [minPrice, maxPrice] = priceRange.split("-");
 
-    if (minPrice) {
-      params.set("min_price", minPrice);
-    }
-    if (maxPrice) {
-      params.set("max_price", maxPrice);
+    if (isOpenEnded) {
+      params.set("min_price", priceRange.slice(0, -1));
+    } else {
+      if (minPrice) {
+        params.set("min_price", minPrice);
+      }
+      if (maxPrice) {
+        params.set("max_price", maxPrice);
+      }
     }
   }
   const response = await apiRequest<GetProductsResponse>(
