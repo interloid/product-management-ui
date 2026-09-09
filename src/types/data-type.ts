@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import type { ChangeEvent, ComponentType, DragEvent, ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
 import type { AuthUser } from "./auth";
 import { Sidebar } from "@/components/ui/sidebar";
 
@@ -227,7 +227,6 @@ export type PaginationProps = {
   pageSize: number;
   productCount: number;
   totalPages: number;
-
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setPageSize: React.Dispatch<React.SetStateAction<number>>;
 };
@@ -235,54 +234,25 @@ export type PaginationProps = {
 export interface SearchContextValue {
   searchQuery: string;
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-
   refreshKey: number;
   refresh: () => void;
-
   productCount: number;
   setProductCount: React.Dispatch<React.SetStateAction<number>>;
 }
-
-export type User = {
-  name: string;
-  avatar?: string;
-};
 
 export type HeaderProps = {
   user: AuthUser | null;
   productCount?: number;
 };
 
-export type InputInlineProps = {
+export type HeaderActionsProps = {
   user: AuthUser | null;
 };
-
-export type HeaderActionsProps = InputInlineProps;
 
 export type JsonBody = object;
 
 export type ApiRequestOptions = Omit<RequestInit, "body"> & {
   body?: BodyInit | JsonBody;
-};
-
-export type AddProductsProps = {
-  onProductCreated?: () => void;
-};
-
-export type ProductEditProps = {
-  product: ApiProduct | null;
-  open: boolean;
-  loading: boolean;
-  onOpenChange: (open: boolean) => void;
-  onUpdated?: (product: ApiProduct) => void;
-};
-
-export type ProductViewProps = {
-  product: ApiProduct | null;
-  open: boolean;
-  loading: boolean;
-  onOpenChange: (open: boolean) => void;
-  onEdit?: (product: ApiProduct) => void;
 };
 
 export class ApiError extends Error {
@@ -319,17 +289,6 @@ export interface ImageOverlayControlsProps {
   onSetPrimary: () => void;
 }
 
-export interface ImageDropzoneProps {
-  isSubmitting: boolean;
-  isAtLimit: boolean;
-  isDragging: boolean;
-  onDragEnter: (event: DragEvent<HTMLLabelElement>) => void;
-  onDragOver: (event: DragEvent<HTMLLabelElement>) => void;
-  onDragLeave: (event: DragEvent<HTMLLabelElement>) => void;
-  onDrop: (event: DragEvent<HTMLLabelElement>) => void;
-  children: ReactNode;
-}
-
 export type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   user: AuthUser | null;
 };
@@ -348,32 +307,6 @@ export interface UnsavedChangesDialogProps {
   onOpenChange: (open: boolean) => void;
   onKeepEditing: () => void;
   onDiscard: () => void;
-}
-
-export interface UseProductImagesOptions {
-  maxImages?: number;
-  isSubmitting?: boolean;
-  shouldAutoSetPrimary?: () => boolean;
-}
-
-export interface UseProductImagesReturn {
-  images: ProductImage[];
-  imageError: ImageError | null;
-  isDragging: boolean;
-  remainingSlots: number;
-  handleImageChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  handleDragEnter: (event: DragEvent<HTMLLabelElement>) => void;
-  handleDragOver: (event: DragEvent<HTMLLabelElement>) => void;
-  handleDragLeave: (event: DragEvent<HTMLLabelElement>) => void;
-  handleDrop: (event: DragEvent<HTMLLabelElement>) => void;
-  removeImage: (id: string) => void;
-  setPrimaryImage: (id: string) => void;
-  clearPrimaryImage: () => void;
-  clearImages: () => void;
-}
-
-export interface ImageErrorBannerProps {
-  error: ImageError;
 }
 
 export interface LogoutDialogProps {

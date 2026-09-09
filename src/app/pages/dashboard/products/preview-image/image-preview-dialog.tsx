@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/utils/product-utils";
+import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 
 import type { ImagePreviewDialogProps } from "@/types/data-type";
 

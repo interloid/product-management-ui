@@ -79,10 +79,8 @@ export default function PasscodeVerifyPage() {
         replace: true,
       });
     } catch (error) {
-  console.error("Passcode verification failed:", error);
-
-  setPasscode("");
-  setPasscodeError(getPasscodeErrorMessage(error));
+      setPasscode("");
+      setPasscodeError(getPasscodeErrorMessage(error));
     } finally {
       setIsLoading(false);
     }

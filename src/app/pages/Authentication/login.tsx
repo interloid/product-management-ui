@@ -116,8 +116,7 @@ export default function LoginPage({
 
     try {
       await loginWithProvider(provider);
-    } catch (error) {
-      console.error("OAuth login failed:", error);
+    } catch {
       setProviderLoading(null);
     }
   };

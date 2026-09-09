@@ -26,8 +26,8 @@ import {
   type ProductStatus,
 } from "@/types/data-type";
 import { ProductImagePreview } from "../../preview-image/product-image-preview";
-import { ImageOverlayControls } from "../components/image-overlay-controls";
-import { MAX_IMAGES } from "../components/product-constants";
+import { ImageOverlayControls } from "../product-components/image-overlay-controls";
+import { MAX_IMAGES } from "../product-components/product-constants";
 
 function fieldInputClass({
   error,

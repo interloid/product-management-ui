@@ -33,12 +33,11 @@ export default function Callback() {
         }
 
         setError("We couldn't complete your sign-in.");
-      } catch (error) {
+      } catch {
         if (!isMounted) {
           return;
         }
 
-        console.error("Authentication callback failed:", error);
         setError("We couldn't complete your sign-in.");
       }
     };

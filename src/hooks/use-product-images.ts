@@ -18,7 +18,7 @@ import { revokeImageUrls } from "@/lib/utils";
 import {
   MAX_IMAGES,
   validateImage,
-} from "@/app/pages/dashboard/products/crud-operations/components/product-constants";
+} from "@/app/pages/dashboard/products/crud-operations/product-components/product-constants";
 
 type UseProductImagesProps = {
   maxImages?: number;
@@ -210,7 +210,7 @@ export function useProductImages({
       return;
     }
 
-    URL.revokeObjectURL(image.previewUrl);
+    revokeImageUrls([image]);
 
     const remainingImages = newImages.filter((item) => item.id !== id);
 

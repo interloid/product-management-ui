@@ -64,6 +64,7 @@ export interface AuthContextValue {
   status: AuthStatus;
   isAuthenticated: boolean;
   user: AuthUser | null;
+  sessionError: string | null;
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithPasscode: (email: string, passcode: string) => Promise<void>;
   checkAuth: () => Promise<boolean>;

@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -50,7 +49,6 @@
   --color-muted-text: #71717b;
   --color-hover-text: #23366e;
   --color-cancel-button-background: oklch(63.7% 0.237 25.331);
-  --font-sans: "Inter Variable", sans-serif;
   --font-sans: "Geist Variable", sans-serif;
 }
 

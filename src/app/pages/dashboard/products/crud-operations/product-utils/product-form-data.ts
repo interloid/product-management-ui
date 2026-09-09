@@ -1,4 +1,4 @@
-import { PRODUCT_FORM_FIELDS } from "../components/product-form-fields";
+import { PRODUCT_FORM_FIELDS } from "../product-components/product-form-fields";
 import type { ProductForm } from "@/types/data-type";
 
 export function appendProductFormData(

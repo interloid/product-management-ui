@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ImagePreviewDialog } from "./image-preview-dialog";
 import type { ProductImagePreviewProps } from "@/types/data-type";
 import { Spinner } from "@/components/ui/spinner";
-import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/utils/product-utils";
+import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 
 export function ProductImagePreview({
   src,

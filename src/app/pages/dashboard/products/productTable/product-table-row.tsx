@@ -16,7 +16,7 @@ import {
   getStatusLabel,
 } from "@/lib/converters";
 import { memo, useState } from "react";
-import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/utils/product-utils";
+import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 import { ProductActionConfirmationRow } from "./product-action-confirmation-row";
 
 export const ProductTableRow = memo(function ProductTableRow({

@@ -25,16 +25,16 @@ import {
 } from "@/services/product-service";
 
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
-import { getPrimaryImage } from "./utils/product-utils";
+import { getPrimaryImage } from "./product-utils/product-utils";
 import { useProductImages } from "@/hooks/use-product-images";
-import { useProductFormSheet } from "./utils/use-product-form-sheet";
-import { appendProductFormData } from "./utils/product-form-data";
+import { useProductFormSheet } from "./product-utils/use-product-form-sheet";
+import { appendProductFormData } from "./product-utils/product-form-data";
 
-import { PRODUCT_FORM_FIELDS } from "./components/product-form-fields";
-import { MAX_IMAGES } from "./components/product-constants";
-import { ImageErrorBanner } from "./components/image-error-banner";
-import { ProductEditSkeleton } from "./components/product-edit-skeleton";
-import { ProductViewSkeleton } from "./components/product-view-skeleton";
+import { PRODUCT_FORM_FIELDS } from "./product-components/product-form-fields";
+import { MAX_IMAGES } from "./product-components/product-constants";
+import { ImageErrorBanner } from "./product-components/image-error-banner";
+import { ProductEditSkeleton } from "./product-components/product-edit-skeleton";
+import { ProductViewSkeleton } from "./product-components/product-view-skeleton";
 
 import { ProductImagePreview } from "../preview-image/product-image-preview";
 
@@ -47,7 +47,7 @@ import {
   ProductImageGrid,
   ProductImageHeader,
   ProductImageTile,
-} from "./utils/product-form-ui";
+} from "./product-utils/product-form-ui";
 
 const blankForm: ProductFormData = {
   name: "",
