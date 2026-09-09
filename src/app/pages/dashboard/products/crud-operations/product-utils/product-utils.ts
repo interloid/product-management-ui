@@ -25,7 +25,7 @@ export function waitForImageReady(
     });
   }
 
-  img.decode().finally(paint);
+  img.decode().then(paint).catch(() => {});
 
   return () => {
     cancelled = true;

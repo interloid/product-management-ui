@@ -8,10 +8,18 @@ export function useProductFormSheet<T extends ProductForm>({
   isDirtyExtra = false,
   onReset,
 }: UseProductFormSheetOptions<T>) {
+  const [prevInitialForm, setPrevInitialForm] = useState(initialForm);
   const [form, setForm] = useState<T>(initialForm);
   const [errors, setErrors] = useState<FormError>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+
+  if (initialForm !== prevInitialForm) {
+    setPrevInitialForm(initialForm);
+    if (!isDirtyExtra) {
+      setForm(initialForm);
+    }
+  }
 
   const isDirty = useMemo(() => {
     return (

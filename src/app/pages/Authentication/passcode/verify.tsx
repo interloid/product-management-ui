@@ -110,7 +110,7 @@ export default function PasscodeVerifyPage() {
         <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
       <div className="w-full max-w-lg">
-        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0,_0,_0,_0.04)_0px_1px_2px]">
+        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
           <Tabs defaultValue="Passcode" className="w-full">
             <TabsList className="h-10! w-full">
               <TabsTrigger

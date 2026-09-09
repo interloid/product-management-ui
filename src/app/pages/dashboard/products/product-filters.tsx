@@ -29,6 +29,7 @@ export function ProductFilters({
   status,
   priceRange,
   sort,
+  searchQuery,
   onCategoryChange,
   onStatusChange,
   onPriceChange,
@@ -38,7 +39,8 @@ export function ProductFilters({
     category === "All" &&
     status === "All" &&
     priceRange === "all" &&
-    sort.field === null;
+    sort.field === null &&
+    (!searchQuery || !searchQuery.trim());
 
   return (
     <div className="flex flex-wrap items-center gap-2">

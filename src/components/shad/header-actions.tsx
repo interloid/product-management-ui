@@ -26,7 +26,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
             placeholder="Search name or SKU..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="hidden h-9 w-1/2 cursor-pointer focus-visible:border-primary focus-visible:ring-primary/20 sm:flex md:w-full"
+            className="hidden h-9 w-1/2 focus-visible:border-primary focus-visible:ring-primary/20 sm:flex md:w-full"
           />
 
           <Button
@@ -59,7 +59,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
         trigger={
           <Button
             variant="destructive"
-            className="cursor-pointer bg-cancel-button-background! px-2.5 text-sm text-secondary hover:bg-destructive! sm:px-3"
+            className="cursor-pointer bg-cancel-button-background! px-2.5 text-sm text-white hover:bg-destructive! sm:px-3"
           >
             Log out
           </Button>

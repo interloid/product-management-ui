@@ -9,7 +9,7 @@ export function MobileMenuButton() {
       type="button"
       variant="ghost"
       size="icon"
-      className="size-9 shrink-0 md:hidden border-2px"
+      className="size-9 shrink-0 md:hidden border-2"
       onClick={(event) => {
         event.stopPropagation();
         toggleSidebar();

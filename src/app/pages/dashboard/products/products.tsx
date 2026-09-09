@@ -27,8 +27,14 @@ import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import { ApiError } from "@/types/data-type";
 
 export default function ProductsPage() {
-  const { searchQuery, refreshKey, refresh, productCount, setProductCount } =
-    useSearch();
+  const {
+    searchQuery,
+    setSearchQuery,
+    refreshKey,
+    refresh,
+    productCount,
+    setProductCount,
+  } = useSearch();
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -175,8 +181,9 @@ export default function ProductsPage() {
     setStatus("All");
     setPriceRange("all");
     setSort({ field: null, order: "desc" });
+    setSearchQuery("");
     setPage(1);
-  }, []);
+  }, [setSearchQuery]);
 
   const handleSort = useCallback((field: ProductSortField) => {
     setArchiveId(null);
@@ -360,6 +367,7 @@ export default function ProductsPage() {
           status={status}
           priceRange={priceRange}
           sort={sort}
+          searchQuery={searchQuery}
           onCategoryChange={updateCategory}
           onStatusChange={updateStatus}
           onPriceChange={updatePrice}
@@ -401,7 +409,7 @@ export default function ProductsPage() {
           )}
         </div>
         <ProductForm
-          key={`${productForm.mode}-${productForm.product?.id ?? "new"}-${productForm.loading ? "loading" : "ready"}`}
+          key={`${productForm.mode}-${productForm.product?.id ?? productForm.productId ?? "new"}`}
           mode={productForm.mode}
           product={productForm.product}
           open={productForm.open}

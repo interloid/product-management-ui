@@ -46,7 +46,7 @@ export function UnsavedChangesDialog({
             type="button"
             variant="destructive"
             onClick={onDiscard}
-            className="bg-cancel-button-background text-background hover:bg-red-400 focus-visible:border-destructive! focus-visible:ring-destructive/20!"
+            className="bg-cancel-button-background text-white hover:bg-red-400 focus-visible:border-destructive! focus-visible:ring-destructive/20!"
           >
             Discard changes
           </Button>

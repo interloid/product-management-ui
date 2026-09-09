@@ -4,12 +4,15 @@ import {
   type JsonBody,
 } from "@/types/data-type";
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
+export const API_BASE_URL = (
+  import.meta.env.VITE_API_BASE_URL ?? ""
+).replace(/\/+$/, "");
 
 const API_TIMEOUT = 15_000;
 
 const CREDENTIAL_AUTH_ENDPOINTS = new Set([
   "/api/v1/auth/login",
+  "/api/v1/auth/session",
   "/api/v1/auth/passcode/request",
   "/api/v1/auth/passcode/verify",
 ]);
@@ -124,11 +127,23 @@ export async function apiRequest<T>(
       },
     });
 
-    const contentType = response.headers.get("content-type") ?? "";
+    if (response.status === 204) {
+      return undefined as T;
+    }
 
-    const data: unknown = contentType.includes("application/json")
-      ? await response.json()
-      : await response.text();
+    const contentType = response.headers.get("content-type") ?? "";
+    const rawText = await response.text();
+
+    let data: unknown;
+    if (contentType.includes("application/json") && rawText.trim()) {
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = rawText;
+      }
+    } else {
+      data = rawText;
+    }
 
     if (!response.ok) {
       if (response.status === 401) {
@@ -142,7 +157,7 @@ export async function apiRequest<T>(
       );
     }
 
-    return data as T;
+    return (data ?? undefined) as T;
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
       if (!timedOut) {

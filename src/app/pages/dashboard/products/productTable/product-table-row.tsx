@@ -81,7 +81,10 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell>
         <button
           type="button"
-          onClick={onView}
+          onClick={(e) => {
+            e.stopPropagation();
+            onView();
+          }}
           className="max-w-40 truncate text-center text-sm font-semibold hover:underline sm:max-w-none"
         >
           {product.name}
@@ -165,7 +168,7 @@ export const ProductTableRow = memo(function ProductTableRow({
               </DropdownMenuItem>
 
               <DropdownMenuItem
-                className="text-cancel-button-background hover:text-red-600! hover:bg-primary cursor-pointer"
+                className="text-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
                 onSelect={(event) => {
                   event.preventDefault();
 

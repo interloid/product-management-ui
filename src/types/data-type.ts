@@ -211,6 +211,7 @@ export type ProductFiltersProps = {
   status: ProductStatusFilter;
   priceRange: string;
   sort: ProductSort;
+  searchQuery?: string;
   onCategoryChange: (value: ProductCategoryFilter) => void;
   onStatusChange: (value: ProductStatusFilter) => void;
   onPriceChange: (value: string) => void;

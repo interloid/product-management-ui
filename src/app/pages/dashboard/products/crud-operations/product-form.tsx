@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
@@ -100,9 +100,16 @@ export function ProductForm(props: ProductFormProps) {
   const product = props.product ?? null;
   const loading = props.loading ?? false;
 
+  const [prevImages, setPrevImages] = useState(product?.images);
   const [existingImages, setExistingImages] = useState(
     () => product?.images ?? [],
   );
+
+  if (product?.images !== prevImages) {
+    setPrevImages(product?.images);
+    setExistingImages(product?.images ?? []);
+  }
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const imageState = useProductImages({
@@ -135,7 +142,10 @@ export function ProductForm(props: ProductFormProps) {
     clearImages,
   } = imageState;
 
-  const initialForm = getForm(mode, product);
+  const initialForm = useMemo(
+    () => getForm(mode, product),
+    [mode, product],
+  );
 
   const formState = useProductFormSheet({
     initialForm,

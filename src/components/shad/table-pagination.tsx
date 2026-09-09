@@ -43,7 +43,7 @@ export function TablePagination({
             setPage(1);
           }}
         >
-          <SelectTrigger className="h-8 w-16.25 hover:border-primary hover:bg-primary-hover focus-visible:border-primary! focus-visible:ring-primary/20!">
+          <SelectTrigger className="h-8 w-[65px] hover:border-primary hover:bg-primary-hover focus-visible:border-primary! focus-visible:ring-primary/20!">
             <SelectValue />
           </SelectTrigger>
 

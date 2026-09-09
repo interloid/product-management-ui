@@ -4,12 +4,22 @@ import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operation
 import type { ProductImageProps } from "@/types/data-type";
 
 export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
+  const [prevSrc, setPrevSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(Boolean(src));
   const [hasError, setHasError] = useState(false);
   const cancelLoadRef = useRef<(() => void) | null>(null);
 
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setIsLoading(Boolean(src));
+    setHasError(false);
+  }
+
   useEffect(() => {
-    return () => cancelLoadRef.current?.();
+    return () => {
+      cancelLoadRef.current?.();
+      cancelLoadRef.current = null;
+    };
   }, []);
 
   if (!src || hasError) {

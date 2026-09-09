@@ -45,7 +45,7 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
               placeholder="Search name or SKU..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-9 w-full cursor-pointer pl-9 focus-visible:border-primary focus-visible:ring-primary/20"
+              className="h-9 w-full pl-9 focus-visible:border-primary focus-visible:ring-primary/20"
             />
           </div>
         </div>
