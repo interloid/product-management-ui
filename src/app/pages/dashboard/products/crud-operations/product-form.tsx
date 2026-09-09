@@ -161,6 +161,7 @@ export function ProductForm(props: ProductFormProps) {
   const {
     form,
     errors,
+    isDirty,
     showDiscardDialog,
     setShowDiscardDialog,
     updateField,
@@ -439,6 +440,7 @@ export function ProductForm(props: ProductFormProps) {
             isSubmitting={isSubmitting}
             submitLabel={isEdit ? "Save changes" : "Create product"}
             onCancel={() => handleSheetOpenChange(false)}
+            disabled={isEdit && !isDirty}
           />
         </form>
       </>

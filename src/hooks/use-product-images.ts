@@ -31,9 +31,29 @@ export function useProductImages({
     new Set(),
   );
 
+  const [prevExistingImages, setPrevExistingImages] = useState(existingImages);
+
+  const initialPrimaryExistingImageId = useRef(
+    existingImages.find((image) => image.is_primary)?.id ??
+      existingImages[0]?.id ??
+      null,
+  );
+
   const [primaryExistingImageId, setPrimaryExistingImageId] = useState<
     string | null
-  >(() => existingImages.find((image) => image.is_primary)?.id ?? null);
+  >(() => initialPrimaryExistingImageId.current);
+
+  if (existingImages !== prevExistingImages) {
+    setPrevExistingImages(existingImages);
+    const initialPrimaryId =
+      existingImages.find((image) => image.is_primary)?.id ??
+      existingImages[0]?.id ??
+      null;
+    initialPrimaryExistingImageId.current = initialPrimaryId;
+    setPrimaryExistingImageId(initialPrimaryId);
+    setRemovedImageIds(new Set());
+    setNewImages([]);
+  }
 
   const [imageError, setImageError] = useState<ImageError | null>(null);
 
@@ -73,10 +93,6 @@ export function useProductImages({
 
   const currentPrimaryImageId =
     primaryExistingImageId ?? primaryNewImage?.id ?? null;
-
-  const initialPrimaryExistingImageId = useRef(
-    existingImages.find((image) => image.is_primary)?.id ?? null,
-  );
 
   const isDirty =
     newImages.length > 0 ||
@@ -329,9 +345,12 @@ export function useProductImages({
 
     setNewImages([]);
     setRemovedImageIds(new Set());
-    setPrimaryExistingImageId(
-      existingImages.find((image) => image.is_primary)?.id ?? null,
-    );
+    const initialPrimaryId =
+      existingImages.find((image) => image.is_primary)?.id ??
+      existingImages[0]?.id ??
+      null;
+    setPrimaryExistingImageId(initialPrimaryId);
+    initialPrimaryExistingImageId.current = initialPrimaryId;
     setImageError(null);
     setIsDragging(false);
   }

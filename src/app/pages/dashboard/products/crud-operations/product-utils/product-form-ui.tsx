@@ -237,10 +237,12 @@ export function ProductFormActions({
   isSubmitting,
   submitLabel,
   onCancel,
+  disabled = false,
 }: {
   isSubmitting: boolean;
   submitLabel: string;
   onCancel: () => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-2 border-t px-5">
@@ -256,7 +258,7 @@ export function ProductFormActions({
       </Button>
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={isSubmitting || disabled}
         className="h-9 px-4 text-[13px] font-medium"
       >
         {isSubmitting ? (
