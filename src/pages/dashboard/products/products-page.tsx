@@ -150,6 +150,7 @@ export default function ProductsPage() {
     setCategory("All");
     setStatus("All");
     setPriceRange("all");
+    setSort({ field: null, order: "desc" });
     setPage(1);
   }, []);
 
