@@ -26,47 +26,63 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setSessionError(null);
   }, []);
 
-  const checkAuth = useCallback(async (options?: { ignore?: () => boolean }) => {
-    const shouldIgnore = () => options?.ignore?.() ?? false;
+  const checkAuth = useCallback(
+    async (options?: { ignore?: () => boolean; retries?: number }) => {
+      const shouldIgnore = () => options?.ignore?.() ?? false;
+      const maxRetries = options?.retries ?? 2;
 
-    try {
-      const response = await getCurrentSession();
-      const apiUser = response?.data?.user;
+      for (let attempt = 0; attempt <= maxRetries; attempt++) {
+        try {
+          const response = await getCurrentSession();
+          const apiUser = response?.data?.user;
 
-      if (!apiUser?.id || !apiUser?.email) {
-        throw new Error("Invalid user data");
+          if (!apiUser?.id || !apiUser?.email) {
+            throw new Error("Invalid user data");
+          }
+
+          if (shouldIgnore()) {
+            return true;
+          }
+
+          const userData: AuthUser = {
+            id: apiUser.id,
+            email: apiUser.email,
+            name: `${apiUser.first_name ?? ""} ${apiUser.last_name ?? ""}`.trim(),
+          };
+          setUser(userData);
+          setStatus("authenticated");
+          setSessionError(null);
+          return true;
+        } catch (error) {
+          if (shouldIgnore()) {
+            return false;
+          }
+
+          if (error instanceof ApiError && error.status === 401) {
+            setUser(null);
+            setStatus("unauthenticated");
+            setSessionError(null);
+            return false;
+          }
+
+          if (attempt < maxRetries) {
+            await new Promise((resolve) =>
+              setTimeout(resolve, 800 * (attempt + 1)),
+            );
+            continue;
+          }
+
+          setUser(null);
+          setStatus("unauthenticated");
+          setSessionError(null);
+          return false;
+        }
       }
 
-      if (shouldIgnore()) {
-        return true;
-      }
-
-      const userData: AuthUser = {
-        id: apiUser.id,
-        email: apiUser.email,
-        name: `${apiUser.first_name ?? ""} ${apiUser.last_name ?? ""}`.trim(),
-      };
-      setUser(userData);
-      setStatus("authenticated");
-      setSessionError(null);
-      return true;
-    } catch (error) {
-      if (shouldIgnore()) {
-        return false;
-      }
-
-      setUser(null);
-      setStatus("unauthenticated");
-
-      if (error instanceof ApiError && error.status === 401) {
-        setSessionError(null);
-        return false;
-      }
-
-      setSessionError("Unable to check your session. Please try again.");
       return false;
-    }
-  }, []);
+    },
+    [],
+  );
 
   const login = useCallback(async (credentials: LoginCredentials) => {
     const response = await loginService(credentials);

@@ -28,7 +28,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { isAuthError, type OAuthProvider } from "@/types/auth";
 import { ApiError } from "@/types/data-type";
 import interloidLogo from "@/assets/interloid-logo.png";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function LoginPage({
   className,
@@ -36,7 +35,7 @@ export default function LoginPage({
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, sessionError, checkAuth } = useAuth();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -44,7 +43,6 @@ export default function LoginPage({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [providerLoading, setProviderLoading] = useState<string | null>(null);
-  const [isRetryingSession, setIsRetryingSession] = useState(false);
 
   const validateForm = () => {
     if (!email.trim()) {
@@ -127,20 +125,6 @@ export default function LoginPage({
     }
   };
 
-  const handleRetrySession = async () => {
-    setIsRetryingSession(true);
-
-    try {
-      const isAuthenticated = await checkAuth();
-
-      if (isAuthenticated) {
-        navigate("/products", { replace: true });
-      }
-    } finally {
-      setIsRetryingSession(false);
-    }
-  };
-
   const handleProviderLogin = (provider: OAuthProvider) => {
     setError("");
     setProviderLoading(provider);
@@ -167,31 +151,6 @@ export default function LoginPage({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {sessionError && (
-                <Alert variant="destructive" className="mb-4">
-                  <AlertTitle className="font-bold">Session error</AlertTitle>
-                  <AlertDescription className="flex flex-col gap-2 text-xs">
-                    <span>{sessionError}</span>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="w-fit"
-                      disabled={isRetryingSession}
-                      onClick={handleRetrySession}
-                    >
-                      {isRetryingSession ? (
-                        <>
-                          <Spinner className="size-4" />
-                          Retrying...
-                        </>
-                      ) : (
-                        "Retry session check"
-                      )}
-                    </Button>
-                  </AlertDescription>
-                </Alert>
-              )}
               <form onSubmit={handleSubmit} noValidate>
                 <FieldGroup className="gap-4">
                   <Field className="flex-col h-fit py-1 gap-2">

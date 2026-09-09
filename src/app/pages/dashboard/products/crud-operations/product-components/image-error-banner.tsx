@@ -1,19 +1,18 @@
 import type { ImageErrorBannerProps } from "@/types/data-type";
-import { AlertCircle } from "lucide-react";
 
 export function ImageErrorBanner({
   error: { message, details },
 }: ImageErrorBannerProps) {
-
   return (
-    <div className="flex gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-3">
-      <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-destructive">{message}</p>
-        {details && (
-          <p className="mt-1 text-xs text-muted-foreground">{details}</p>
-        )}
-      </div>
+    <div className="rounded-lg border border-red-200 bg-[#fff5f5] px-4 py-2.5 dark:border-red-900/40 dark:bg-red-950/20">
+      <p className="text-[13px] font-semibold text-red-600 dark:text-red-400">
+        {message}
+      </p>
+      {details && (
+        <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-400">
+          {details}
+        </p>
+      )}
     </div>
   );
 }
