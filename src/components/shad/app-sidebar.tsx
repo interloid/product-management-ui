@@ -67,10 +67,10 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
     >
       <SidebarTitle />
 
-      <SidebarContent className="gap-0 mt-2">
+      <SidebarContent className="gap-0 mt-3">
         <NavMain items={data.navMain} />
 
-        <SidebarGroupLabel className="group-data-[state=expanded]:ml-4! group-data-[state=collapsed]:opacity-0 duration-0!">
+        <SidebarGroupLabel className="group-data-[state=expanded]:ml-4! group-data-[state=collapsed]:hidden duration-0!">
           WORKSPACE
         </SidebarGroupLabel>
 

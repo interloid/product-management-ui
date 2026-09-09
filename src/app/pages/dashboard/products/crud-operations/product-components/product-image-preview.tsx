@@ -51,14 +51,14 @@ export function ProductImagePreview({
           className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
         />
         {isLoading && (
-          <span className="absolute inset-0 flex items-center justify-center bg-muted-foreground">
-            <Spinner className="size-5 text-background" />
+          <span className="absolute inset-0 flex items-center justify-center bg-muted">
+            <Spinner className="size-5 text-muted-foreground" />
           </span>
         )}
 
         {hasError && (
-          <span className="absolute inset-0 flex items-center justify-center bg-muted-foreground">
-            <span className="text-[10px] font-medium text-background">
+          <span className="absolute inset-0 flex items-center justify-center bg-muted">
+            <span className="text-[10px] font-medium text-muted-foreground">
               Failed to load image
             </span>
           </span>

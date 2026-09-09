@@ -270,7 +270,7 @@ export function ProductForm(props: ProductFormProps) {
         <div className="flex-1 overflow-y-auto p-5">
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
-              <div className="aspect-16/10 overflow-hidden rounded-lg border bg-border">
+              <div className="aspect-16/10 overflow-hidden rounded-lg border bg-muted">
                 {primaryImage?.url ? (
                   <ProductImagePreview
                     src={primaryImage.url}
