@@ -1,10 +1,13 @@
-import { PackageOpen } from "lucide-react";
+import { PackageOpen, RotateCcw } from "lucide-react";
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 export default function EmptyProductTableRow({
   showNoResults = false,
+  onResetFilters,
 }: {
   showNoResults?: boolean;
+  onResetFilters?: () => void;
 }) {
   return (
     <TableRow>
@@ -18,6 +21,17 @@ export default function EmptyProductTableRow({
               ? "No products match your search or filters"
               : "No products yet"}
           </h3>
+          {showNoResults && onResetFilters && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onResetFilters}
+              className="mt-2 gap-1.5 text-xs font-medium"
+            >
+              <RotateCcw className="size-3.5" />
+              Clear all filters
+            </Button>
+          )}
         </div>
       </TableCell>
     </TableRow>

@@ -204,6 +204,7 @@ export type ProductTableProps = {
   onDelete: (id: string) => void;
   onCancelDelete: () => void;
   onConfirmDelete: (id: string) => void;
+  onResetFilters?: () => void;
 };
 
 export type ProductFiltersProps = {

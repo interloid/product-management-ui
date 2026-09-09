@@ -40,7 +40,7 @@ export function ProductImagePreview({
         onClick={() => setOpen(true)}
         disabled={isLoading || hasError}
         aria-label={`Preview ${alt}`}
-        className={`group relative block overflow-hidden ${className}`}
+        className={`group relative block overflow-hidden rounded-[inherit] ${className}`}
       >
         <img
           src={src}
@@ -48,16 +48,16 @@ export function ProductImagePreview({
           decoding="async"
           onLoad={handleLoad}
           onError={handleError}
-          className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+          className="h-full w-full rounded-[inherit] object-cover transition-transform duration-200 group-hover:scale-[1.02]"
         />
         {isLoading && (
-          <span className="absolute inset-0 flex items-center justify-center bg-muted">
+          <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-muted/50">
             <Spinner className="size-5 text-muted-foreground" />
           </span>
         )}
 
         {hasError && (
-          <span className="absolute inset-0 flex items-center justify-center bg-muted">
+          <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-muted/50">
             <span className="text-[10px] font-medium text-muted-foreground">
               Failed to load image
             </span>

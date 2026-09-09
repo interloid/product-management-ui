@@ -26,6 +26,7 @@ export function ProductTable({
   onDelete,
   onCancelDelete,
   onConfirmDelete,
+  onResetFilters,
 }: ProductTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border">
@@ -86,7 +87,10 @@ export function ProductTable({
                 />
               ))
             ) : (
-              <EmptyProductTableRow showNoResults={showNoResults} />
+              <EmptyProductTableRow
+                showNoResults={showNoResults}
+                onResetFilters={onResetFilters}
+              />
             )}
           </TableBody>
         </Table>

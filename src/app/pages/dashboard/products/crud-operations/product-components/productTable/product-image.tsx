@@ -39,10 +39,10 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
   }
   return (
     <div
-      className={`relative size-10 shrink-0 overflow-hidden rounded-md border bg-muted ${className}`}
+      className={`relative size-10 shrink-0 overflow-hidden rounded-md border bg-muted/40 bg-clip-padding ${className}`}
     >
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
           <Spinner className="size-4 text-muted-foreground" />
         </div>
       )} 
@@ -53,7 +53,7 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
         height={40}
         loading="eager"
         decoding="async"
-        className="size-full object-cover"
+        className="size-full object-cover rounded-[inherit]"
         onLoad={(e) => {
           cancelLoadRef.current?.();
           cancelLoadRef.current = waitForImageReady(e.currentTarget, () =>

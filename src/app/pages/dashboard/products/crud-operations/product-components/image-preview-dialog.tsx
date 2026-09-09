@@ -16,7 +16,7 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
   }, []);
 
   return (
-    <div className="relative flex min-h-72 min-w-72 max-h-[80vh] items-center justify-center overflow-hidden rounded-md bg-muted">
+    <div className="relative flex min-h-72 min-w-72 max-h-[80vh] items-center justify-center overflow-hidden rounded-md bg-muted/40 bg-clip-padding">
       <img
         src={src}
         alt={alt}
@@ -34,15 +34,15 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
           setIsLoading(false);
           setHasError(true);
         }}
-        className="max-h-[75vh] h-full w-full object-contain"
+        className="max-h-[75vh] h-full w-full object-contain rounded-[inherit]"
       />
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
           <Spinner className="size-8 text-muted-foreground" />
         </div>
       )}
       {hasError && !isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-muted">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
           <span className="text-sm font-medium text-muted-foreground">
             Failed to load image
           </span>

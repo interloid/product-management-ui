@@ -310,11 +310,11 @@ export function ProductImageTile({
   return (
     <div
       className={cn(
-        "relative aspect-square overflow-hidden rounded-md border",
+        "relative aspect-square overflow-hidden rounded-md border bg-clip-padding",
         isPrimary ? "border-2 border-primary" : "border-border",
       )}
     >
-      <ProductImagePreview src={src} alt={alt} className="h-full w-full" />
+      <ProductImagePreview src={src} alt={alt} className="h-full w-full rounded-[inherit]" />
 
       {mode !== "view" && onRemove && (
         <button

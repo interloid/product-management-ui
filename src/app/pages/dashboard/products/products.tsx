@@ -401,6 +401,7 @@ export default function ProductsPage() {
                   onDelete={setDeleteId}
                   onCancelDelete={() => setDeleteId(null)}
                   onConfirmDelete={handleDeleteProduct}
+                  onResetFilters={resetFilters}
                 />
               </div>
 
