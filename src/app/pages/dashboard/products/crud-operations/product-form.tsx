@@ -19,10 +19,7 @@ import type {
   ProductFormProps,
 } from "@/types/data-type";
 
-import {
-  createProduct,
-  updateProduct,
-} from "@/services/product-service";
+import { createProduct, updateProduct } from "@/services/product-service";
 
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import { getPrimaryImage } from "./product-utils/product-utils";
@@ -142,10 +139,7 @@ export function ProductForm(props: ProductFormProps) {
     clearImages,
   } = imageState;
 
-  const initialForm = useMemo(
-    () => getForm(mode, product),
-    [mode, product],
-  );
+  const initialForm = useMemo(() => getForm(mode, product), [mode, product]);
 
   const formState = useProductFormSheet({
     initialForm,
@@ -171,6 +165,16 @@ export function ProductForm(props: ProductFormProps) {
     handleDiscardAndClose,
     handleSheetOpenChange,
   } = formState;
+
+  const allImages = (product?.images ?? []).map((img) => ({
+    src: img.url,
+    alt: product?.name,
+  }));
+
+  const primaryIndex = Math.max(
+    0,
+    (product?.images ?? []).findIndex((img) => img.is_primary),
+  );
 
   function resetProductForm() {
     clearImages();
@@ -251,6 +255,7 @@ export function ProductForm(props: ProductFormProps) {
       return <ProductViewSkeleton />;
     }
     const primaryImage = getPrimaryImage(product);
+
     return (
       <>
         <SheetHeader className="border-b px-5 py-4">
@@ -275,6 +280,8 @@ export function ProductForm(props: ProductFormProps) {
                   <ProductImagePreview
                     src={primaryImage.url}
                     alt={product.name}
+                    images={allImages}
+                    initialIndex={primaryIndex}
                     className="h-full w-full rounded-[inherit]"
                   />
                 ) : (
@@ -288,13 +295,15 @@ export function ProductForm(props: ProductFormProps) {
 
               {product.images?.length > 0 && (
                 <ProductImageGrid>
-                  {product.images.map((image) => (
+                  {product.images.map((image, index) => (
                     <ProductImageTile
                       key={image.id}
                       src={image.url}
                       alt={`${product.name} image`}
                       isPrimary={image.is_primary}
                       mode="view"
+                      images={allImages}
+                      initialIndex={index}
                     />
                   ))}
                 </ProductImageGrid>

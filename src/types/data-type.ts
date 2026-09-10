@@ -151,19 +151,25 @@ export type ProductImageProps = {
   className?: string;
 };
 
+export type PreviewImageItem = {
+  src: string;
+  alt?: string;
+};
+
+export type ImagePreviewDialogProps = {
+  images?: PreviewImageItem[];
+  image?: PreviewImageItem | null;
+  initialIndex?: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+
 export type ProductImagePreviewProps = {
   src: string;
   alt: string;
   className?: string;
-};
-
-export type ImagePreviewDialogProps = {
-  image: {
-    src: string;
-    alt: string;
-  } | null;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  images?: PreviewImageItem[];
+  initialIndex?: number;
 };
 
 export type ImageError = {
@@ -356,7 +362,6 @@ export type UseProductFormSheetOptions<T extends ProductForm> = {
   isDirtyExtra?: boolean;
   onReset?: () => void;
 };
-
 
 export type FormFieldChange = <K extends keyof ProductForm>(
   field: K,

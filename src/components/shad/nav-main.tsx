@@ -16,7 +16,6 @@ export function NavMain({ items }: NavMainProps) {
         <SidebarMenu className="w-full items-center gap-1">
           {items.map((item) => {
             const Icon = item.icon;
-
             return (
               <SidebarMenuItem
                 key={item.title}
@@ -43,7 +42,6 @@ export function NavMain({ items }: NavMainProps) {
                       )}
                     >
                       <Icon className="size-4 shrink-0" />
-
                       <span className="group-data-[collapsible=icon]:hidden">
                         {item.title}
                       </span>

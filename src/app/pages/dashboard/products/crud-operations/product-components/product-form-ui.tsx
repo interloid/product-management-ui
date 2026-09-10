@@ -25,6 +25,7 @@ import {
   type ProductCategory,
   type ProductForm,
   type ProductStatus,
+  type PreviewImageItem,
 } from "@/types/data-type";
 import { ProductImagePreview } from "./product-image-preview";
 import { ImageOverlayControls } from "./image-overlay-controls";
@@ -297,6 +298,8 @@ export function ProductImageTile({
   alt,
   isPrimary,
   mode,
+  images,
+  initialIndex,
   onRemove,
   onSetPrimary,
 }: {
@@ -304,6 +307,8 @@ export function ProductImageTile({
   alt: string;
   isPrimary: boolean;
   mode: "new" | "existing" | "view";
+  images?: PreviewImageItem[];
+  initialIndex?: number;
   onRemove?: () => void;
   onSetPrimary?: () => void;
 }) {
@@ -314,7 +319,13 @@ export function ProductImageTile({
         isPrimary ? "border-2 border-primary" : "border-border",
       )}
     >
-      <ProductImagePreview src={src} alt={alt} className="h-full w-full rounded-[inherit]" />
+      <ProductImagePreview
+        src={src}
+        alt={alt}
+        images={images}
+        initialIndex={initialIndex}
+        className="h-full w-full rounded-[inherit]"
+      />
 
       {mode !== "view" && onRemove && (
         <button

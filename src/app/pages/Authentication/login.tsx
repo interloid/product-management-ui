@@ -130,6 +130,8 @@ export default function LoginPage({
     setProviderLoading(provider);
     loginWithProvider(provider);
   };
+
+  const isFormEmpty = !email.trim() && !password;
   return (
     <div className="flex min-h-full w-full items-center justify-center p-6 md:p-10">
       <div className="absolute left-8 top-8 flex items-center gap-2">
@@ -230,7 +232,10 @@ export default function LoginPage({
                       placeholder=""
                       value={email}
                       autoComplete="username"
-                      onChange={(event) => setEmail(event.target.value)}
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                        if (error) setError("");
+                      }}
                       required
                       className="h-10 px-3! text-[13px]! focus-visible:border-primary focus-visible:ring-primary/20"
                     />
@@ -249,7 +254,10 @@ export default function LoginPage({
                         id="password"
                         type={showPassword ? "text" : "password"}
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
+                        onChange={(event) => {
+                          setPassword(event.target.value);
+                          if (error) setError("");
+                        }}
                         autoComplete="current-password"
                         required
                         className={`h-10 px-3.5! focus-visible:border-primary focus-visible:ring-primary/20 text-[13px]! ${
@@ -300,8 +308,8 @@ export default function LoginPage({
 
                     <Button
                       type="submit"
-                      disabled={loading}
-                      className="w-full h-10 text-sm"
+                      disabled={loading || isFormEmpty}
+                      className="w-full h-10 text-sm font-semibold shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/35 transition-all disabled:opacity-60 disabled:shadow-none"
                     >
                       {loading ? (
                         <>
