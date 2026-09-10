@@ -11,7 +11,7 @@ import type {
   ImageError,
   ProductImage,
   UseProductImagesProps,
-} from "@/types/data-type";
+} from "@/types/product";
 
 import { revokeImageUrls } from "@/lib/utils";
 
@@ -52,6 +52,7 @@ export function useProductImages({
     initialPrimaryExistingImageId.current = initialPrimaryId;
     setPrimaryExistingImageId(initialPrimaryId);
     setRemovedImageIds(new Set());
+    revokeImageUrls(newImages);
     setNewImages([]);
   }
 
@@ -90,9 +91,6 @@ export function useProductImages({
   );
 
   const primaryNewImage = newImages.find((image) => image.isPrimary);
-
-  const currentPrimaryImageId =
-    primaryExistingImageId ?? primaryNewImage?.id ?? null;
 
   const isDirty =
     newImages.length > 0 ||
@@ -366,9 +364,7 @@ export function useProductImages({
     totalImageCount,
     remainingSlots,
     primaryExistingImage,
-    primaryExistingImageId,
     primaryNewImage,
-    currentPrimaryImageId,
     isDirty,
     handleImageChange,
     handleDragEnter,
@@ -380,9 +376,5 @@ export function useProductImages({
     setExistingImagePrimary,
     toggleRemoveExistingImage,
     clearImages,
-    setNewImages,
-    setRemovedImageIds,
-    setImageError,
-    setIsDragging,
   };
 }

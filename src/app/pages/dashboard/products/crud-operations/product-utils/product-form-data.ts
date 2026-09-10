@@ -1,5 +1,5 @@
 import { PRODUCT_FORM_FIELDS } from "./product-form-fields";
-import type { ProductForm } from "@/types/data-type";
+import type { ProductForm } from "@/types/product";
 
 function toNumericString(value: string): string {
   const parsed = Number(value);

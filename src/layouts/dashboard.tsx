@@ -11,11 +11,16 @@ export default function DashboardLayout() {
   const [searchQuery, setSearchQuery] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [productCount, setProductCount] = useState(0);
+  const [addTrigger, setAddTrigger] = useState(0);
 
   const { user } = useAuth();
 
   const refresh = useCallback(() => {
     setRefreshKey((current) => current + 1);
+  }, []);
+
+  const triggerAddProduct = useCallback(() => {
+    setAddTrigger((current) => current + 1);
   }, []);
 
   const value = useMemo(
@@ -26,8 +31,17 @@ export default function DashboardLayout() {
       refresh,
       productCount,
       setProductCount,
+      triggerAddProduct,
+      addTrigger,
     }),
-    [searchQuery, refreshKey, refresh, productCount],
+    [
+      searchQuery,
+      refreshKey,
+      refresh,
+      productCount,
+      triggerAddProduct,
+      addTrigger,
+    ],
   );
 
   return (

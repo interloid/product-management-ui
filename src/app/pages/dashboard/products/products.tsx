@@ -17,14 +17,13 @@ import type {
   ProductSort,
   ProductSortField,
   ProductStatusFilter,
-} from "@/types/data-type";
+} from "@/types/product";
 import { ProductListSkeleton } from "@/components/shad/product-list-skeleton";
 import { TablePagination } from "@/components/shad/table-pagination";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters";
 import { ProductTableSkeleton } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table-skeleton";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
-import { ApiError } from "@/types/data-type";
 
 export default function ProductsPage() {
   const {
@@ -34,6 +33,7 @@ export default function ProductsPage() {
     refresh,
     productCount,
     setProductCount,
+    addTrigger,
   } = useSearch();
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -64,6 +64,21 @@ export default function ProductsPage() {
     loading: false,
   });
 
+  const tableTopRef = useRef<HTMLDivElement>(null);
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    tableTopRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [page]);
+
   const showNoResults =
     category !== "All" ||
     status !== "All" ||
@@ -73,6 +88,7 @@ export default function ProductsPage() {
     page > 1;
 
   useEffect(() => {
+    const controller = new AbortController();
     let ignore = false;
 
     async function loadProducts() {
@@ -80,16 +96,19 @@ export default function ProductsPage() {
         setIsLoading(true);
         setLoadError(null);
 
-        const response = await getProducts({
-          page,
-          pageSize,
-          status,
-          category,
-          search: debouncedSearch,
-          priceRange,
-          sort: sort.field ?? undefined,
-          order: sort.order,
-        });
+        const response = await getProducts(
+          {
+            page,
+            pageSize,
+            status,
+            category,
+            search: debouncedSearch,
+            priceRange,
+            sort: sort.field ?? undefined,
+            order: sort.order,
+          },
+          controller.signal,
+        );
 
         if (ignore) return;
 
@@ -110,24 +129,26 @@ export default function ProductsPage() {
         setTotalPages(response.totalPages);
         setIsInitialLoad(false);
       } catch (error) {
-        if (!ignore) {
-          const message =
-            error instanceof ApiError && error.status === 401
-              ? "Your session has expired. Please sign in again."
-              : "Unable to load products. Please try again.";
-          setLoadError(message);
-        }
+        if (ignore || controller.signal.aborted) return;
+
+        setLoadError(
+          getUserFriendlyErrorMessage(
+            error,
+            "Unable to load products. Please try again.",
+          ),
+        );
       } finally {
-        if (!ignore) {
+        if (!ignore && !controller.signal.aborted) {
           setIsLoading(false);
         }
       }
     }
 
-    loadProducts();
+    void loadProducts();
 
     return () => {
       ignore = true;
+      controller.abort();
     };
   }, [
     page,
@@ -182,7 +203,9 @@ export default function ProductsPage() {
     setPriceRange("all");
     setSort({ field: null, order: "desc" });
     setSearchQuery("");
+    setDebouncedSearch("");
     setPage(1);
+    setPageSize(10);
   }, [setSearchQuery]);
 
   const handleSort = useCallback((field: ProductSortField) => {
@@ -251,12 +274,20 @@ export default function ProductsPage() {
 
   const openProductForm = useCallback(
     (product: ApiProduct, mode: ProductFormMode) => {
-      setProductForm({
-        mode,
-        product,
-        productId: product.id,
-        open: true,
-        loading: true,
+      setProductForm((current) => {
+        const isSameProductLoaded =
+          current.open &&
+          current.productId === product.id &&
+          current.product?.id === product.id &&
+          !current.loading;
+
+        return {
+          mode,
+          product: isSameProductLoaded ? current.product : product,
+          productId: product.id,
+          open: true,
+          loading: !isSameProductLoaded,
+        };
       });
     },
     [],
@@ -276,8 +307,27 @@ export default function ProductsPage() {
     [openProductForm],
   );
 
+  const openAdd = useCallback(() => {
+    setProductForm({
+      mode: "add",
+      product: null,
+      productId: null,
+      open: true,
+      loading: false,
+    });
+  }, []);
+
+  const lastAddTriggerRef = useRef(addTrigger);
+
   useEffect(() => {
-    if (!productForm.open || !productForm.productId) {
+    if (addTrigger > 0 && addTrigger !== lastAddTriggerRef.current) {
+      lastAddTriggerRef.current = addTrigger;
+      openAdd();
+    }
+  }, [addTrigger, openAdd]);
+
+  useEffect(() => {
+    if (!productForm.open || !productForm.productId || !productForm.loading) {
       return;
     }
 
@@ -310,14 +360,25 @@ export default function ProductsPage() {
       }
     }
 
-    loadProduct();
+    void loadProduct();
 
     return () => {
       ignore = true;
     };
-  }, [productForm.open, productForm.productId, productForm.mode]);
+  }, [productForm.open, productForm.productId, productForm.loading]);
 
   const handleProductUpdated = useCallback(() => {
+    setProductForm({
+      mode: "view",
+      product: null,
+      productId: null,
+      open: false,
+      loading: false,
+    });
+    refresh();
+  }, [refresh]);
+
+  const handleProductCreated = useCallback(() => {
     setProductForm({
       mode: "view",
       product: null,
@@ -361,13 +422,15 @@ export default function ProductsPage() {
 
   return (
     <>
-      <div className="w-full space-y-4">
+      <div ref={tableTopRef} className="w-full space-y-4">
         <ProductFilters
           category={category}
           status={status}
           priceRange={priceRange}
           sort={sort}
           searchQuery={searchQuery}
+          page={page}
+          pageSize={pageSize}
           onCategoryChange={updateCategory}
           onStatusChange={updateStatus}
           onPriceChange={updatePrice}
@@ -417,6 +480,7 @@ export default function ProductsPage() {
           loading={productForm.loading}
           onOpenChange={handleProductFormOpenChange}
           onEdit={openEdit}
+          onCreated={handleProductCreated}
           onUpdated={handleProductUpdated}
         />
       </div>

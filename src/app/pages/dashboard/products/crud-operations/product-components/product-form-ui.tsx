@@ -15,18 +15,22 @@ import {
 } from "@/components/ui/select";
 import { FieldError } from "@/components/shad/field-error";
 import { DetailLabel, DetailValue } from "@/components/shad/detail-label";
-import { formatDateTime, getStatusClassName, getStatusLabel } from "@/lib/converters";
 import {
-  productCategories,
-  statuses,
-  type ApiProduct,
-  type FormError,
-  type FormFieldChange,
-  type ProductCategory,
-  type ProductForm,
-  type ProductStatus,
-  type PreviewImageItem,
-} from "@/types/data-type";
+  formatDateTime,
+  formatPrice,
+  getStatusClassName,
+  getStatusLabel,
+} from "@/lib/converters";
+import { productCategories, statuses } from "@/lib/product-options";
+import type {
+  ApiProduct,
+  FormError,
+  FormFieldChange,
+  ProductCategory,
+  ProductForm,
+  ProductStatus,
+  PreviewImageItem,
+} from "@/types/product";
 import { ProductImagePreview } from "./product-image-preview";
 import { ImageOverlayControls } from "./image-overlay-controls";
 import { MAX_IMAGES } from "../product-utils/product-constants";
@@ -102,7 +106,12 @@ export function ProductFormFields({
       </ProductField>
 
       <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
-        <ProductField id={`${idPrefix}-sku`} label="SKU" required error={errors.sku}>
+        <ProductField
+          id={`${idPrefix}-sku`}
+          label="SKU"
+          required
+          error={errors.sku}
+        >
           <Input
             id={`${idPrefix}-sku`}
             value={form.sku}
@@ -154,7 +163,12 @@ export function ProductFormFields({
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <ProductField id={`${idPrefix}-price`} label="Price" required error={errors.price}>
+        <ProductField
+          id={`${idPrefix}-price`}
+          label="Price"
+          required
+          error={errors.price}
+        >
           <Input
             id={`${idPrefix}-price`}
             type="number"
@@ -167,7 +181,12 @@ export function ProductFormFields({
           />
         </ProductField>
 
-        <ProductField id={`${idPrefix}-stock`} label="Stock" required error={errors.stock}>
+        <ProductField
+          id={`${idPrefix}-stock`}
+          label="Stock"
+          required
+          error={errors.stock}
+        >
           <Input
             id={`${idPrefix}-stock`}
             type="number"
@@ -284,13 +303,17 @@ export function ProductImageHeader({ count }: { count: number }) {
           (Only JPG, PNG, and WEBP image formats are allowed.)
         </span>
       </Label>
-      <span className="text-[11px] text-muted-foreground">{count}/{MAX_IMAGES}</span>
+      <span className="text-[11px] text-muted-foreground">
+        {count}/{MAX_IMAGES}
+      </span>
     </div>
   );
 }
 
 export function ProductImageGrid({ children }: { children: React.ReactNode }) {
-  return <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">{children}</div>;
+  return (
+    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">{children}</div>
+  );
 }
 
 export function ProductImageTile({
@@ -417,7 +440,7 @@ export function ProductDetailGrid({ product }: { product: ApiProduct }) {
 
       <DetailLabel>Price</DetailLabel>
       <DetailValue className="font-mono text-xs">
-        ${Number(product.price).toFixed(2)}
+        {formatPrice(product.price)}
       </DetailValue>
 
       <DetailLabel>Stock</DetailLabel>
@@ -425,10 +448,7 @@ export function ProductDetailGrid({ product }: { product: ApiProduct }) {
 
       <DetailLabel>Status</DetailLabel>
       <div>
-        <Badge
-          variant="outline"
-          className={getStatusClassName(product.status)}
-        >
+        <Badge variant="outline" className={getStatusClassName(product.status)}>
           {getStatusLabel(product.status)}
         </Badge>
       </div>

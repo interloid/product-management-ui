@@ -16,8 +16,8 @@ import { UnsavedChangesDialog } from "@/components/shad/unsaved-changes-dialog";
 import type {
   ApiProduct,
   ProductForm as ProductFormData,
-  ProductFormProps,
-} from "@/types/data-type";
+} from "@/types/product";
+import type { ProductFormProps } from "@/types/props";
 
 import { createProduct, updateProduct } from "@/services/product-service";
 

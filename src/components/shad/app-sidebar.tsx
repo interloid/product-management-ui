@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 import SidebarTitle from "./sidebar-title";
-import type { AppSidebarProps } from "@/types/data-type";
+import type { AuthUser } from "@/types/auth";
 
 const data = {
   navMain: [
@@ -56,6 +56,10 @@ const data = {
       icon: Settings,
     },
   ],
+};
+
+export type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  user: AuthUser | null;
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {

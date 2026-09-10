@@ -5,9 +5,15 @@ export class ErrorBoundary extends Component<
   { hasError: boolean }
 > {
   state = { hasError: false };
+
   static getDerivedStateFromError() {
     return { hasError: true };
   }
+
+  componentDidCatch(error: unknown, info: unknown) {
+    console.error("Unhandled UI error", error, info);
+  }
+
   render() {
     if (this.state.hasError) {
       return (
@@ -22,7 +28,7 @@ export class ErrorBoundary extends Component<
         </div>
       );
     }
+
     return this.props.children;
   }
 }
-

@@ -62,7 +62,6 @@ export type AuthUser = {
 
 export interface AuthContextValue {
   status: AuthStatus;
-  isAuthenticated: boolean;
   user: AuthUser | null;
   sessionError: string | null;
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -77,20 +76,4 @@ export interface AuthProviderProps {
 
 export interface PasscodeLocationState {
   email?: string;
-}
-
-export type AuthErrorCode =
-  "INVALID_CREDENTIALS" | "NETWORK_ERROR" | "SERVER_ERROR" | "UNKNOWN_ERROR";
-
-export type AuthError = {
-  code: AuthErrorCode;
-};
-
-export function isAuthError(error: unknown): error is AuthError {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    typeof error.code === "string"
-  );
 }

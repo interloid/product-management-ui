@@ -1,4 +1,4 @@
-import type { ImageOverlayControlsProps } from "@/types/data-type";
+import type { ImageOverlayControlsProps } from "@/types/props";
 
 export function ImageOverlayControls({
   isPrimary,

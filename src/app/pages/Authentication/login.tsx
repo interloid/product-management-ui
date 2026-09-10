@@ -21,13 +21,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { loginWithProvider } from "@/services/auth-service";
 import { useAuth } from "@/hooks/use-auth";
-import { FcGoogle } from "react-icons/fc";
-import { FaGithub } from "react-icons/fa";
+import GoogleLogo from "@/components/icons/google-logo";
+import GithubLogo from "@/components/icons/github-logo";
 import MicrosoftLogo from "@/components/icons/microsoft-logo";
 import { Eye, EyeOff } from "lucide-react";
-import { isAuthError, type OAuthProvider } from "@/types/auth";
-import { ApiError } from "@/types/data-type";
-import interloidLogo from "@/assets/interloid-logo.png";
+import { type OAuthProvider } from "@/types/auth";
+import { getUserFriendlyErrorMessage } from "@/lib/errors";
+import interloidLogo from "@/assets/favicon.ico";
 
 export default function LoginPage({
   className,
@@ -35,7 +35,7 @@ export default function LoginPage({
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, sessionError } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,47 +79,13 @@ export default function LoginPage({
         replace: true,
       });
     } catch (error) {
-      if (error instanceof ApiError) {
-        if (error.status === 401) {
-          setError("Invalid username or password.");
-          return;
-        }
-
-        if (error.status >= 500) {
-          setError("Something went wrong. Please try again later.");
-          return;
-        }
-
-        setError(error.message || "Unable to log in. Please try again.");
-        return;
-      }
-
-      if (error instanceof TypeError && error.message === "Failed to fetch") {
-        setError("Unable to connect to the server. Please try again.");
-        return;
-      }
-
-      if (!isAuthError(error)) {
-        setError("Unable to log in. Please try again.");
-        return;
-      }
-
-      switch (error.code) {
-        case "INVALID_CREDENTIALS":
-          setError("Invalid username or password.");
-          break;
-
-        case "NETWORK_ERROR":
-          setError("Unable to connect to the server. Please try again.");
-          break;
-
-        case "SERVER_ERROR":
-          setError("Something went wrong. Please try again later.");
-          break;
-
-        default:
-          setError("Unable to log in. Please try again.");
-      }
+      setError(
+        getUserFriendlyErrorMessage(
+          error,
+          "Unable to log in. Please try again.",
+          { context: "login" },
+        ),
+      );
     } finally {
       setLoading(false);
     }
@@ -138,12 +104,14 @@ export default function LoginPage({
         <img
           src={interloidLogo}
           alt="Interloid"
+          width={20}
+          height={20}
           className="h-5 w-5 object-contain"
         />
         <span className="text-sm font-semibold">Interloid</span>
         <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
-      <div className="w-full max-w-lg">
+      <div className="w-full border rounded-[10px] max-w-lg">
         <div className={cn("flex flex-col gap-6", className)} {...props}>
           <Card className="gap-4 px-2 py-8 rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
             <CardHeader>
@@ -170,7 +138,7 @@ export default function LoginPage({
                         </>
                       ) : (
                         <>
-                          <FcGoogle />
+                          <GoogleLogo />
                           <span>Continue with Google</span>
                         </>
                       )}
@@ -190,7 +158,7 @@ export default function LoginPage({
                           </>
                         ) : (
                           <>
-                            <FaGithub className="size-4" />
+                            <GithubLogo/>
                             GitHub
                           </>
                         )}
@@ -300,12 +268,11 @@ export default function LoginPage({
                     </label>
                   </div>
                   <Field>
-                    {error && (
+                    {(error || sessionError) && (
                       <p className="text-sm text-destructive font-medium">
-                        {error}
+                        {error || sessionError}
                       </p>
                     )}
-
                     <Button
                       type="submit"
                       disabled={loading || isFormEmpty}

@@ -1,4 +1,4 @@
-import type { FormError, ProductForm } from "@/types/data-type";
+import type { FormError, ProductForm } from "@/types/product";
 
 function parseRequiredNumber(
   value: string,

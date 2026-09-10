@@ -5,7 +5,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import type { EmptyPageProps } from "@/types/data-type";
+import type { EmptyPageProps } from "@/types/props";
 
 export default function EmptyProductPage({
   icon: Icon,

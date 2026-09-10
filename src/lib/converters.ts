@@ -1,4 +1,4 @@
-import { statuses } from "@/types/data-type";
+import { statuses } from "@/lib/product-options";
 
 const statusLabels = new Map<string, string>(
   statuses.map((item) => [item.value, item.label]),

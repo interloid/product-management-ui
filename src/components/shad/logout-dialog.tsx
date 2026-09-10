@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
-import type { LogoutDialogProps } from "@/types/data-type";
+import type { LogoutDialogProps } from "@/types/props";
 
 export function LogoutDialog({ trigger }: LogoutDialogProps) {
   const { logout } = useAuth();

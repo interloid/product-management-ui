@@ -6,8 +6,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { ProductCategory, ProductFiltersProps } from "@/types/data-type";
-import { categories, statusFilters } from "@/types/data-type";
+import type { ProductCategoryFilter } from "@/types/product";
+import type { ProductFiltersProps } from "@/types/props";
+import { categories, statusFilters } from "@/lib/product-options";
 import { ResetForwardIcon } from "@/components/icons/reset-forward";
 import {
   Tooltip,
@@ -30,6 +31,8 @@ export function ProductFilters({
   priceRange,
   sort,
   searchQuery,
+  page = 1,
+  pageSize = 10,
   onCategoryChange,
   onStatusChange,
   onPriceChange,
@@ -40,13 +43,17 @@ export function ProductFilters({
     status === "All" &&
     priceRange === "all" &&
     sort.field === null &&
-    (!searchQuery || !searchQuery.trim());
+    (!searchQuery || !searchQuery.trim()) &&
+    page === 1 &&
+    pageSize === 10;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       <Select
         value={category}
-        onValueChange={(value) => onCategoryChange(value as ProductCategory)}
+        onValueChange={(value) =>
+          onCategoryChange(value as ProductCategoryFilter)
+        }
       >
         <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
           <span className="text-xs">Category:</span>

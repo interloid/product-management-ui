@@ -1,7 +1,7 @@
 import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ImagePreviewDialog } from "./image-preview-dialog";
-import type { ProductImagePreviewProps } from "@/types/data-type";
+import type { ProductImagePreviewProps } from "@/types/props";
 import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 

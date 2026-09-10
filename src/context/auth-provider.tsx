@@ -11,7 +11,7 @@ import type {
   AuthUser,
   LoginCredentials,
 } from "@/types/auth";
-import { ApiError } from "@/types/data-type";
+import { ApiError } from "@/lib/api-error";
 import { AuthContext } from "./auth-context";
 import { setSessionExpiredListener } from "@/lib/api";
 
@@ -74,7 +74,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           setUser(null);
           setStatus("unauthenticated");
-          setSessionError(null);
+          setSessionError(
+            "We couldn't reach the server. Please check your connection and try again.",
+          );
           return false;
         }
       }
@@ -160,7 +162,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const value = useMemo(
     () => ({
       status,
-      isAuthenticated: status === "authenticated",
       user,
       sessionError,
       login,

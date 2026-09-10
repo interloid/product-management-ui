@@ -1,8 +1,5 @@
-import {
-  ApiError,
-  type ApiRequestOptions,
-  type JsonBody,
-} from "@/types/data-type";
+import { ApiError } from "@/lib/api-error";
+import type { ApiRequestOptions, JsonBody } from "@/types/product";
 
 export const API_BASE_URL = (
   import.meta.env.VITE_API_BASE_URL ?? ""

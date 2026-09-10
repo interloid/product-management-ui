@@ -1,15 +1,40 @@
 import type { PasscodeErrorDetails } from "@/types/auth";
-import { ApiError } from "@/types/data-type";
+import { ApiError } from "@/lib/api-error";
+
+export type ErrorMessageOptions = {
+  context?: "login" | "default";
+  fallback?: string;
+};
 
 export function getUserFriendlyErrorMessage(
   error: unknown,
-  fallback = "Something went wrong. Please try again.",
+  fallbackOrOptions?: string | ErrorMessageOptions,
+  options?: ErrorMessageOptions,
 ): string {
+  const fallback =
+    typeof fallbackOrOptions === "string"
+      ? fallbackOrOptions
+      : (fallbackOrOptions?.fallback ?? "Something went wrong. Please try again.");
+
+  const opts =
+    typeof fallbackOrOptions === "object" && fallbackOrOptions !== null
+      ? fallbackOrOptions
+      : options;
+
+  const isLogin = opts?.context === "login";
+
   if (error instanceof TypeError && error.message === "Failed to fetch") {
     return "Unable to connect to the server. Please check your connection and try again.";
   }
 
   if (error instanceof ApiError) {
+    if (
+      error.code === "INVALID_CREDENTIALS" ||
+      (isLogin && error.status === 401)
+    ) {
+      return "Invalid username or password.";
+    }
+
     if (error.status === 401) {
       return "Your session has expired. Please sign in again.";
     }
@@ -19,7 +44,18 @@ export function getUserFriendlyErrorMessage(
     }
 
     if (error.status === 404) {
+      if (isLogin) {
+        return "Account not found.";
+      }
       return "The requested product could not be found.";
+    }
+
+    if (error.code === "NETWORK_ERROR") {
+      return "Unable to connect to the server. Please try again.";
+    }
+
+    if (error.code === "SERVER_ERROR") {
+      return "Something went wrong on the server. Please try again later.";
     }
 
     const message = error.message.trim();
@@ -47,11 +83,30 @@ export function getUserFriendlyErrorMessage(
       return "Something went wrong on the server. Please try again later.";
     }
 
-    if (message) {
+    if (message && !message.startsWith("Request failed with status")) {
       return message;
     }
 
     return fallback;
+  }
+
+  if (error instanceof Error) {
+    const message = error.message.trim();
+    const lowerMessage = message.toLowerCase();
+
+    if (lowerMessage.includes("network")) {
+      return "Unable to connect to the server. Please try again.";
+    }
+    if (lowerMessage.includes("timeout")) {
+      return "The request took too long. Please try again.";
+    }
+    if (message) {
+      return message;
+    }
+  }
+
+  if (typeof error === "string" && error.trim()) {
+    return error.trim();
   }
 
   return fallback;

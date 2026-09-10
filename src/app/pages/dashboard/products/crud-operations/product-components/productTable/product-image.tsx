@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
-import type { ProductImageProps } from "@/types/data-type";
+import type { ProductImageProps } from "@/types/props";
 
 export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
   const [prevSrc, setPrevSrc] = useState(src);
@@ -45,13 +45,13 @@ export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
           <Spinner className="size-4 text-muted-foreground" />
         </div>
-      )} 
+      )}
       <img
         src={src}
         alt={alt ?? "Product"}
         width={40}
         height={40}
-        loading="eager"
+        loading="lazy"
         decoding="async"
         className="size-full object-cover rounded-[inherit]"
         onLoad={(e) => {

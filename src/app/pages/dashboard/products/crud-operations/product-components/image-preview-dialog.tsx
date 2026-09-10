@@ -4,10 +4,8 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
-import type {
-  ImagePreviewDialogProps,
-  PreviewImageItem,
-} from "@/types/data-type";
+import type { ImagePreviewDialogProps } from "@/types/props";
+import type { PreviewImageItem } from "@/types/product";
 
 function PreviewImage({ src, alt }: { src: string; alt: string }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -142,7 +140,7 @@ function ImagePreviewSlider({
               key={`${img.src}-${idx}`}
               type="button"
               onClick={() => setCurrentIndex(idx)}
-              className={`relative size-12 shrink-0 overflow-hidden rounded border transition-all ${
+              className={`relative size-10 shrink-0 overflow-hidden rounded border transition-all ${
                 idx === currentIndex
                   ? "border-primary ring-2 ring-primary/30 scale-105"
                   : "border-border opacity-60 hover:opacity-100"

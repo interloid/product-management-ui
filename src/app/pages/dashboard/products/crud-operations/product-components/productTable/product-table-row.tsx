@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
-import type { ProductTableRowProps } from "@/types/data-type";
+import type { ProductTableRowProps } from "@/types/props";
 import { ProductImage } from "./product-image";
 import {
   formatDateTime,

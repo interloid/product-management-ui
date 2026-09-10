@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { UnsavedChangesDialogProps } from "@/types/data-type";
+import type { UnsavedChangesDialogProps } from "@/types/props";
 
 export function UnsavedChangesDialog({
   open,

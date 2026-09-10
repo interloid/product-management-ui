@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { PaginationProps } from "@/types/data-type";
+import type { PaginationProps } from "@/types/props";
 
 export function TablePagination({
   page,

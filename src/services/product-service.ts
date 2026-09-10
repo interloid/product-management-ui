@@ -4,18 +4,21 @@ import type {
   GetProductsParams,
   GetProductsResponse,
   ProductsResult,
-} from "@/types/data-type";
+} from "@/types/product";
 
-export async function getProducts({
-  page,
-  pageSize,
-  status = "All",
-  category = "All",
-  search = "",
-  priceRange = "all",
-  sort,
-  order,
-}: GetProductsParams): Promise<ProductsResult> {
+export async function getProducts(
+  {
+    page,
+    pageSize,
+    status = "All",
+    category = "All",
+    search = "",
+    priceRange = "all",
+    sort,
+    order,
+  }: GetProductsParams,
+  signal?: AbortSignal,
+): Promise<ProductsResult> {
   const params = new URLSearchParams();
   params.set("page", String(page));
   params.set("page_size", String(pageSize));
@@ -56,6 +59,7 @@ export async function getProducts({
   }
   const response = await apiRequest<GetProductsResponse>(
     `/api/v1/products?${params.toString()}`,
+    { signal },
   );
 
   return {

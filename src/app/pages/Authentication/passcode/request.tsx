@@ -14,7 +14,8 @@ import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import interloidLogo from "@/assets/interloid-logo.png";
+import { getUserFriendlyErrorMessage } from "@/lib/errors";
+import interloidLogo from "@/assets/favicon.ico";
 
 export default function PasscodeRequestPage() {
   const navigate = useNavigate();
@@ -37,7 +38,9 @@ export default function PasscodeRequestPage() {
 
       const response = await requestPasscode(trimmedEmail);
       if (!response.success) {
-        toast.error("Unable to send the passcode. Please try again.");
+        toast.error(
+          response.message || "Unable to send the passcode. Please try again.",
+        );
         return;
       }
       toast.success("Passcode sent successfully.");
@@ -46,8 +49,13 @@ export default function PasscodeRequestPage() {
           email: trimmedEmail,
         },
       });
-    } catch {
-      toast.error("Unable to send the passcode. Please try again.");
+    } catch (error) {
+      toast.error(
+        getUserFriendlyErrorMessage(
+          error,
+          "Unable to send the passcode. Please try again.",
+        ),
+      );
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +73,7 @@ export default function PasscodeRequestPage() {
         <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
       <div className="w-full max-w-lg">
-        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0,_0,_0,_0.04)_0px_1px_2px]">
+        <Card className="w-full p-8 border rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
           <Tabs defaultValue="Passcode" className="w-full">
             <TabsList className="h-10! w-full">
               <TabsTrigger

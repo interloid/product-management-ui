@@ -7,7 +7,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import type { NavMainProps } from "@/types/data-type";
+import type { NavMainProps } from "@/types/props";
 
 export function NavMain({ items }: NavMainProps) {
   return (

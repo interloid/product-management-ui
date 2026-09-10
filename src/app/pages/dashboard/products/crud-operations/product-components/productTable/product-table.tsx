@@ -8,7 +8,7 @@ import {
 import { ProductTableRow } from "./product-table-row";
 import { SortableHeader } from "@/components/shad/sortable-header";
 import EmptyProductTableRow from "@/components/shad/empty-products";
-import type { ProductTableProps } from "@/types/data-type";
+import type { ProductTableProps } from "@/types/props";
 
 export function ProductTable({
   products,

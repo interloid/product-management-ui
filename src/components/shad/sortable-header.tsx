@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
 import { TableHead } from "@/components/ui/table";
-import type { SortableTableHeadProps } from "@/types/data-type";
+import type { SortableTableHeadProps } from "@/types/props";
 
 export function SortableHeader({
   label,

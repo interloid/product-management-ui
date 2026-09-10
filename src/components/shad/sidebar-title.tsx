@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/interloid-logo.png";
+import logo from "@/assets/favicon.ico";
 import { CustomSidebarTrigger } from "./custom-sidebar-trigger";
 
 export default function SidebarTitle() {

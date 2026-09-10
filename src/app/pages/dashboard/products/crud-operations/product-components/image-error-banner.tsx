@@ -1,4 +1,4 @@
-import type { ImageErrorBannerProps } from "@/types/data-type";
+import type { ImageErrorBannerProps } from "@/types/props";
 
 export function ImageErrorBanner({
   error: { message, details },

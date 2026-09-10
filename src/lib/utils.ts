@@ -1,4 +1,4 @@
-import type { ProductImage } from "@/types/data-type";
+import type { ProductImage } from "@/types/product";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 

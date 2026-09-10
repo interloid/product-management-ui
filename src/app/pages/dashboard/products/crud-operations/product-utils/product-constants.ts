@@ -1,4 +1,4 @@
-import type { ImageError } from "@/types/data-type";
+import type { ImageError } from "@/types/product";
 
 export const MAX_IMAGES = 6;
 export const MAX_FILE_SIZE = 5 * 1024 * 1024;

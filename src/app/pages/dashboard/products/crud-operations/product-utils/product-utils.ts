@@ -1,4 +1,4 @@
-import type { ApiProduct, ApiProductImage } from "@/types/data-type";
+import type { ApiProduct, ApiProductImage } from "@/types/product";
 
 export function getPrimaryImage(
   product: ApiProduct,
@@ -17,18 +17,21 @@ export function waitForImageReady(
 
   function paint() {
     if (cancelled) return;
+
     rafId = requestAnimationFrame(() => {
       if (cancelled) return;
+
       rafId = requestAnimationFrame(() => {
         if (!cancelled) callback();
       });
     });
   }
 
-  img.decode().then(paint).catch(() => {});
+  img.decode().then(paint).catch(paint);
 
   return () => {
     cancelled = true;
+
     if (rafId !== undefined) {
       cancelAnimationFrame(rafId);
     }

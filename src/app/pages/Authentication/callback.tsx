@@ -14,58 +14,25 @@ import { useAuth } from "@/hooks/use-auth";
 
 export default function Callback() {
   const navigate = useNavigate();
-  const { checkAuth } = useAuth();
-  const [error, setError] = useState("");
+  const { status, checkAuth } = useAuth();
   const [isRetrying, setIsRetrying] = useState(false);
+  const error =
+    status === "unauthenticated" ? "We couldn't complete your sign-in." : "";
 
   useEffect(() => {
-    let isMounted = true;
-    const authenticate = async () => {
-      try {
-        const isAuthenticated = await checkAuth();
-        if (!isMounted) {
-          return;
-        }
-
-        if (isAuthenticated) {
-          navigate("/products", {
-            replace: true,
-          });
-          return;
-        }
-
-        setError("We couldn't complete your sign-in.");
-      } catch {
-        if (!isMounted) {
-          return;
-        }
-
-        setError("We couldn't complete your sign-in.");
-      }
-    };
-
-    void authenticate();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [checkAuth, navigate]);
+    if (status === "authenticated") {
+      navigate("/products", { replace: true });
+    }
+  }, [status, navigate]);
 
   const handleRetry = async () => {
     setIsRetrying(true);
-    setError("");
-
     try {
       const isAuthenticated = await checkAuth();
 
       if (isAuthenticated) {
         navigate("/products", { replace: true });
-        return;
       }
-
-      setError("We couldn't complete your sign-in.");
-    } catch {
-      setError("We couldn't complete your sign-in.");
     } finally {
       setIsRetrying(false);
     }

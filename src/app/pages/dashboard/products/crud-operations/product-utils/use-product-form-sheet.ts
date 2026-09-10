@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { validateProductFields } from "./product-validation";
-import type { FormError, ProductForm, UseProductFormSheetOptions } from "@/types/data-type";
+import type { FormError, ProductForm, UseProductFormSheetOptions } from "@/types/product";
 
 export function useProductFormSheet<T extends ProductForm>({
   initialForm,
@@ -11,7 +11,6 @@ export function useProductFormSheet<T extends ProductForm>({
   const [prevInitialForm, setPrevInitialForm] = useState(initialForm);
   const [form, setForm] = useState<T>(initialForm);
   const [errors, setErrors] = useState<FormError>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
   if (initialForm !== prevInitialForm) {
@@ -67,7 +66,6 @@ export function useProductFormSheet<T extends ProductForm>({
     onReset?.();
     setForm(initialForm);
     setErrors({});
-    setIsSubmitting(false);
     setShowDiscardDialog(false);
   }
 
@@ -100,12 +98,7 @@ export function useProductFormSheet<T extends ProductForm>({
     setForm,
     errors,
     setErrors,
-
-    isSubmitting,
-    setIsSubmitting,
-
     isDirty,
-
     showDiscardDialog,
     setShowDiscardDialog,
     updateField,

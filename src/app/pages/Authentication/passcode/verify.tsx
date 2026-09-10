@@ -18,7 +18,7 @@ import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import type { PasscodeLocationState } from "@/types/auth";
-import interloidLogo from "@/assets/interloid-logo.png";
+import interloidLogo from "@/assets/favicon.ico";
 import { cn } from "@/lib/utils";
 import { getPasscodeErrorMessage } from "@/lib/errors";
 
@@ -110,7 +110,7 @@ export default function PasscodeVerifyPage() {
         <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
       <div className="w-full max-w-lg">
-        <Card className="w-full p-8 rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
+        <Card className="w-full p-8 border rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
           <Tabs defaultValue="Passcode" className="w-full">
             <TabsList className="h-10! w-full">
               <TabsTrigger
