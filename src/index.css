@@ -167,7 +167,6 @@ div#root {
   animation: shimmer 1.5s linear infinite;
 }
 
-/* Sleek custom scrollbar for table container */
 [data-slot="table-container"]::-webkit-scrollbar {
   width: 6px;
   height: 6px;

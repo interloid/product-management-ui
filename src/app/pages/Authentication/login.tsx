@@ -55,8 +55,6 @@ export default function LoginPage({
       }
       return;
     }
-
-    // 2. Typing a letter is 100% deterministic based on casing vs Shift:
     if (event.type === "keydown" && event.key.length === 1) {
       const isUpper = event.key >= "A" && event.key <= "Z";
       const isLower = event.key >= "a" && event.key <= "z";
@@ -65,8 +63,6 @@ export default function LoginPage({
         return;
       }
     }
-
-    // 3. For any other key (backspace, delete, arrows, numbers, etc.):
     if (typeof event.getModifierState === "function") {
       setIsCapsLockOn(event.getModifierState("CapsLock"));
     }
