@@ -14,7 +14,8 @@ export function getUserFriendlyErrorMessage(
   const fallback =
     typeof fallbackOrOptions === "string"
       ? fallbackOrOptions
-      : (fallbackOrOptions?.fallback ?? "Something went wrong. Please try again.");
+      : (fallbackOrOptions?.fallback ??
+        "Something went wrong. Please try again.");
 
   const opts =
     typeof fallbackOrOptions === "object" && fallbackOrOptions !== null

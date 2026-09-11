@@ -16,11 +16,11 @@ export function SortableHeader({
       <button
         type="button"
         onClick={() => onSort(field)}
-        className="flex w-full items-center justify-center gap-1 text-xs font-medium hover:text-foreground"
+        className="flex w-full items-center justify-start gap-1 text-xs font-bold hover:text-foreground select-none"
       >
-        <span>{label}</span>
+        <span className="whitespace-nowrap text-sm">{label}</span>
 
-        <span className="flex flex-col -space-y-1">
+        <span className="flex flex-col -space-y-1 shrink-0">
           <ArrowUp
             className={`size-3 ${
               isActive && sort.order === "asc"

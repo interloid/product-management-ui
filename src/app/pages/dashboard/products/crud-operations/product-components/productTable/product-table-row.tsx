@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -67,7 +67,7 @@ export const ProductTableRow = memo(function ProductTableRow({
   }
   return (
     <TableRow
-      className="relative cursor-pointer hover:bg-primary-hover"
+      className="relative w-full cursor-pointer hover:bg-primary-hover"
       onClick={onView}
     >
       <TableCell>
@@ -78,37 +78,35 @@ export const ProductTableRow = memo(function ProductTableRow({
           </span>
         </div>
       </TableCell>
-      <TableCell>
+      <TableCell className="overflow-hidden">
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
             onView();
           }}
-          className="max-w-40 truncate text-center text-sm font-semibold hover:underline sm:max-w-none"
+          title={product.name}
+          className="block w-full truncate text-left text-sm font-semibold hover:underline"
         >
           {product.name}
         </button>
       </TableCell>
-      <TableCell className="hidden text-sm text-muted-foreground md:table-cell">
+      <TableCell className="hidden truncate text-sm text-muted-foreground md:table-cell">
         {product.category_name}
       </TableCell>
-      <TableCell className="text-center font-mono text-sm">
+      <TableCell className="font-mono text-sm whitespace-nowrap">
         {formatPrice(product.price)}
       </TableCell>
-      <TableCell className="text-center text-sm">{product.stock}</TableCell>
-      <TableCell>
+      <TableCell className="text-sm pl-3 whitespace-nowrap">{product.stock}</TableCell>
+      <TableCell className="whitespace-nowrap">
         <Badge variant="outline" className={getStatusClassName(product.status)}>
           {getStatusLabel(product.status)}
         </Badge>
       </TableCell>
-      <TableCell className="hidden text-center text-xs text-muted-foreground md:table-cell">
+      <TableCell className="hidden text-xs text-muted-foreground md:table-cell whitespace-nowrap">
         {formatDateTime(product.updated_at)}
       </TableCell>
-      <TableCell
-        className="relative z-20"
-        onClick={(event) => event.stopPropagation()}
-      >
+      <TableCell onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-center gap-1">
           <Button
             variant="outline"
@@ -119,7 +117,7 @@ export const ProductTableRow = memo(function ProductTableRow({
               onView();
             }}
           >
-            View
+            <Eye className="size-4" />
           </Button>
           <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
             <DropdownMenuTrigger asChild>

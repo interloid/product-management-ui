@@ -158,7 +158,7 @@ export default function LoginPage({
                           </>
                         ) : (
                           <>
-                            <GithubLogo/>
+                            <GithubLogo />
                             GitHub
                           </>
                         )}
@@ -262,7 +262,7 @@ export default function LoginPage({
                     />
                     <label
                       htmlFor="remember-me"
-                      className="text-xs font-normal text-muted-text leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      className="text-xs font-normal text-muted-text leading-none peer-disabled:cursor-not-allowed cursor-pointer peer-disabled:opacity-70"
                     >
                       Keep me signed in on this device
                     </label>

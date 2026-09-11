@@ -5,13 +5,13 @@ import type { ProductImagePreviewProps } from "@/types/props";
 import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 
-   export function ProductImagePreview({                                                                                                                                                                                             
-      src,                                                                                                                                                                                                                            
-      alt,                                                                                                                                                                                                                            
-      className = "",                                                                                                                                                                                                                 
-      images,                                                                                                                                                                                                                         
-      initialIndex = 0,
-    }: ProductImagePreviewProps) {     
+export function ProductImagePreview({
+  src,
+  alt,
+  className = "",
+  images,
+  initialIndex = 0,
+}: ProductImagePreviewProps) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -72,12 +72,12 @@ import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operation
           </span>
         )}
       </button>
-          <ImagePreviewDialog                                                                                                                                                                                                         
-            images={images ?? [{ src, alt }]}                                                                                                                                                                                         
-            initialIndex={initialIndex}                                                                                                                                                                                               
-            open={open}                                                                                                                                                                                                               
-            onOpenChange={setOpen}                                                                                                                                                                                                    
-          />    
+      <ImagePreviewDialog
+        images={images ?? [{ src, alt }]}
+        initialIndex={initialIndex}
+        open={open}
+        onOpenChange={setOpen}
+      />
     </>
   );
 }

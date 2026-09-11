@@ -30,71 +30,75 @@ export function ProductTable({
 }: ProductTableProps) {
   return (
     <div className="overflow-hidden rounded-lg border">
-      <div className="overflow-x-auto">
-        <Table className="text-center">
-          <TableHeader>
-            <TableRow className="bg-muted/50 text-xs text-muted-text hover:bg-muted/50">
-              <TableHead className="text-center">SKU</TableHead>
-              <TableHead className="text-center">PRODUCT NAME</TableHead>
-              <TableHead className="hidden text-center md:table-cell">
-                CATEGORY
-              </TableHead>
-              <SortableHeader
-                label="PRICE"
-                field="price"
-                sort={sort}
-                onSort={onSort}
+      <Table
+        className="table-fixed min-w-212.5"
+        containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
+      >
+        <TableHeader className="sticky top-0 z-20 h-15! bg-muted/95 backdrop-blur-xs shadow-xs [&_th]:bg-muted">
+          <TableRow className="bg-muted text-sm text-muted-text hover:bg-muted">
+            <TableHead className="w-[22%] min-w-30">SKU</TableHead>
+            <TableHead className="w-[25%] min-w-42.5">PRODUCT NAME</TableHead>
+            <TableHead className="hidden md:table-cell w-[12%] min-w-25">
+              CATEGORY
+            </TableHead>
+            <SortableHeader
+              label="PRICE"
+              field="price"
+              sort={sort}
+              onSort={onSort}
+              className="w-[11%] min-w-21.25"
+            />
+            <SortableHeader
+              label="STOCK"
+              field="stock"
+              sort={sort}
+              onSort={onSort}
+              className="w-[8%] min-w-16.25"
+            />
+            <SortableHeader
+              label="STATUS"
+              field="status"
+              sort={sort}
+              onSort={onSort}
+              className="w-[11%] min-w-23.75"
+            />
+            <SortableHeader
+              label="UPDATED"
+              field="updated"
+              sort={sort}
+              onSort={onSort}
+              className="hidden md:table-cell w-[10%] min-w-26.25"
+            />
+            <TableHead className="w-[8%] min-w-20 ">ACTIONS</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ProductTableRow
+                key={product.id}
+                product={product}
+                isArchiving={archiveId === product.id}
+                isDeleting={deleteId === product.id}
+                isActionPending={isActionPending}
+                onView={() => onView(product)}
+                onEdit={() => onEdit(product)}
+                onArchive={() => onArchive(product.id)}
+                onCancelArchive={onCancelArchive}
+                onConfirmArchive={() => onConfirmArchive(product.id)}
+                onDelete={() => onDelete(product.id)}
+                onCancelDelete={onCancelDelete}
+                onConfirmDelete={() => onConfirmDelete(product.id)}
               />
-              <SortableHeader
-                label="STOCK"
-                field="stock"
-                sort={sort}
-                onSort={onSort}
-              />
-              <SortableHeader
-                label="STATUS"
-                field="status"
-                sort={sort}
-                onSort={onSort}
-              />
-              <SortableHeader
-                label="UPDATED"
-                field="updated"
-                sort={sort}
-                onSort={onSort}
-                className="hidden md:table-cell"
-              />
-              <TableHead className="text-center">ACTIONS</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {products.length > 0 ? (
-              products.map((product) => (
-                <ProductTableRow
-                  key={product.id}
-                  product={product}
-                  isArchiving={archiveId === product.id}
-                  isDeleting={deleteId === product.id}
-                  isActionPending={isActionPending}
-                  onView={() => onView(product)}
-                  onEdit={() => onEdit(product)}
-                  onArchive={() => onArchive(product.id)}
-                  onCancelArchive={onCancelArchive}
-                  onConfirmArchive={() => onConfirmArchive(product.id)}
-                  onDelete={() => onDelete(product.id)}
-                  onCancelDelete={onCancelDelete}
-                  onConfirmDelete={() => onConfirmDelete(product.id)}
-                />
-              ))
-            ) : (
-              <EmptyProductTableRow
-                showNoResults={showNoResults}
-                onResetFilters={onResetFilters}
-              />
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <EmptyProductTableRow
+              showNoResults={showNoResults}
+              onResetFilters={onResetFilters}
+            />
+          )}
+        </TableBody>
+      </Table>
     </div>
   );
 }

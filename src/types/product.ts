@@ -1,10 +1,5 @@
 export type ProductCategory =
-  | "Lighting"
-  | "Apparel"
-  | "Home"
-  | "Electronics"
-  | "Outdoor"
-  | "Stationery";
+  "Lighting" | "Apparel" | "Home" | "Electronics" | "Outdoor" | "Stationery";
 
 export type ProductCategoryFilter = "All" | ProductCategory;
 
@@ -13,13 +8,7 @@ export type ProductStatus = "active" | "draft" | "out_of_stock" | "archived";
 export type ProductStatusFilter = "All" | ProductStatus;
 
 export type ProductSortField =
-  | "sku"
-  | "name"
-  | "category"
-  | "price"
-  | "stock"
-  | "status"
-  | "updated";
+  "sku" | "name" | "category" | "price" | "stock" | "status" | "updated";
 
 export type SortOrder = "asc" | "desc";
 

@@ -27,7 +27,7 @@ export function NavUser({ user }: { user: AuthUser | null }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="hover:bg-primary-hover! data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 shrink-0 rounded-lg">
                 <AvatarImage src={user?.avatar} alt={user?.name ?? ""} />
@@ -45,7 +45,6 @@ export function NavUser({ user }: { user: AuthUser | null }) {
               )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-
           <DropdownMenuContent
             side="top"
             align={state === "collapsed" ? "center" : "start"}
@@ -54,6 +53,7 @@ export function NavUser({ user }: { user: AuthUser | null }) {
             <LogoutDialog
               trigger={
                 <DropdownMenuItem
+                  variant="destructive"
                   onSelect={(event) => event.preventDefault()}
                   className="cursor-pointer text-cancel-button-background hover:text-destructive!"
                 >

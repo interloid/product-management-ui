@@ -1,9 +1,10 @@
 import { ApiError } from "@/lib/api-error";
 import type { ApiRequestOptions, JsonBody } from "@/types/product";
 
-export const API_BASE_URL = (
-  import.meta.env.VITE_API_BASE_URL ?? ""
-).replace(/\/+$/, "");
+export const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(
+  /\/+$/,
+  "",
+);
 
 const API_TIMEOUT = 15_000;
 

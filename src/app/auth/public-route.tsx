@@ -10,7 +10,7 @@ export function PublicRoute() {
     return (
       <div className="flex min-h-full items-center justify-center gap-2">
         <Spinner />
-        <span>checking for Authentication...</span>
+        <span>checking for session...</span>
       </div>
     );
   }

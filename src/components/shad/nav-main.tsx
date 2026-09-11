@@ -6,10 +6,13 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import type { NavMainProps } from "@/types/props";
 
 export function NavMain({ items }: NavMainProps) {
+  const { setOpenMobile } = useSidebar();
+
   return (
     <SidebarGroup className="w-full group-data-[collapsible=icon]:px-0 p-0">
       <SidebarGroupContent className="w-full pt-3 p-2">
@@ -23,6 +26,7 @@ export function NavMain({ items }: NavMainProps) {
               >
                 <NavLink
                   to={item.url}
+                  onClick={() => setOpenMobile(false)}
                   className="block w-full group-data-[collapsible=icon]:w-10"
                 >
                   {({ isActive }) => (

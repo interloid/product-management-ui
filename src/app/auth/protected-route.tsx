@@ -12,7 +12,7 @@ export function ProtectedRoute() {
       <div className="h-full">
         <div className="text-muted-foreground flex min-h-full items-center justify-center gap-2">
           <Spinner />
-          checking for Authentication...
+          checking for session...
         </div>
       </div>
     );

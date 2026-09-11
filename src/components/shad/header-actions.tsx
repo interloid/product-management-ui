@@ -18,7 +18,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
     <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 md:w-3/4 lg:w-3/4 xl:w-3/4 2xl:w-1/2">
       {isProductsPage && (
         <>
-          <ProductSearchInput className="hidden w-1/2 sm:flex md:w-full" />
+          <ProductSearchInput className="hidden w-1/2 sm:flex md:w-full lg:w-1/2" />
 
           <Button
             type="button"

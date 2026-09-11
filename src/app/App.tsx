@@ -13,9 +13,7 @@ const LoginForm = lazy(() => import("@/app/pages/Authentication/login"));
 const Callback = lazy(() => import("@/app/pages/Authentication/callback"));
 const DashboardLayout = lazy(() => import("@/layouts/dashboard"));
 const Orders = lazy(() => import("@/app/pages/dashboard/orders"));
-const Products = lazy(
-  () => import("@/app/pages/dashboard/products/products"),
-);
+const Products = lazy(() => import("@/app/pages/dashboard/products/products"));
 const Categories = lazy(() => import("@/app/pages/dashboard/categories"));
 const Customers = lazy(() => import("@/app/pages/dashboard/customers"));
 const Reports = lazy(() => import("@/app/pages/dashboard/reports"));
