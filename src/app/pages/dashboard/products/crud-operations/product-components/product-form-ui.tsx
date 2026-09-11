@@ -312,7 +312,9 @@ export function ProductImageHeader({ count }: { count: number }) {
 
 export function ProductImageGrid({ children }: { children: React.ReactNode }) {
   return (
-    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">{children}</div>
+    <div className="flex gap-2 overflow-x-auto p-1 [scrollbar-thin] [&>*]:size-20 sm:[&>*]:size-24 [&>*]:shrink-0">
+      {children}
+    </div>
   );
 }
 
