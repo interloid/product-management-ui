@@ -14,40 +14,40 @@ export function ProductTableSkeleton() {
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table
-        className="table-fixed min-w-212.5"
+        className="table-fixed min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
         <TableHeader className="sticky top-0 z-20 bg-muted/95 backdrop-blur-xs shadow-xs [&_th]:bg-muted">
           <TableRow className="bg-muted text-xs">
-            <TableHead className="w-[15%] min-w-30">
+            <TableHead className="w-[17%] min-w-38.75">
               <Skeleton className="h-4 w-16" />
             </TableHead>
 
-            <TableHead className="w-[25%] min-w-42.5">
+            <TableHead className="w-[20%] min-w-40">
               <Skeleton className="h-4 w-28" />
             </TableHead>
 
-            <TableHead className="hidden md:table-cell w-[12%] min-w-25">
+            <TableHead className="hidden md:table-cell w-[10%] min-w-25">
               <Skeleton className="h-4 w-20" />
             </TableHead>
 
-            <TableHead className="w-[11%] min-w-21.25">
+            <TableHead className="w-[9%] min-w-21.25">
               <Skeleton className="h-4 w-14" />
             </TableHead>
 
-            <TableHead className="w-[8%] min-w-16.25">
+            <TableHead className="w-[7%] min-w-17.5">
               <Skeleton className="h-4 w-12" />
             </TableHead>
 
-            <TableHead className="w-[11%] min-w-23.75">
+            <TableHead className="w-[11%] min-w-28.75">
               <Skeleton className="h-4 w-16" />
             </TableHead>
 
-            <TableHead className="hidden md:table-cell w-[10%] min-w-26.25">
+            <TableHead className="hidden md:table-cell w-[16%] min-w-40">
               <Skeleton className="h-4 w-20" />
             </TableHead>
 
-            <TableHead className="w-[8%] min-w-20 text-center!">
+            <TableHead className="w-[10%] min-w-23.75 text-center!">
               <Skeleton className="mx-auto h-4 w-14" />
             </TableHead>
           </TableRow>

@@ -58,11 +58,11 @@ function ProductField({
   error,
   children,
 }: {
-  id: string;
-  label: string;
-  required?: boolean;
-  error?: string;
-  children: React.ReactNode;
+  readonly id: string;
+  readonly label: string;
+  readonly required?: boolean;
+  readonly error?: string;
+  readonly children: React.ReactNode;
 }) {
   return (
     <div className="grid gap-1.5">
@@ -82,10 +82,10 @@ export function ProductFormFields({
   errors,
   onFieldChange,
 }: {
-  idPrefix: string;
-  form: ProductForm;
-  errors: FormError;
-  onFieldChange: FormFieldChange;
+  readonly idPrefix: string;
+  readonly form: ProductForm;
+  readonly errors: FormError;
+  readonly onFieldChange: FormFieldChange;
 }) {
   return (
     <>
@@ -234,9 +234,9 @@ export function ProductDescriptionField({
   value,
   onChange,
 }: {
-  id: string;
-  value: string;
-  onChange: (value: string) => void;
+  readonly id: string;
+  readonly value: string;
+  readonly onChange: (value: string) => void;
 }) {
   return (
     <div className="grid gap-1.5">
@@ -259,10 +259,10 @@ export function ProductFormActions({
   onCancel,
   disabled = false,
 }: {
-  isSubmitting: boolean;
-  submitLabel: string;
-  onCancel: () => void;
-  disabled?: boolean;
+  readonly isSubmitting: boolean;
+  readonly submitLabel: string;
+  readonly onCancel: () => void;
+  readonly disabled?: boolean;
 }) {
   return (
     <div className="flex h-16 shrink-0 items-center gap-2 border-t px-5">
@@ -294,11 +294,11 @@ export function ProductFormActions({
   );
 }
 
-export function ProductImageHeader({ count }: { count: number }) {
+export function ProductImageHeader({ count }: { readonly count: number }) {
   return (
     <div className="flex items-center justify-between">
       <Label className="gap-1 text-[12px] font-medium">
-        Images
+        Images{" "}
         <span className="text-[11px] font-bold">
           (Only JPG, PNG, and WEBP image formats are allowed.)
         </span>
@@ -310,9 +310,9 @@ export function ProductImageHeader({ count }: { count: number }) {
   );
 }
 
-export function ProductImageGrid({ children }: { children: React.ReactNode }) {
+export function ProductImageGrid({ children }: { readonly children: React.ReactNode }) {
   return (
-    <div className="flex gap-2 overflow-x-auto p-1 [scrollbar-thin] [&>*]:size-20 sm:[&>*]:size-24 [&>*]:shrink-0">
+    <div className="flex gap-2 overflow-x-auto p-1 [scrollbar-thin] *:size-20 sm:*:size-24 *:shrink-0">
       {children}
     </div>
   );
@@ -328,14 +328,14 @@ export function ProductImageTile({
   onRemove,
   onSetPrimary,
 }: {
-  src: string;
-  alt: string;
-  isPrimary: boolean;
-  mode: "new" | "existing" | "view";
-  images?: PreviewImageItem[];
-  initialIndex?: number;
-  onRemove?: () => void;
-  onSetPrimary?: () => void;
+  readonly src: string;
+  readonly alt: string;
+  readonly isPrimary: boolean;
+  readonly mode: "new" | "existing" | "view";
+  readonly images?: PreviewImageItem[];
+  readonly initialIndex?: number;
+  readonly onRemove?: () => void;
+  readonly onSetPrimary?: () => void;
 }) {
   return (
     <div
@@ -381,17 +381,17 @@ export function ProductImageDropzone({
   dragHandlers,
   onFileChange,
 }: {
-  idPrefix: string;
-  remainingSlots: number;
-  isDragging: boolean;
-  isSubmitting: boolean;
-  dragHandlers: {
-    onDragEnter: (event: React.DragEvent<HTMLLabelElement>) => void;
-    onDragOver: (event: React.DragEvent<HTMLLabelElement>) => void;
-    onDragLeave: (event: React.DragEvent<HTMLLabelElement>) => void;
-    onDrop: (event: React.DragEvent<HTMLLabelElement>) => void;
+  readonly idPrefix: string;
+  readonly remainingSlots: number;
+  readonly isDragging: boolean;
+  readonly isSubmitting: boolean;
+  readonly dragHandlers: {
+    readonly onDragEnter: (event: React.DragEvent<HTMLLabelElement>) => void;
+    readonly onDragOver: (event: React.DragEvent<HTMLLabelElement>) => void;
+    readonly onDragLeave: (event: React.DragEvent<HTMLLabelElement>) => void;
+    readonly onDrop: (event: React.DragEvent<HTMLLabelElement>) => void;
   };
-  onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  readonly onFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
   return (
     <>
@@ -431,7 +431,7 @@ export function ProductImageDropzone({
   );
 }
 
-export function ProductDetailGrid({ product }: { product: ApiProduct }) {
+export function ProductDetailGrid({ product }: { readonly product: ApiProduct }) {
   return (
     <div className="grid grid-cols-[120px_1fr] gap-x-4 gap-y-3 text-[13px]">
       <DetailLabel>SKU</DetailLabel>

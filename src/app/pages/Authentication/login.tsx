@@ -54,7 +54,7 @@ export default function LoginPage({
     return null;
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     const validationError = validateForm();

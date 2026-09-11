@@ -3,7 +3,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 import type { ProductImageProps } from "@/types/props";
 
-export function ProductImage({ src, alt, className = "" }: ProductImageProps) {
+export function ProductImage({ src, alt, className = "" }: Readonly<ProductImageProps>) {
   const [prevSrc, setPrevSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(Boolean(src));
   const [hasError, setHasError] = useState(false);

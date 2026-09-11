@@ -27,18 +27,18 @@ export function ProductTable({
   onCancelDelete,
   onConfirmDelete,
   onResetFilters,
-}: ProductTableProps) {
+}: Readonly<ProductTableProps>) {
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table
-        className="table-fixed min-w-212.5"
+        className="table-fixed min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
-        <TableHeader className="sticky top-0 z-20 h-15! bg-muted/95 backdrop-blur-xs shadow-xs [&_th]:bg-muted">
+        <TableHeader className="sticky top-0 z-20 h-15! bg-muted/95 backdrop-blur-xs shadow-md [&_th]:bg-muted">
           <TableRow className="bg-muted text-sm text-muted-text hover:bg-muted">
-            <TableHead className="w-[22%] min-w-30">SKU</TableHead>
-            <TableHead className="w-[25%] min-w-42.5">PRODUCT NAME</TableHead>
-            <TableHead className="hidden md:table-cell w-[12%] min-w-25">
+            <TableHead className="w-[17%] min-w-38.75 pl-5!">SKU</TableHead>
+            <TableHead className="w-[20%] min-w-40">PRODUCT NAME</TableHead>
+            <TableHead className="hidden md:table-cell w-[10%] min-w-25">
               CATEGORY
             </TableHead>
             <SortableHeader
@@ -46,30 +46,32 @@ export function ProductTable({
               field="price"
               sort={sort}
               onSort={onSort}
-              className="w-[11%] min-w-21.25"
+              className="w-[9%] min-w-21.25"
             />
             <SortableHeader
               label="STOCK"
               field="stock"
               sort={sort}
               onSort={onSort}
-              className="w-[8%] min-w-16.25"
+              className="w-[7%] min-w-17.5"
             />
             <SortableHeader
               label="STATUS"
               field="status"
               sort={sort}
               onSort={onSort}
-              className="w-[11%] min-w-23.75"
+              className="w-[11%] min-w-28.75"
             />
             <SortableHeader
               label="UPDATED"
               field="updated"
               sort={sort}
               onSort={onSort}
-              className="hidden md:table-cell w-[10%] min-w-26.25"
+              className="hidden md:table-cell w-[15%] min-w-40"
             />
-            <TableHead className="w-[8%] min-w-20 ">ACTIONS</TableHead>
+            <TableHead className="w-[10%] min-w-23.75 text-center xl:text-left">
+              ACTIONS
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

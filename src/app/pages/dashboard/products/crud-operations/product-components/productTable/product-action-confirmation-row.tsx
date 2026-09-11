@@ -13,7 +13,7 @@ export function ProductActionConfirmationRow({
   isPending = false,
   onCancel,
   onConfirm,
-}: ProductActionConfirmationRowProps) {
+}: Readonly<ProductActionConfirmationRowProps>) {
   return (
     <TableRow className="bg-red-50 hover:bg-red-50">
       <TableCell

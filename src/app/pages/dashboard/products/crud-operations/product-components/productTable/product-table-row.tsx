@@ -70,10 +70,13 @@ export const ProductTableRow = memo(function ProductTableRow({
       className="relative w-full cursor-pointer hover:bg-primary-hover"
       onClick={onView}
     >
-      <TableCell>
-        <div className="flex items-center gap-3">
+      <TableCell className="overflow-hidden">
+        <div className="flex items-center gap-2.5 min-w-0">
           <ProductImage src={primaryImage?.url} alt={product.name} />
-          <span className="hidden font-mono text-xs text-muted-foreground min-[420px]:inline">
+          <span
+            title={product.sku}
+            className="hidden font-mono text-xs text-muted-foreground min-[420px]:inline truncate min-w-0"
+          >
             {product.sku}
           </span>
         </div>
@@ -103,15 +106,15 @@ export const ProductTableRow = memo(function ProductTableRow({
           {getStatusLabel(product.status)}
         </Badge>
       </TableCell>
-      <TableCell className="hidden text-xs text-muted-foreground md:table-cell whitespace-nowrap">
+      <TableCell className="hidden text-xs text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis">
         {formatDateTime(product.updated_at)}
       </TableCell>
       <TableCell onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-center gap-1">
+        <div className="flex items-center justify-center xl:justify-between gap-1.5">
           <Button
             variant="outline"
-            size="sm"
-            className="h-8 hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20"
+            size="icon"
+            className="size-8 hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20"
             onClick={(event) => {
               event.stopPropagation();
               onView();

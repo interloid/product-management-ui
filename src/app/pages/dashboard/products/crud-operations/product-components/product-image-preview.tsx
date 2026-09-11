@@ -11,7 +11,7 @@ export function ProductImagePreview({
   className = "",
   images,
   initialIndex = 0,
-}: ProductImagePreviewProps) {
+}: Readonly<ProductImagePreviewProps>) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
