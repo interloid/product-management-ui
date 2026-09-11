@@ -35,7 +35,7 @@ export function ProductTable({
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
         <TableHeader className="sticky top-0 z-20 h-15! bg-muted/95 backdrop-blur-xs shadow-md [&_th]:bg-muted">
-          <TableRow className="bg-muted text-sm text-muted-text hover:bg-muted">
+          <TableRow className="bg-muted text-xs text-muted-text hover:bg-muted">
             <TableHead className="w-[17%] min-w-38.75 pl-5!">SKU</TableHead>
             <TableHead className="w-[20%] min-w-40">PRODUCT NAME</TableHead>
             <TableHead className="hidden md:table-cell w-[10%] min-w-25">

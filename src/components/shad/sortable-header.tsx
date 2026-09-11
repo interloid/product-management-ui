@@ -18,7 +18,7 @@ export function SortableHeader({
         onClick={() => onSort(field)}
         className="flex w-full items-center justify-start gap-1 text-xs font-bold hover:text-foreground select-none"
       >
-        <span className="whitespace-nowrap text-sm">{label}</span>
+        <span className="whitespace-nowrap text-xs">{label}</span>
 
         <span className="flex flex-col -space-y-1 shrink-0">
           <ArrowUp
