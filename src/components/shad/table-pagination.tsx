@@ -62,8 +62,22 @@ export function TablePagination({
       </div>
 
       <div className="flex items-center justify-between gap-4 sm:justify-end">
-        <span className="text-sm text-muted-foreground">
-          {startItem}-{endItem} of {productCount}
+        <span className="text-sm text-muted-foreground whitespace-nowrap">
+          {productCount === 0 ? (
+            "0 products"
+          ) : (
+            <>
+              Page <span className="font-medium text-foreground">{page}</span> of{" "}
+              <span className="font-medium text-foreground">{lastPage}</span>{" "}
+              <span className="hidden min-[480px]:inline text-muted-foreground">
+                ({startItem}–{endItem} of {productCount}{" "}
+                {productCount === 1 ? "product" : "products"})
+              </span>
+              <span className="min-[480px]:hidden text-muted-foreground">
+                ({startItem}–{endItem})
+              </span>
+            </>
+          )}
         </span>
 
         <div className="flex items-center gap-1">

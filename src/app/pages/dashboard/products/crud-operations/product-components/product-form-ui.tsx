@@ -169,16 +169,24 @@ export function ProductFormFields({
           required
           error={errors.price}
         >
-          <Input
-            id={`${idPrefix}-price`}
-            type="number"
-            min={0}
-            step="0.01"
-            value={form.price}
-            onChange={(event) => onFieldChange("price", event.target.value)}
-            aria-invalid={Boolean(errors.price)}
-            className={fieldInputClass({ error: errors.price, mono: true })}
-          />
+          <div className="relative">
+            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+              $
+            </span>
+            <Input
+              id={`${idPrefix}-price`}
+              type="number"
+              min={0}
+              step="0.01"
+              value={form.price}
+              onChange={(event) => onFieldChange("price", event.target.value)}
+              aria-invalid={Boolean(errors.price)}
+              className={cn(
+                fieldInputClass({ error: errors.price, mono: true }),
+                "pl-7",
+              )}
+            />
+          </div>
         </ProductField>
 
         <ProductField
@@ -233,21 +241,31 @@ export function ProductDescriptionField({
   id,
   value,
   onChange,
+  maxLength = 1000,
 }: {
   readonly id: string;
   readonly value: string;
   readonly onChange: (value: string) => void;
+  readonly maxLength?: number;
 }) {
+  const currentLength = value?.length ?? 0;
+
   return (
     <div className="grid gap-1.5">
-      <Label htmlFor={id} className="text-[12px] font-medium">
-        Description
-      </Label>
+      <div className="flex items-center justify-between">
+        <Label htmlFor={id} className="text-[12px] font-medium">
+          Description
+        </Label>
+        <span className="text-[11px] text-muted-foreground font-mono">
+          {currentLength}/{maxLength}
+        </span>
+      </div>
       <Textarea
         id={id}
         value={value}
+        maxLength={maxLength}
         onChange={(event) => onChange(event.target.value)}
-        className="h-20 resize-none leading-relaxed focus-visible:border-primary focus-visible:ring-primary/20"
+        className="h-25 resize-none leading-relaxed focus-visible:border-primary focus-visible:ring-primary/20"
       />
     </div>
   );
@@ -402,19 +420,24 @@ export function ProductImageDropzone({
         onDragLeave={dragHandlers.onDragLeave}
         onDrop={dragHandlers.onDrop}
         className={cn(
-          "flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border border-dashed transition-colors",
+          "group flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border border-dashed transition-all duration-200",
           isDragging
-            ? "border-primary bg-primary/10 text-primary"
-            : "border-border text-muted-foreground hover:bg-muted hover:text-foreground",
+            ? "border-primary bg-primary/10 text-primary scale-[1.02]"
+            : "border-border text-muted-foreground hover:border-primary hover:bg-primary-hover/50 hover:text-foreground",
           isSubmitting && "pointer-events-none opacity-60",
         )}
       >
-        <span className="text-2xl font-light leading-none">+</span>
-        <span className="mt-1 px-2 text-center text-[10px] font-medium">
+        <span className="text-xl font-light leading-none transition-transform duration-150 group-hover:scale-110">
+          +
+        </span>
+        <span className="mt-0.5 px-1 text-center text-[10px] font-medium">
           {isDragging ? "Drop images here" : "Add images"}
         </span>
-        <span className="mt-0.5 px-2 text-center text-[9px] text-muted-foreground">
+        <span className="px-1 text-center text-[9px] text-muted-foreground">
           {remainingSlots} {remainingSlots === 1 ? "slot" : "slots"} left
+        </span>
+        <span className="font-mono text-[8px] text-muted-foreground/70">
+          Max 5MB
         </span>
       </label>
 

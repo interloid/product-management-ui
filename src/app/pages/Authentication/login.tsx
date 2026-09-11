@@ -24,7 +24,7 @@ import { useAuth } from "@/hooks/use-auth";
 import GoogleLogo from "@/components/icons/google-logo";
 import GithubLogo from "@/components/icons/github-logo";
 import MicrosoftLogo from "@/components/icons/microsoft-logo";
-import { Eye, EyeOff } from "lucide-react";
+import { AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { type OAuthProvider } from "@/types/auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import interloidLogo from "@/assets/favicon.ico";
@@ -37,12 +37,40 @@ export default function LoginPage({
   const location = useLocation();
   const { login, sessionError } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isCapsLockOn, setIsCapsLockOn] = useState<boolean>(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [providerLoading, setProviderLoading] = useState<string | null>(null);
+
+  const handlePasswordKeyEvent = (
+    event: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === "CapsLock") {
+      if (event.repeat) return;
+      if (event.type === "keydown") {
+        setIsCapsLockOn(!event.getModifierState("CapsLock"));
+      }
+      return;
+    }
+
+    // 2. Typing a letter is 100% deterministic based on casing vs Shift:
+    if (event.type === "keydown" && event.key.length === 1) {
+      const isUpper = event.key >= "A" && event.key <= "Z";
+      const isLower = event.key >= "a" && event.key <= "z";
+      if (isUpper || isLower) {
+        setIsCapsLockOn(isUpper !== event.shiftKey);
+        return;
+      }
+    }
+
+    // 3. For any other key (backspace, delete, arrows, numbers, etc.):
+    if (typeof event.getModifierState === "function") {
+      setIsCapsLockOn(event.getModifierState("CapsLock"));
+    }
+  };
 
   const validateForm = () => {
     if (!email.trim()) {
@@ -99,8 +127,8 @@ export default function LoginPage({
 
   const isFormEmpty = !email.trim() && !password;
   return (
-    <div className="flex min-h-full w-full items-center justify-center p-6 md:p-10">
-      <div className="absolute left-8 top-8 flex items-center gap-2">
+    <div className="flex min-h-full w-full flex-col items-center justify-center p-4 sm:p-6 md:p-10">
+      <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:left-8 sm:top-8 sm:mb-0 sm:justify-start">
         <img
           src={interloidLogo}
           alt="Interloid"
@@ -226,6 +254,9 @@ export default function LoginPage({
                           setPassword(event.target.value);
                           if (error) setError("");
                         }}
+                        onKeyDown={handlePasswordKeyEvent}
+                        onKeyUp={handlePasswordKeyEvent}
+                        onBlur={() => setIsCapsLockOn(false)}
                         autoComplete="current-password"
                         required
                         className={`h-10 px-3.5! focus-visible:border-primary focus-visible:ring-primary/20 text-[13px]! ${
@@ -251,6 +282,16 @@ export default function LoginPage({
                         </span>
                       </button>
                     </div>
+                    {isCapsLockOn && (
+                      <div
+                        role="status"
+                        aria-live="polite"
+                        className="mt-1.5 inline-flex w-fit items-center gap-1.5 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400"
+                      >
+                        <AlertTriangle className="size-3.5 shrink-0" />
+                        <span>Caps Lock is on</span>
+                      </div>
+                    )}
                   </Field>
                   <div className="flex items-center gap-2">
                     <Checkbox

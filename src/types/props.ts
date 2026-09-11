@@ -177,4 +177,6 @@ export type ProductFormProps = {
   onCreated?: () => void;
   onUpdated?: (product: ApiProduct) => void;
   onEdit?: (product: ApiProduct) => void;
+  onArchive?: (product: ApiProduct) => void;
+  onDelete?: (product: ApiProduct) => void;
 };

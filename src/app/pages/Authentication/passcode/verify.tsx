@@ -99,8 +99,8 @@ export default function PasscodeVerifyPage() {
   };
 
   return (
-    <div className="flex min-h-full w-full items-center justify-center p-6 md:p-10">
-      <div className="absolute left-8 top-8 flex items-center gap-2">
+    <div className="flex min-h-full w-full flex-col items-center justify-center p-4 sm:p-6 md:p-10">
+      <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:left-8 sm:top-8 sm:mb-0 sm:justify-start">
         <img
           src={interloidLogo}
           alt="Interloid"

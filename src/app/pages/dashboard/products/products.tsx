@@ -480,6 +480,14 @@ export default function ProductsPage() {
           loading={productForm.loading}
           onOpenChange={handleProductFormOpenChange}
           onEdit={openEdit}
+          onArchive={(product) => {
+            handleProductFormOpenChange(false);
+            setArchiveId(product.id);
+          }}
+          onDelete={(product) => {
+            handleProductFormOpenChange(false);
+            setDeleteId(product.id);
+          }}
           onCreated={handleProductCreated}
           onUpdated={handleProductUpdated}
         />

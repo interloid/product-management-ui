@@ -1,8 +1,15 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { RotateCcw } from "lucide-react";
+import { Archive, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
@@ -315,20 +322,68 @@ export function ProductForm(props: ProductFormProps) {
         </div>
 
         <SheetFooter className="border-t px-5 py-3">
-          <div className="flex w-full flex-row-reverse justify-start gap-2">
-            <Button
-              type="button"
-              variant="default"
-              onClick={() => props.onEdit?.(product)}
-            >
-              Edit
-            </Button>
+          <div className="flex w-full items-center justify-between">
+            {(props.onArchive || props.onDelete) && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 text-xs hover:border-primary hover:bg-primary-hover hover:text-hover-text! data-[state=open]:border-primary data-[state=open]:bg-primary-hover data-[state=open]:text-hover-text!"
+                  >
+                    <MoreHorizontal className="size-4" />
+                    <span>Actions</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-44">
+                  {product.status !== "archived" && props.onArchive && (
+                    <DropdownMenuItem
+                      onClick={() => props.onArchive?.(product)}
+                      className="cursor-pointer gap-2 text-xs focus:bg-primary-hover! focus:text-hover-text! focus:**:text-hover-text!"
+                    >
+                      <Archive className="size-3.5" />
+                      <span>Archive product</span>
+                    </DropdownMenuItem>
+                  )}
+                  {props.onDelete && (
+                    <>
+                      {product.status !== "archived" && props.onArchive && (
+                        <DropdownMenuSeparator />
+                      )}
+                      <DropdownMenuItem
+                        variant="destructive"
+                        onClick={() => props.onDelete?.(product)}
+                        className="cursor-pointer gap-2 text-xs focus:bg-destructive/10! focus:text-destructive! focus:**:text-destructive!"
+                      >
+                        <Trash2 className="size-3.5" />
+                        <span>Delete product</span>
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
 
-            <SheetClose asChild>
-              <Button type="button" variant="outline">
-                Close
+            <div className="ml-auto flex items-center gap-2">
+              <SheetClose asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                >
+                  Close
+                </Button>
+              </SheetClose>
+
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => props.onEdit?.(product)}
+              >
+                Edit
               </Button>
-            </SheetClose>
+            </div>
           </div>
         </SheetFooter>
       </>
