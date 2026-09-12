@@ -142,6 +142,7 @@ export type EmptyPageProps = {
     className?: string;
   }>;
   title?: string;
+  image?: string;
   description?: string;
   children?: ReactNode;
 };

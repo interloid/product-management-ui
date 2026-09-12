@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { Archive, MoreHorizontal, RotateCcw, Trash2 } from "lucide-react";
+import { Archive, EllipsisVertical, RotateCcw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -332,8 +332,8 @@ export function ProductForm(props: ProductFormProps) {
                     size="sm"
                     className="gap-1.5 text-xs hover:border-primary hover:bg-primary-hover hover:text-hover-text! data-[state=open]:border-primary data-[state=open]:bg-primary-hover data-[state=open]:text-hover-text!"
                   >
-                    <MoreHorizontal className="size-4" />
                     <span>Actions</span>
+                    <EllipsisVertical className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-44">

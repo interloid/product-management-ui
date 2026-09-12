@@ -110,11 +110,11 @@ export const ProductTableRow = memo(function ProductTableRow({
         {formatDateTime(product.updated_at)}
       </TableCell>
       <TableCell onClick={(event) => event.stopPropagation()}>
-        <div className="flex items-center justify-center xl:justify-between flex-row-reverse gap-1.5">
+        <div className="flex items-center justify-end flex-row-reverse gap-1.5">
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20"
+            className="size-8 border-none"
             onClick={(event) => {
               event.stopPropagation();
               onView();
