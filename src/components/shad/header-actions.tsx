@@ -43,7 +43,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
         trigger={
           <Button
             variant="destructive"
-            className="cursor-pointer bg-cancel-button-background! px-2.5 text-sm text-white hover:bg-destructive! sm:px-3"
+            className="cursor-pointer bg-cancel-button-background/90! px-2.5 text-sm text-white hover:bg-destructive! sm:px-3"
           >
             Log out
           </Button>

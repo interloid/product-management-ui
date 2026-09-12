@@ -255,10 +255,10 @@ export default function LoginPage({
                         onBlur={() => setIsCapsLockOn(false)}
                         autoComplete="current-password"
                         required
-                        className={`h-10 px-3.5! focus-visible:border-primary focus-visible:ring-primary/20 text-[13px]! ${
+                        className={`h-10 pl-3.5! pr-10! focus-visible:border-primary focus-visible:ring-primary/20 text-[13px]! ${
                           showPassword
                             ? "tracking-normal"
-                            : "tracking-[10px]  font-bold"
+                            : "tracking-[9px] font-bold"
                         }`}
                       />
                       <button

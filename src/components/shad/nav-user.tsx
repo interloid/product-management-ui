@@ -21,8 +21,8 @@ export function NavUser({ user }: { user: AuthUser | null }) {
   const initials = getInitials(user?.name ?? "");
 
   return (
-    <SidebarMenu className="group-data-[collapsible=icon]:ml-2 ml-0">
-      <SidebarMenuItem>
+    <SidebarMenu className="ml-0">
+      <SidebarMenuItem className="flex justify-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
