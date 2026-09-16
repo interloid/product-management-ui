@@ -34,52 +34,54 @@ export function ProductActionConfirmDialog({
     >
       <DialogContent
         showCloseButton={!isPending}
-        className="max-w-lg p-6"
+        className="w-full sm:max-w-lg p-6"
       >
-<DialogHeader>
+        <DialogHeader>
           <div className="flex items-center gap-4">
             {image && (
               <ProductImage
                 src={image}
                 alt={alt}
                 size="size-16"
-                className="rounded-lg"
+                className="rounded-lg shadow-xs"
               />
             )}
 
-            <div className="min-w-0">
-              <DialogTitle className="truncate text-base font-semibold">
+            <div className="min-w-0 flex-1">
+              <DialogTitle className="text-base sm:text-[17px] font-semibold leading-snug text-foreground">
                 {title}
               </DialogTitle>
 
-              <DialogDescription className="mt-1 text-sm">
+              <DialogDescription className="mt-1 text-sm text-muted-foreground leading-normal">
                 {description}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <DialogFooter className="gap-2">
+        <DialogFooter className="mt-1 gap-2 sm:space-x-0">
           <Button
+            type="button"
             variant="outline"
             onClick={onCancel}
             disabled={isPending}
-            className="hover:border-primary hover:bg-primary-hover"
+            className="h-9 px-3.5 text-sm hover:border-primary hover:bg-primary-hover cursor-pointer"
           >
             Cancel
           </Button>
           <Button
+            type="button"
             className={
               confirmTone === "archive"
-                ? "bg-blue-600 text-white hover:bg-blue-700"
-                : "bg-red-600 text-white hover:bg-red-700"
+                ? "h-9 px-4 text-sm bg-blue-600 text-white hover:bg-blue-700 cursor-pointer"
+                : "h-9 px-4 text-sm bg-red-600 text-white hover:bg-red-700 cursor-pointer"
             }
             onClick={onConfirm}
             disabled={isPending}
           >
             {isPending ? (
               <>
-                <Spinner className="size-3.5" />
+                <Spinner className="mr-1.5 size-4" />
                 Working…
               </>
             ) : (

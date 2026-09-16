@@ -10,6 +10,7 @@ const API_TIMEOUT = 15_000;
 
 const CREDENTIAL_AUTH_ENDPOINTS = new Set([
   "/api/v1/auth/login",
+  "/api/v1/auth/logout",
   "/api/v1/auth/session",
   "/api/v1/auth/passcode/request",
   "/api/v1/auth/passcode/verify",

@@ -248,6 +248,13 @@ export default function ProductsPage() {
         setArchiveId(null);
         setDeleteId(null);
         setConfirmTarget(null);
+        setProductForm({
+          mode: "view",
+          product: null,
+          productId: null,
+          open: false,
+          loading: false,
+        });
         toast.success("Product deleted successfully");
         refresh();
       } catch (error) {
@@ -276,6 +283,13 @@ export default function ProductsPage() {
         setArchiveId(null);
         setDeleteId(null);
         setConfirmTarget(null);
+        setProductForm({
+          mode: "view",
+          product: null,
+          productId: null,
+          open: false,
+          loading: false,
+        });
         toast.success("Product archived successfully");
         refresh();
       } catch (error) {
@@ -512,11 +526,9 @@ export default function ProductsPage() {
           onOpenChange={handleProductFormOpenChange}
           onEdit={openEdit}
           onArchive={(product) => {
-            handleProductFormOpenChange(false);
             openConfirm(product, "archive");
           }}
           onDelete={(product) => {
-            handleProductFormOpenChange(false);
             openConfirm(product, "delete");
           }}
           onCreated={handleProductCreated}

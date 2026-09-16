@@ -58,101 +58,101 @@ export function ProductFilters({
         </div>
       )}
       <div className="flex flex-wrap min-w-0 items-center gap-1!">
-      <Select
-        value={category}
-        onValueChange={(value) =>
-          onCategoryChange(value as ProductCategoryFilter)
-        }
-      >
-        <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
-          <span className="text-xs">Category:</span>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent
-          position="popper"
-          side="bottom"
-          align="start"
-          sideOffset={4}
-          avoidCollisions={false}
-          className="w-fit"
+        <Select
+          value={category}
+          onValueChange={(value) =>
+            onCategoryChange(value as ProductCategoryFilter)
+          }
         >
-          {categories.map((item) => (
-            <SelectItem
-              key={item.value}
-              value={item.value}
-              className="hover:bg-primary-hover!"
-            >
-              {item.value}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <div className="flex flex-wrap items-center gap-1">
-        {statusFilters.map((item) => {
-          const active = status === item.value;
-          return (
-            <Button
-              key={item.value}
-              type="button"
-              variant={active ? "default" : "outline"}
-              size="sm"
-              className={
-                active
-                  ? "h-9 rounded-full px-3 sm:px-4"
-                  : "h-9 rounded-full px-3 font-normal hover:bg-primary-hover! hover:border-primary sm:px-4"
-              }
-              onClick={() => onStatusChange(item.value)}
-            >
-              {item.label}
-            </Button>
-          );
-        })}
-      </div>
-      <div className="mx-1 hidden h-6 w-px bg-border md:block" />
-      <Select value={priceRange} onValueChange={onPriceChange}>
-        <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
-          <span className="text-xs">Price</span>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent
-          position="popper"
-          side="bottom"
-          align="start"
-          sideOffset={4}
-          avoidCollisions={false}
-          className="w-fit"
-        >
-          {priceRanges.map((range) => (
-            <SelectItem
-              key={range.value}
-              value={range.value}
-              className="hover:bg-primary-hover!"
-            >
-              {range.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <div className="flex items-center gap-1 text-xs text-muted-text">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-9 px-3 hover:border-primary hover:bg-primary-hover!"
-              onClick={onReset}
-              aria-label="Reset filters"
-              disabled={isDefaultFilters}
-            >
-              <ListRestart className="size-5"/>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right">
-            <p>Clear Filters</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
+          <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
+            <span className="text-xs">Category:</span>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            side="bottom"
+            align="start"
+            sideOffset={4}
+            avoidCollisions={false}
+            className="w-fit"
+          >
+            {categories.map((item) => (
+              <SelectItem
+                key={item.value}
+                value={item.value}
+                className="hover:bg-primary-hover!"
+              >
+                {item.value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="flex flex-wrap items-center gap-1">
+          {statusFilters.map((item) => {
+            const active = status === item.value;
+            return (
+              <Button
+                key={item.value}
+                type="button"
+                variant={active ? "default" : "outline"}
+                size="sm"
+                className={
+                  active
+                    ? "h-9 rounded-full px-3 sm:px-4"
+                    : "h-9 rounded-full px-3 font-normal hover:bg-primary-hover! hover:border-primary sm:px-4"
+                }
+                onClick={() => onStatusChange(item.value)}
+              >
+                {item.label}
+              </Button>
+            );
+          })}
+        </div>
+        <div className="mx-1 hidden h-6 w-px bg-border md:block" />
+        <Select value={priceRange} onValueChange={onPriceChange}>
+          <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
+            <span className="text-xs">Price</span>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            side="bottom"
+            align="start"
+            sideOffset={4}
+            avoidCollisions={false}
+            className="w-fit"
+          >
+            {priceRanges.map((range) => (
+              <SelectItem
+                key={range.value}
+                value={range.value}
+                className="hover:bg-primary-hover!"
+              >
+                {range.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <div className="flex items-center gap-1 text-xs text-muted-text">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 px-3 hover:border-primary hover:bg-primary-hover!"
+                onClick={onReset}
+                aria-label="Reset filters"
+                disabled={isDefaultFilters}
+              >
+                <ListRestart className="size-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>Clear Filters</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
     </div>
   );

@@ -67,8 +67,8 @@ export function TablePagination({
             "0 products"
           ) : (
             <>
-              Page <span className="font-medium text-foreground">{page}</span> of{" "}
-              <span className="font-medium text-foreground">{lastPage}</span>{" "}
+              Page <span className="font-medium text-foreground">{page}</span>{" "}
+              of <span className="font-medium text-foreground">{lastPage}</span>{" "}
               <span className="hidden min-[480px]:inline text-muted-foreground">
                 ({startItem}–{endItem} of {productCount}{" "}
                 {productCount === 1 ? "product" : "products"})

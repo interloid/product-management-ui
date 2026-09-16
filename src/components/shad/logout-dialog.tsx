@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import {
@@ -17,26 +18,63 @@ import { useAuth } from "@/hooks/use-auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import type { LogoutDialogProps } from "@/types/props";
 
-export function LogoutDialog({ trigger }: LogoutDialogProps) {
+export function LogoutDialog({
+  trigger,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen,
+}: LogoutDialogProps) {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const [internalOpen, setInternalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const isControlled = controlledOpen !== undefined;
+  const isOpen = isControlled ? controlledOpen : internalOpen;
+
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (isLoggingOut) {
+      return;
+    }
+    if (isControlled) {
+      setControlledOpen?.(nextOpen);
+    } else {
+      setInternalOpen(nextOpen);
+    }
+  };
 
   async function handleLogout() {
     try {
       setIsLoggingOut(true);
       await logout();
+      handleOpenChange(false);
+      // Do not rely on the route guard alone: logout must leave the dashboard
+      // on builds where ProtectedRoute is not mounted.
+      navigate("/login", { replace: true });
     } catch (error) {
-      toast.error(getUserFriendlyErrorMessage(error, "Failed to log out"));
+      toast.error(getUserFriendlyErrorMessage(error, "Failed to log out"), {
+        description: "You are still signed in. Please try again.",
+      });
     } finally {
       setIsLoggingOut(false);
     }
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
-
-      <DialogContent>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      <DialogContent
+        showCloseButton={!isLoggingOut}
+        onPointerDownOutside={(e) => {
+          if (isLoggingOut) {
+            e.preventDefault();
+          }
+        }}
+        onEscapeKeyDown={(e) => {
+          if (isLoggingOut) {
+            e.preventDefault();
+          }
+        }}
+      >
         <DialogHeader>
           <DialogTitle className="text-[16px]">
             Are you sure you want to log out?
@@ -51,6 +89,7 @@ export function LogoutDialog({ trigger }: LogoutDialogProps) {
         <DialogFooter>
           <DialogClose asChild>
             <Button
+              type="button"
               variant="outline"
               disabled={isLoggingOut}
               className="cursor-pointer"
@@ -58,8 +97,8 @@ export function LogoutDialog({ trigger }: LogoutDialogProps) {
               Cancel
             </Button>
           </DialogClose>
-
           <Button
+            type="button"
             variant="destructive"
             disabled={isLoggingOut}
             onClick={handleLogout}

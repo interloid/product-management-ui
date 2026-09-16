@@ -158,7 +158,9 @@ export interface UnsavedChangesDialogProps {
 }
 
 export interface LogoutDialogProps {
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export type ProductActionConfirmDialogProps = {

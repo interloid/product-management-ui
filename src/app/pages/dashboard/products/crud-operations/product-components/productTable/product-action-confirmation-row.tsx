@@ -36,13 +36,9 @@ export function ProductActionConfirmationRow({
             <ProductImage src={image} alt={alt} />
 
             <div className="min-w-0">
-              <p className="truncate text-start text-sm font-medium">
-                {title}
-              </p>
+              <p className="truncate text-start text-sm font-medium">{title}</p>
 
-              <p className="text-sm text-muted-foreground">
-                {description}
-              </p>
+              <p className="text-sm text-muted-foreground">{description}</p>
             </div>
           </div>
 

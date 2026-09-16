@@ -74,9 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           setUser(null);
           setStatus("unauthenticated");
-          setSessionError(
-            "We couldn't reach the server. Please check your connection and try again.",
-          );
+          setSessionError("Please check your connection and try again.");
           return false;
         }
       }
@@ -128,7 +126,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
         clearSession();
         return;
       }
-
       throw error;
     }
 

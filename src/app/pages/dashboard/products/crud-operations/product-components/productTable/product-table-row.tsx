@@ -101,7 +101,9 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell className="font-mono text-sm whitespace-nowrap">
         {formatPrice(product.price)}
       </TableCell>
-      <TableCell className="text-sm pl-3 whitespace-nowrap">{product.stock}</TableCell>
+      <TableCell className="text-sm pl-3 whitespace-nowrap">
+        {product.stock}
+      </TableCell>
       <TableCell className="whitespace-nowrap">
         <Badge variant="outline" className={getStatusClassName(product.status)}>
           {getStatusLabel(product.status)}

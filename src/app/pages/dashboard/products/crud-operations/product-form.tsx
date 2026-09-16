@@ -197,7 +197,9 @@ export function ProductForm(props: ProductFormProps) {
   }, [product?.images, activeViewImage]);
 
   const [draggedTileIndex, setDraggedTileIndex] = useState<number | null>(null);
-  const [dragOverTileIndex, setDragOverTileIndex] = useState<number | null>(null);
+  const [dragOverTileIndex, setDragOverTileIndex] = useState<number | null>(
+    null,
+  );
 
   const handleTileDragStart = (
     e: React.DragEvent<HTMLDivElement>,
@@ -294,7 +296,9 @@ export function ProductForm(props: ProductFormProps) {
       const orderedImages = primaryNewImage
         ? [
             primaryNewImage,
-            ...orderedNewImages.filter((image) => image.id !== primaryNewImage.id),
+            ...orderedNewImages.filter(
+              (image) => image.id !== primaryNewImage.id,
+            ),
           ]
         : orderedNewImages;
 

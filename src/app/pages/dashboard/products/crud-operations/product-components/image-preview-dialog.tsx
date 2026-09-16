@@ -103,12 +103,15 @@ function ImagePreviewSlider({
     setCurrentIndex((prev) => prev + 1);
   }, [hasMultiple]);
 
-  const handleSelectImage = useCallback((idx: number) => {
-    if (isAnimatingRef.current) return;
-    isAnimatingRef.current = true;
-    setEnableTransition(true);
-    setCurrentIndex(idx + 1);
-  }, []);
+  const handleSelectImage = useCallback(
+    (idx: number) => {
+      if (isAnimatingRef.current || idx === realIndex) return;
+      isAnimatingRef.current = true;
+      setEnableTransition(true);
+      setCurrentIndex(idx + 1);
+    },
+    [realIndex],
+  );
 
   const handleTransitionEnd = () => {
     isAnimatingRef.current = false;
