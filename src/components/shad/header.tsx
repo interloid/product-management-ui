@@ -2,7 +2,6 @@ import { useLocation } from "react-router-dom";
 import { HeaderActions } from "./header-actions";
 import type { HeaderProps } from "@/types/props";
 import { MobileMenuButton } from "./menu-button";
-import { ProductSearchInput } from "./product-search-input";
 
 const TITLES: Record<string, string> = {
   "/products": "Products",
@@ -33,11 +32,6 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
         </div>
         <HeaderActions user={user} />
       </div>
-      {pathname === "/products" && (
-        <div className="flex items-center border-t px-3 py-2 sm:hidden sm:border-t-0 sm:px-4 sm:py-0">
-          <ProductSearchInput className="w-full" />
-        </div>
-      )}
     </header>
   );
 }

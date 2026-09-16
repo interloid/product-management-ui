@@ -11,8 +11,13 @@ export function ImageOverlayControls({
   ) : onSetPrimary ? (
     <button
       type="button"
-      onClick={onSetPrimary}
-      className="absolute bottom-1.5 left-1.5 z-20 rounded-full border bg-background/90 px-2 py-0.5 text-[10px] font-medium text-muted-foreground shadow-sm backdrop-blur transition-colors hover:bg-background hover:text-foreground"
+      onMouseDown={(e) => e.stopPropagation()}
+      onTouchStart={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+        onSetPrimary?.();
+      }}
+      className="absolute bottom-1.5 left-1.5 z-20 rounded-full border bg-background/90 px-1.5 lg:px-2 py-0.5 text-[9px] lg:text-[10px] font-medium text-muted-foreground shadow-sm backdrop-blur transition-colors hover:bg-background hover:text-foreground"
     >
       Set primary
     </button>

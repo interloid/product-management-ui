@@ -9,12 +9,12 @@ import {
 import type { ProductCategoryFilter } from "@/types/product";
 import type { ProductFiltersProps } from "@/types/props";
 import { categories, statusFilters } from "@/lib/product-options";
-import { ResetForwardIcon } from "@/components/icons/reset-forward";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { ListRestart } from "lucide-react";
 
 const priceRanges = [
   { value: "all", label: "All" },
@@ -37,6 +37,8 @@ export function ProductFilters({
   onStatusChange,
   onPriceChange,
   onReset,
+  searchSlot,
+  actionsSlot,
 }: ProductFiltersProps) {
   const isDefaultFilters =
     category === "All" &&
@@ -48,7 +50,14 @@ export function ProductFilters({
     pageSize === 10;
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex w-full flex-wrap items-center gap-2 min-[1440px]:flex-row-reverse min-[1440px]:justify-between">
+      {(searchSlot || actionsSlot) && (
+        <div className="flex min-w-0 items-center gap-2">
+          {searchSlot}
+          {actionsSlot}
+        </div>
+      )}
+      <div className="flex flex-wrap min-w-0 items-center gap-1!">
       <Select
         value={category}
         onValueChange={(value) =>
@@ -136,13 +145,14 @@ export function ProductFilters({
               aria-label="Reset filters"
               disabled={isDefaultFilters}
             >
-              <ResetForwardIcon />
+              <ListRestart className="size-5"/>
             </Button>
           </TooltipTrigger>
           <TooltipContent side="right">
-            <p>Reset filters</p>
+            <p>Clear Filters</p>
           </TooltipContent>
         </Tooltip>
+      </div>
       </div>
     </div>
   );

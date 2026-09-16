@@ -10,15 +10,26 @@ export function ProductActionConfirmationRow({
   title,
   description,
   confirmLabel,
+  confirmTone = "delete",
   isPending = false,
   onCancel,
   onConfirm,
 }: Readonly<ProductActionConfirmationRowProps>) {
   return (
-    <TableRow className="bg-red-50 hover:bg-red-50">
+    <TableRow
+      className={
+        confirmTone === "archive"
+          ? "bg-blue-50 hover:bg-blue-50"
+          : "bg-red-50 hover:bg-red-50"
+      }
+    >
       <TableCell
         colSpan={8}
-        className="border-l-2 border-l-cancel-button-background py-4"
+        className={
+          confirmTone === "archive"
+            ? "border-l-2 border-l-blue-600 py-4"
+            : "border-l-2 border-l-cancel-button-background py-4"
+        }
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3">
@@ -48,7 +59,11 @@ export function ProductActionConfirmationRow({
 
             <Button
               size="sm"
-              className="bg-red-600 text-white hover:bg-red-700"
+              className={
+                confirmTone === "archive"
+                  ? "bg-primary text-white hover:bg-primary/90"
+                  : "bg-red-600 text-white hover:bg-red-700"
+              }
               onClick={onConfirm}
               disabled={isPending}
             >

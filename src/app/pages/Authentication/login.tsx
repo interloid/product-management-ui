@@ -42,8 +42,10 @@ export default function LoginPage({
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState("");
+  const [serverError, setServerError] = useState("");
   const [providerLoading, setProviderLoading] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handlePasswordKeyEvent = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -68,25 +70,86 @@ export default function LoginPage({
     }
   };
 
-  const validateForm = () => {
-    if (!email.trim()) {
-      return "Username or email is required.";
+  const validateEmail = (value: string): string | null => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return "Email is required.";
     }
-    if (!password) {
-      return "Password is required.";
+    if (trimmed.length > 254) {
+      return "Email must be 254 characters or fewer.";
+    }
+    if (/\s/.test(trimmed)) {
+      return "Email address cannot contain spaces.";
+    }
+    if (!trimmed.includes("@")) {
+      return "Email address must contain an @ symbol.";
+    }
+    const emailRegex =
+      /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
+
+    if (!emailRegex.test(trimmed)) {
+      return "Please enter a valid email address";
     }
     return null;
   };
 
+  const validatePassword = (value: string): string | null => {
+    if (!value) {
+      return "Password is required.";
+    }
+    if (value.length < 8) {
+      return "Password must be at least 8 characters.";
+    }
+    if (value.length > 128) {
+      return "Password must be 128 characters or fewer.";
+    }
+    return null;
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value;
+    setEmail(val);
+    if (serverError) setServerError("");
+    if (emailError) {
+      const err = validateEmail(val);
+      setEmailError(err ?? "");
+    }
+  };
+
+  const handleEmailBlur = () => {
+    const err = validateEmail(email);
+    setEmailError(err ?? "");
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value;
+    setPassword(val);
+    if (serverError) setServerError("");
+    if (passwordError) {
+      const err = validatePassword(val);
+      setPasswordError(err ?? "");
+    }
+  };
+
+  const handlePasswordBlur = () => {
+    const err = validatePassword(password);
+    setPasswordError(err ?? "");
+  };
+
   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError("");
-    const validationError = validateForm();
+    setServerError("");
 
-    if (validationError) {
-      setError(validationError);
+    const eErr = validateEmail(email);
+    const pErr = validatePassword(password);
+
+    setEmailError(eErr ?? "");
+    setPasswordError(pErr ?? "");
+
+    if (eErr || pErr) {
       return;
     }
+
     setLoading(true);
     try {
       await login({
@@ -103,7 +166,7 @@ export default function LoginPage({
         replace: true,
       });
     } catch (error) {
-      setError(
+      setServerError(
         getUserFriendlyErrorMessage(
           error,
           "Unable to log in. Please try again.",
@@ -116,15 +179,18 @@ export default function LoginPage({
   };
 
   const handleProviderLogin = (provider: OAuthProvider) => {
-    setError("");
+    setServerError("");
     setProviderLoading(provider);
     loginWithProvider(provider);
   };
 
-  const isFormEmpty = !email.trim() && !password;
   return (
     <div className="flex min-h-full w-full flex-col items-center justify-center p-4 sm:p-6 md:p-10">
-      <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:left-8 sm:top-8 sm:mb-0 sm:justify-start">
+      <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:right-8 sm:bottom-8 sm:mb-0 sm:justify-start">
+        <span className="text-sm font-light text-muted-foreground">
+          Powered by{" "}
+        </span>
+        <span className="text-sm font-semibold">Interloid</span>
         <img
           src={interloidLogo}
           alt="Interloid"
@@ -132,8 +198,6 @@ export default function LoginPage({
           height={20}
           className="h-5 w-5 object-contain"
         />
-        <span className="text-sm font-semibold">Interloid</span>
-        <span className="text-sm text-muted-foreground">Workforce Suite</span>
       </div>
       <div className="w-full border rounded-[10px] max-w-lg">
         <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -146,7 +210,7 @@ export default function LoginPage({
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} noValidate>
-                <FieldGroup className="gap-4">
+                <FieldGroup className="gap-2!">
                   <Field className="flex-col h-fit py-1 gap-2">
                     <Button
                       type="button"
@@ -211,28 +275,44 @@ export default function LoginPage({
                   <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-[11px] py-1">
                     <span className="px-1"> OR </span>
                   </FieldSeparator>
-                  <Field className="gap-2">
+                  <Field className="gap-1.5">
                     <FieldLabel
                       htmlFor="email"
                       className="text-[13px] font-medium"
                     >
-                      Username or email
+                      Email
                     </FieldLabel>
+
                     <Input
                       id="email"
                       type="email"
-                      placeholder=""
+                      maxLength={254}
                       value={email}
                       autoComplete="username"
-                      onChange={(event) => {
-                        setEmail(event.target.value);
-                        if (error) setError("");
-                      }}
+                      onChange={handleEmailChange}
+                      onBlur={handleEmailBlur}
                       required
-                      className="h-10 px-3! text-[13px]! focus-visible:border-primary focus-visible:ring-primary/20"
+                      aria-invalid={Boolean(emailError)}
+                      aria-describedby={emailError ? "email-error" : undefined}
+                      className={cn(
+                        "h-10 px-3! text-[13px]! focus-visible:ring-primary/20",
+                        emailError
+                          ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                          : "focus-visible:border-primary",
+                      )}
                     />
+
+                    {emailError && (
+                      <p
+                        id="email-error"
+                        className="text-xs font-medium text-destructive mt-0.5"
+                        role="alert"
+                      >
+                        {emailError}
+                      </p>
+                    )}
                   </Field>
-                  <Field className="gap-1">
+                  <Field className="gap-1.5">
                     <div className="flex items-center">
                       <FieldLabel
                         htmlFor="password"
@@ -245,21 +325,27 @@ export default function LoginPage({
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
+                        maxLength={128}
                         value={password}
-                        onChange={(event) => {
-                          setPassword(event.target.value);
-                          if (error) setError("");
-                        }}
+                        onChange={handlePasswordChange}
                         onKeyDown={handlePasswordKeyEvent}
                         onKeyUp={handlePasswordKeyEvent}
-                        onBlur={() => setIsCapsLockOn(false)}
+                        onBlur={handlePasswordBlur}
                         autoComplete="current-password"
                         required
-                        className={`h-10 pl-3.5! pr-10! focus-visible:border-primary focus-visible:ring-primary/20 text-[13px]! ${
+                        aria-invalid={Boolean(passwordError)}
+                        aria-describedby={
+                          passwordError ? "password-error" : undefined
+                        }
+                        className={cn(
+                          "h-10 pl-3.5! pr-10! text-[13px]! focus-visible:ring-primary/20",
                           showPassword
                             ? "tracking-normal"
-                            : "tracking-[9px] font-bold"
-                        }`}
+                            : "tracking-[9px] font-bold",
+                          passwordError
+                            ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                            : "focus-visible:border-primary",
+                        )}
                       />
                       <button
                         type="button"
@@ -278,11 +364,20 @@ export default function LoginPage({
                         </span>
                       </button>
                     </div>
+                    {passwordError && (
+                      <p
+                        id="password-error"
+                        className="text-xs font-medium text-destructive mt-0.5"
+                        role="alert"
+                      >
+                        {passwordError}
+                      </p>
+                    )}
                     {isCapsLockOn && (
                       <div
                         role="status"
                         aria-live="polite"
-                        className="mt-1.5 inline-flex w-fit items-center gap-1.5 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400"
+                        className="mt-1 inline-flex w-fit items-center gap-1.5 rounded-md bg-amber-500/10 px-2 py-1 text-xs font-medium text-amber-600 dark:text-amber-400"
                       >
                         <AlertTriangle className="size-3.5 shrink-0" />
                         <span>Caps Lock is on</span>
@@ -305,14 +400,14 @@ export default function LoginPage({
                     </label>
                   </div>
                   <Field>
-                    {(error || sessionError) && (
+                    {(serverError || sessionError) && (
                       <p className="text-sm text-destructive font-medium">
-                        {error || sessionError}
+                        {serverError || sessionError}
                       </p>
                     )}
                     <Button
                       type="submit"
-                      disabled={loading || isFormEmpty}
+                      disabled={loading}
                       className="w-full h-10 text-sm font-semibold shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/35 transition-all disabled:opacity-60 disabled:shadow-none"
                     >
                       {loading ? (

@@ -48,6 +48,7 @@ export function ProductImagePreview({
           src={src}
           alt={alt}
           decoding="async"
+          draggable={false}
           onLoad={handleLoad}
           onError={handleError}
           className="h-full w-full rounded-[inherit] object-cover transition-transform duration-200 group-hover:scale-[1.02]"

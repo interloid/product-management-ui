@@ -25,8 +25,8 @@ export const ProductTableRow = memo(function ProductTableRow({
   isArchiving,
   isDeleting,
   isActionPending = false,
-  onEdit,
   onView,
+  onEdit,
   onArchive,
   onCancelArchive,
   onConfirmArchive,
@@ -45,6 +45,7 @@ export const ProductTableRow = memo(function ProductTableRow({
         title={`Archive "${product.name}"?`}
         description="It disappears from the active list."
         confirmLabel="Yes, archive"
+        confirmTone="archive"
         isPending={isActionPending}
         onCancel={onCancelArchive}
         onConfirm={onConfirmArchive}
@@ -114,11 +115,12 @@ export const ProductTableRow = memo(function ProductTableRow({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 border-none"
+            className="size-8 border-none! shadow-none!"
             onClick={(event) => {
               event.stopPropagation();
               onView();
             }}
+            title="View"
           >
             <Eye className="size-4" />
           </Button>

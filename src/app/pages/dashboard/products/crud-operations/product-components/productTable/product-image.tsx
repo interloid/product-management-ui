@@ -3,7 +3,12 @@ import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 import type { ProductImageProps } from "@/types/props";
 
-export function ProductImage({ src, alt, className = "" }: Readonly<ProductImageProps>) {
+export function ProductImage({
+  src,
+  alt,
+  className = "",
+  size = "size-10",
+}: Readonly<ProductImageProps>) {
   const [prevSrc, setPrevSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(Boolean(src));
   const [hasError, setHasError] = useState(false);
@@ -25,7 +30,7 @@ export function ProductImage({ src, alt, className = "" }: Readonly<ProductImage
   if (!src || hasError) {
     return (
       <div
-        className={`size-10 shrink-0 overflow-hidden rounded-md border bg-muted ${className}`}
+        className={`${size} shrink-0 overflow-hidden rounded-md border bg-muted ${className}`}
       >
         <div
           className="size-full"
@@ -39,7 +44,7 @@ export function ProductImage({ src, alt, className = "" }: Readonly<ProductImage
   }
   return (
     <div
-      className={`relative size-10 shrink-0 overflow-hidden rounded-md border bg-muted/40 bg-clip-padding ${className}`}
+      className={`relative ${size} shrink-0 overflow-hidden rounded-md border bg-muted/40 bg-clip-padding ${className}`}
     >
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
@@ -49,8 +54,6 @@ export function ProductImage({ src, alt, className = "" }: Readonly<ProductImage
       <img
         src={src}
         alt={alt ?? "Product"}
-        width={40}
-        height={40}
         loading="lazy"
         decoding="async"
         className="size-full object-cover rounded-[inherit]"

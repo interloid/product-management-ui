@@ -8,6 +8,7 @@ import {
 } from "react";
 
 import type {
+  ActiveImageItem,
   ImageError,
   ProductImage,
   UseProductImagesProps,
@@ -43,6 +44,14 @@ export function useProductImages({
     string | null
   >(() => initialPrimaryExistingImageId.current);
 
+  const [imageOrder, setImageOrder] = useState<string[]>(() =>
+    existingImages.map((image) => image.id),
+  );
+
+  const initialExistingOrderString = useRef(
+    JSON.stringify(existingImages.map((image) => image.id)),
+  );
+
   if (existingImages !== prevExistingImages) {
     setPrevExistingImages(existingImages);
     const initialPrimaryId =
@@ -54,6 +63,10 @@ export function useProductImages({
     setRemovedImageIds(new Set());
     revokeImageUrls(newImages);
     setNewImages([]);
+    setImageOrder(existingImages.map((image) => image.id));
+    initialExistingOrderString.current = JSON.stringify(
+      existingImages.map((image) => image.id),
+    );
   }
 
   const [imageError, setImageError] = useState<ImageError | null>(null);
@@ -92,10 +105,74 @@ export function useProductImages({
 
   const primaryNewImage = newImages.find((image) => image.isPrimary);
 
+  const orderedActiveImages = useMemo<ActiveImageItem[]>(() => {
+    const activeMap = new Map<string, ActiveImageItem>();
+
+    for (const img of existingImages) {
+      if (!removedImageIds.has(img.id)) {
+        activeMap.set(img.id, {
+          id: img.id,
+          type: "existing",
+          url: img.url,
+          isPrimary: img.id === primaryExistingImageId,
+          raw: img,
+        });
+      }
+    }
+
+    for (const img of newImages) {
+      activeMap.set(img.id, {
+        id: img.id,
+        type: "new",
+        url: img.previewUrl,
+        isPrimary: Boolean(img.isPrimary),
+        file: img.file,
+        raw: img,
+      });
+    }
+
+    const ordered: ActiveImageItem[] = [];
+    const seen = new Set<string>();
+
+    for (const id of imageOrder) {
+      const item = activeMap.get(id);
+      if (item && !seen.has(id)) {
+        ordered.push(item);
+        seen.add(id);
+      }
+    }
+
+    for (const [id, item] of activeMap.entries()) {
+      if (!seen.has(id)) {
+        ordered.push(item);
+      }
+    }
+
+    return ordered;
+  }, [
+    existingImages,
+    removedImageIds,
+    primaryExistingImageId,
+    newImages,
+    imageOrder,
+  ]);
+
+  const currentExistingOrder = useMemo(
+    () =>
+      orderedActiveImages
+        .filter((img) => img.type === "existing")
+        .map((img) => img.id),
+    [orderedActiveImages],
+  );
+
+  const isOrderDirty =
+    JSON.stringify(currentExistingOrder) !== initialExistingOrderString.current;
+
   const isDirty =
     newImages.length > 0 ||
     removedImageIds.size > 0 ||
-    primaryExistingImageId !== initialPrimaryExistingImageId.current;
+    primaryExistingImageId !== initialPrimaryExistingImageId.current ||
+    isOrderDirty;
 
   function processFiles(fileList: FileList | File[]) {
     if (isSubmitting) {
@@ -156,6 +233,10 @@ export function useProductImages({
 
     if (addedImages.length > 0) {
       setNewImages((previous) => [...previous, ...addedImages]);
+      setImageOrder((previous) => [
+        ...previous,
+        ...addedImages.map((img) => img.id),
+      ]);
     }
 
     setImageError(firstError);
@@ -215,6 +296,35 @@ export function useProductImages({
     processFiles(event.dataTransfer.files);
   }
 
+  function reorderImages(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex || isSubmitting) {
+      return;
+    }
+
+    const currentIds = orderedActiveImages.map((img) => img.id);
+    if (
+      fromIndex < 0 ||
+      fromIndex >= currentIds.length ||
+      toIndex < 0 ||
+      toIndex >= currentIds.length
+    ) {
+      return;
+    }
+
+    const nextIds = [...currentIds];
+    const [movedId] = nextIds.splice(fromIndex, 1);
+    nextIds.splice(toIndex, 0, movedId);
+
+    setImageOrder(nextIds);
+
+    setNewImages((prev) => {
+      const idOrder = new Map(nextIds.map((id, idx) => [id, idx]));
+      return [...prev].sort(
+        (a, b) => (idOrder.get(a.id) ?? 999) - (idOrder.get(b.id) ?? 999),
+      );
+    });
+  }
+
   function removeImage(id: string) {
     if (isSubmitting) {
       return;
@@ -229,23 +339,31 @@ export function useProductImages({
     revokeImageUrls([image]);
 
     const remainingImages = newImages.filter((item) => item.id !== id);
+    const nextOrder = imageOrder.filter((imgId) => imgId !== id);
+    setImageOrder(nextOrder);
 
     if (image.isPrimary) {
-      const fallback = remainingImages[0];
+      const nextCoverId = nextOrder[0];
+      if (nextCoverId) {
+        const isExisting = activeExistingImages.some(
+          (item) => item.id === nextCoverId,
+        );
+        if (isExisting) {
+          setPrimaryExistingImageId(nextCoverId);
+          setNewImages(
+            remainingImages.map((item) => ({ ...item, isPrimary: false })),
+          );
+          return;
+        }
 
-      if (fallback) {
+        setPrimaryExistingImageId(null);
         setNewImages(
           remainingImages.map((item) => ({
             ...item,
-            isPrimary: item.id === fallback.id,
+            isPrimary: item.id === nextCoverId,
           })),
         );
-
         return;
-      }
-
-      if (activeExistingImages.length > 0) {
-        setExistingImagePrimary(activeExistingImages[0].id);
       }
     }
 
@@ -254,12 +372,6 @@ export function useProductImages({
 
   function setPrimaryImage(id: string) {
     if (isSubmitting) {
-      return;
-    }
-
-    const imageExists = newImages.some((image) => image.id === id);
-
-    if (!imageExists) {
       return;
     }
 
@@ -275,12 +387,6 @@ export function useProductImages({
 
   function setExistingImagePrimary(id: string) {
     if (isSubmitting) {
-      return;
-    }
-
-    const imageExists = activeExistingImages.some((image) => image.id === id);
-
-    if (!imageExists) {
       return;
     }
 
@@ -349,6 +455,7 @@ export function useProductImages({
       null;
     setPrimaryExistingImageId(initialPrimaryId);
     initialPrimaryExistingImageId.current = initialPrimaryId;
+    setImageOrder(existingImages.map((image) => image.id));
     setImageError(null);
     setIsDragging(false);
   }
@@ -359,6 +466,7 @@ export function useProductImages({
     activeExistingImages,
     removedExistingImages,
     removedImageIds,
+    orderedActiveImages,
     imageError,
     isDragging,
     totalImageCount,
@@ -366,6 +474,7 @@ export function useProductImages({
     primaryExistingImage,
     primaryNewImage,
     isDirty,
+    reorderImages,
     handleImageChange,
     handleDragEnter,
     handleDragOver,

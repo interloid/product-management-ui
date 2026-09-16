@@ -1,15 +1,8 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { Archive, EllipsisVertical, RotateCcw, Trash2 } from "lucide-react";
+import { Archive, RotateCcw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
@@ -123,10 +116,9 @@ export function ProductForm(props: ProductFormProps) {
   });
 
   const {
-    newImages,
-    activeExistingImages,
     removedExistingImages,
     removedImageIds,
+    orderedActiveImages,
     imageError,
     isDragging,
     totalImageCount,
@@ -134,6 +126,7 @@ export function ProductForm(props: ProductFormProps) {
     primaryExistingImage,
     primaryNewImage,
     isDirty: isImageDirty,
+    reorderImages,
     handleImageChange,
     handleDragEnter,
     handleDragOver,
@@ -173,21 +166,92 @@ export function ProductForm(props: ProductFormProps) {
     handleSheetOpenChange,
   } = formState;
 
+  const [selectedImageId, setSelectedImageId] = useState<string | null>(null);
+  const [prevProductId, setPrevProductId] = useState(product?.id);
+  if (product?.id !== prevProductId) {
+    setPrevProductId(product?.id);
+    setSelectedImageId(null);
+  }
+
   const allImages = (product?.images ?? []).map((img) => ({
     src: img.url,
     alt: product?.name,
   }));
 
-  const primaryIndex = Math.max(
-    0,
-    (product?.images ?? []).findIndex((img) => img.is_primary),
-  );
+  const activeViewImage = useMemo(() => {
+    const images = product?.images ?? [];
+    if (!images.length) return null;
+    return (
+      images.find((img) => img.id === selectedImageId) ??
+      (product ? getPrimaryImage(product) : null) ??
+      images[0]
+    );
+  }, [product, selectedImageId]);
+
+  const activeViewIndex = useMemo(() => {
+    if (!activeViewImage) return 0;
+    const idx = (product?.images ?? []).findIndex(
+      (img) => img.id === activeViewImage.id,
+    );
+    return idx >= 0 ? idx : 0;
+  }, [product?.images, activeViewImage]);
+
+  const [draggedTileIndex, setDraggedTileIndex] = useState<number | null>(null);
+  const [dragOverTileIndex, setDragOverTileIndex] = useState<number | null>(null);
+
+  const handleTileDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    e.dataTransfer.setData("application/x-product-image-index", String(index));
+    e.dataTransfer.effectAllowed = "move";
+    setDraggedTileIndex(index);
+  };
+
+  const handleTileDragOver = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    e.preventDefault();
+    if (draggedTileIndex === null || draggedTileIndex === index) {
+      return;
+    }
+    e.dataTransfer.dropEffect = "move";
+    if (dragOverTileIndex !== index) {
+      setDragOverTileIndex(index);
+    }
+  };
+
+  const handleTileDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setDragOverTileIndex(null);
+    }
+  };
+
+  const handleTileDrop = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    e.preventDefault();
+    if (draggedTileIndex !== null && draggedTileIndex !== index) {
+      reorderImages(draggedTileIndex, index);
+    }
+    setDraggedTileIndex(null);
+    setDragOverTileIndex(null);
+  };
+
+  const handleTileDragEnd = () => {
+    setDraggedTileIndex(null);
+    setDragOverTileIndex(null);
+  };
 
   function resetProductForm() {
     clearImages();
     setExistingImages(product?.images ?? []);
     setIsSubmitting(false);
     resetForm();
+    setDraggedTileIndex(null);
+    setDragOverTileIndex(null);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -223,12 +287,16 @@ export function ProductForm(props: ProductFormProps) {
         );
       }
 
+      const orderedNewImages = orderedActiveImages
+        .filter((img) => img.type === "new")
+        .map((img) => img.raw);
+
       const orderedImages = primaryNewImage
         ? [
             primaryNewImage,
-            ...newImages.filter((image) => image.id !== primaryNewImage.id),
+            ...orderedNewImages.filter((image) => image.id !== primaryNewImage.id),
           ]
-        : newImages;
+        : orderedNewImages;
 
       for (const image of orderedImages) {
         formData.append(PRODUCT_FORM_FIELDS.IMAGES, image.file);
@@ -261,7 +329,6 @@ export function ProductForm(props: ProductFormProps) {
     if (loading || !product) {
       return <ProductViewSkeleton />;
     }
-    const primaryImage = getPrimaryImage(product);
 
     return (
       <>
@@ -283,12 +350,13 @@ export function ProductForm(props: ProductFormProps) {
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-2">
               <div className="aspect-16/10 overflow-hidden rounded-lg border bg-muted/40 bg-clip-padding">
-                {primaryImage?.url ? (
+                {activeViewImage?.url ? (
                   <ProductImagePreview
-                    src={primaryImage.url}
+                    key={activeViewImage.id}
+                    src={activeViewImage.url}
                     alt={product.name}
                     images={allImages}
-                    initialIndex={primaryIndex}
+                    initialIndex={activeViewIndex}
                     className="h-full w-full rounded-[inherit]"
                   />
                 ) : (
@@ -302,15 +370,15 @@ export function ProductForm(props: ProductFormProps) {
 
               {product.images?.length > 0 && (
                 <ProductImageGrid>
-                  {product.images.map((image, index) => (
+                  {product.images.map((image) => (
                     <ProductImageTile
                       key={image.id}
                       src={image.url}
                       alt={`${product.name} image`}
                       isPrimary={image.is_primary}
+                      isSelected={image.id === activeViewImage?.id}
+                      onSelect={() => setSelectedImageId(image.id)}
                       mode="view"
-                      images={allImages}
-                      initialIndex={index}
                     />
                   ))}
                 </ProductImageGrid>
@@ -322,48 +390,34 @@ export function ProductForm(props: ProductFormProps) {
         </div>
 
         <SheetFooter className="border-t px-5 py-3">
-          <div className="flex w-full items-center justify-between">
-            {(props.onArchive || props.onDelete) && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs hover:border-primary hover:bg-primary-hover hover:text-hover-text! data-[state=open]:border-primary data-[state=open]:bg-primary-hover data-[state=open]:text-hover-text!"
-                  >
-                    <span>Actions</span>
-                    <EllipsisVertical className="size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-44">
-                  {product.status !== "archived" && props.onArchive && (
-                    <DropdownMenuItem
-                      onClick={() => props.onArchive?.(product)}
-                      className="cursor-pointer gap-2 text-xs focus:bg-primary-hover! focus:text-hover-text! focus:**:text-hover-text!"
-                    >
-                      <Archive className="size-3.5" />
-                      <span>Archive product</span>
-                    </DropdownMenuItem>
-                  )}
-                  {props.onDelete && (
-                    <>
-                      {product.status !== "archived" && props.onArchive && (
-                        <DropdownMenuSeparator />
-                      )}
-                      <DropdownMenuItem
-                        variant="destructive"
-                        onClick={() => props.onDelete?.(product)}
-                        className="cursor-pointer gap-2 text-xs focus:bg-destructive/10! focus:text-destructive! focus:**:text-destructive!"
-                      >
-                        <Trash2 className="size-3.5" />
-                        <span>Delete product</span>
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+          <div className="flex w-full flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              {product.status !== "archived" && props.onArchive && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => props.onArchive?.(product)}
+                  className="gap-1.5 text-xs hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                >
+                  <Archive className="size-3.5" />
+                  <span>Archive</span>
+                </Button>
+              )}
+
+              {props.onDelete && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => props.onDelete?.(product)}
+                  className="gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive!"
+                >
+                  <Trash2 className="size-3.5" />
+                  <span>Delete</span>
+                </Button>
+              )}
+            </div>
 
             <div className="ml-auto flex items-center gap-2">
               <SheetClose asChild>
@@ -419,22 +473,38 @@ export function ProductForm(props: ProductFormProps) {
               <ProductImageHeader count={totalImageCount} />
 
               <ProductImageGrid>
-                {activeExistingImages.map((image) => (
+                {orderedActiveImages.map((image, index) => (
                   <ProductImageTile
                     key={image.id}
                     src={image.url}
-                    alt={`${product?.name ?? "Product"} image`}
-                    isPrimary={primaryExistingImage?.id === image.id}
-                    mode="existing"
+                    alt={
+                      image.type === "new"
+                        ? image.file.name
+                        : `${product?.name ?? "Product"} image`
+                    }
+                    isPrimary={image.isPrimary}
+                    mode={image.type}
+                    draggable={!isSubmitting && orderedActiveImages.length > 1}
+                    isDraggingThis={draggedTileIndex === index}
+                    isDragOverThis={dragOverTileIndex === index}
+                    onDragStart={(e) => handleTileDragStart(e, index)}
+                    onDragOver={(e) => handleTileDragOver(e, index)}
+                    onDragLeave={handleTileDragLeave}
+                    onDrop={(e) => handleTileDrop(e, index)}
+                    onDragEnd={handleTileDragEnd}
                     onRemove={
-                      isEdit
-                        ? () => toggleRemoveExistingImage(image.id)
-                        : undefined
+                      image.type === "existing"
+                        ? isEdit
+                          ? () => toggleRemoveExistingImage(image.id)
+                          : undefined
+                        : () => removeImage(image.id)
                     }
                     onSetPrimary={
-                      isEdit
-                        ? () => setExistingImagePrimary(image.id)
-                        : undefined
+                      image.type === "existing"
+                        ? isEdit
+                          ? () => setExistingImagePrimary(image.id)
+                          : undefined
+                        : () => setPrimaryImage(image.id)
                     }
                   />
                 ))}
@@ -447,7 +517,6 @@ export function ProductForm(props: ProductFormProps) {
                     <span className="px-2 text-center text-[10px] font-medium text-destructive">
                       Removed on save
                     </span>
-
                     <button
                       type="button"
                       onClick={() => toggleRemoveExistingImage(image.id)}
@@ -457,18 +526,6 @@ export function ProductForm(props: ProductFormProps) {
                       <RotateCcw className="size-3" />
                     </button>
                   </div>
-                ))}
-
-                {newImages.map((image) => (
-                  <ProductImageTile
-                    key={image.id}
-                    src={image.previewUrl}
-                    alt={image.file.name}
-                    isPrimary={image.isPrimary}
-                    mode="new"
-                    onRemove={() => removeImage(image.id)}
-                    onSetPrimary={() => setPrimaryImage(image.id)}
-                  />
                 ))}
 
                 {remainingSlots > 0 && (

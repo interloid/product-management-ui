@@ -25,6 +25,7 @@ export type ProductImageProps = {
   src?: string;
   alt: string;
   className?: string;
+  size?: string;
 };
 
 export type ImagePreviewDialogProps = {
@@ -89,6 +90,8 @@ export type ProductFiltersProps = {
   onStatusChange: (value: ProductStatusFilter) => void;
   onPriceChange: (value: string) => void;
   onReset: () => void;
+  searchSlot?: React.ReactNode;
+  actionsSlot?: React.ReactNode;
 };
 
 export type SortableTableHeadProps = {
@@ -158,12 +161,26 @@ export interface LogoutDialogProps {
   trigger: React.ReactNode;
 }
 
+export type ProductActionConfirmDialogProps = {
+  open: boolean;
+  image?: string;
+  alt: string;
+  title: string;
+  description: string;
+  confirmLabel: string;
+  confirmTone?: "archive" | "delete";
+  isPending?: boolean;
+  onCancel: () => void;
+  onConfirm: () => void;
+};
+
 export type ProductActionConfirmationRowProps = {
   image?: string;
   alt: string;
   title: string;
   description: string;
   confirmLabel: string;
+  confirmTone?: "archive" | "delete";
   isPending?: boolean;
   onCancel: () => void;
   onConfirm: () => void;

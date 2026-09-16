@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/context/auth-provider";
-import { ProtectedRoute } from "@/app/auth/protected-route";
+// import { ProtectedRoute } from "@/app/auth/protected-route";
 import { PublicRoute } from "@/app/auth/public-route";
 import LoadingScreen from "@/components/shad/loading-screen";
 import { ToasterMessage } from "@/components/shad/toaster";
@@ -58,7 +58,7 @@ export default function App() {
                     />
                   </Route>
                   <Route path="/callback" element={<Callback />} />
-                  <Route element={<ProtectedRoute />}>
+                  {/* <Route element={<ProtectedRoute />}> */}
                     <Route element={<DashboardLayout />}>
                       <Route path="/products" element={<Products />} />
                       <Route path="/categories" element={<Categories />} />
@@ -67,7 +67,7 @@ export default function App() {
                       <Route path="/reports" element={<Reports />} />
                       <Route path="/settings" element={<Settings />} />
                     </Route>
-                  </Route>
+                  {/* </Route> */}
                   <Route path="/" element={<RootRedirect />} />
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>

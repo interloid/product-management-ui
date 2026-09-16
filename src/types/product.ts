@@ -87,6 +87,23 @@ export interface ProductImage {
   isPrimary: boolean;
 }
 
+export type ActiveImageItem =
+  | {
+      id: string;
+      type: "existing";
+      url: string;
+      isPrimary: boolean;
+      raw: ApiProductImage;
+    }
+  | {
+      id: string;
+      type: "new";
+      url: string;
+      isPrimary: boolean;
+      file: File;
+      raw: ProductImage;
+    };
+
 export type PreviewImageItem = {
   src: string;
   alt?: string;

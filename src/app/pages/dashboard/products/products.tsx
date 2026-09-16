@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
 import { ProductTable } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table";
 import { ProductForm } from "@/app/pages/dashboard/products/crud-operations/product-form";
+import { ProductActionConfirmDialog } from "@/app/pages/dashboard/products/crud-operations/product-components/product-action-confirm-dialog";
+import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
 import { useSearch } from "@/context/use-search";
 import {
   archiveProduct as archiveProductApi,
@@ -23,6 +25,7 @@ import { TablePagination } from "@/components/shad/table-pagination";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters";
 import { ProductTableSkeleton } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table-skeleton";
+import { ProductSearchInput } from "@/components/shad/product-search-input";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 
 export default function ProductsPage() {
@@ -49,6 +52,10 @@ export default function ProductsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [archiveId, setArchiveId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<{
+    product: ApiProduct;
+    kind: "archive" | "delete";
+  } | null>(null);
   const [isActionPending, setIsActionPending] = useState(false);
   const isActionPendingRef = useRef(false);
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
@@ -220,6 +227,13 @@ export default function ProductsPage() {
     setPage(1);
   }, []);
 
+  const openConfirm = useCallback(
+    (product: ApiProduct, kind: "archive" | "delete") => {
+      setConfirmTarget({ product, kind });
+    },
+    [],
+  );
+
   const handleDeleteProduct = useCallback(
     async (id: string) => {
       if (isActionPendingRef.current) {
@@ -231,7 +245,9 @@ export default function ProductsPage() {
 
       try {
         await deleteProductApi(id);
+        setArchiveId(null);
         setDeleteId(null);
+        setConfirmTarget(null);
         toast.success("Product deleted successfully");
         refresh();
       } catch (error) {
@@ -258,6 +274,8 @@ export default function ProductsPage() {
       try {
         await archiveProductApi(id);
         setArchiveId(null);
+        setDeleteId(null);
+        setConfirmTarget(null);
         toast.success("Product archived successfully");
         refresh();
       } catch (error) {
@@ -435,6 +453,19 @@ export default function ProductsPage() {
           onStatusChange={updateStatus}
           onPriceChange={updatePrice}
           onReset={resetFilters}
+          searchSlot={
+            <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
+          }
+          actionsSlot={
+            <Button
+              type="button"
+              className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4"
+              onClick={openAdd}
+            >
+              <span className="hidden sm:inline">Add Product</span>
+              <span className="sm:hidden">Add</span>
+            </Button>
+          }
         />
         <div className="relative">
           {isInitialLoad ? (
@@ -450,8 +481,8 @@ export default function ProductsPage() {
               >
                 <ProductTable
                   products={products}
-                  onEdit={openEdit}
                   onView={openView}
+                  onEdit={openEdit}
                   archiveId={archiveId}
                   deleteId={deleteId}
                   isActionPending={isActionPending}
@@ -482,11 +513,11 @@ export default function ProductsPage() {
           onEdit={openEdit}
           onArchive={(product) => {
             handleProductFormOpenChange(false);
-            setArchiveId(product.id);
+            openConfirm(product, "archive");
           }}
           onDelete={(product) => {
             handleProductFormOpenChange(false);
-            setDeleteId(product.id);
+            openConfirm(product, "delete");
           }}
           onCreated={handleProductCreated}
           onUpdated={handleProductUpdated}
@@ -506,6 +537,42 @@ export default function ProductsPage() {
           setArchiveId(null);
           setDeleteId(null);
           setPageSize(value);
+        }}
+      />
+      <ProductActionConfirmDialog
+        open={confirmTarget !== null}
+        image={
+          confirmTarget
+            ? getPrimaryImage(confirmTarget.product)?.url
+            : undefined
+        }
+        alt={confirmTarget?.product.name ?? "Product"}
+        title={
+          confirmTarget?.kind === "archive"
+            ? `Archive "${confirmTarget.product.name}"?`
+            : `Delete "${confirmTarget?.product.name}"?`
+        }
+        description={
+          confirmTarget?.kind === "archive"
+            ? "It disappears from the active list."
+            : "This permanently removes the product."
+        }
+        confirmLabel={
+          confirmTarget?.kind === "archive" ? "Yes, Archive" : "Yes, Delete"
+        }
+        confirmTone={confirmTarget?.kind === "archive" ? "archive" : "delete"}
+        isPending={isActionPending}
+        onCancel={() => setConfirmTarget(null)}
+        onConfirm={() => {
+          if (!confirmTarget) {
+            return;
+          }
+
+          if (confirmTarget.kind === "archive") {
+            void handleArchiveProduct(confirmTarget.product.id);
+          } else {
+            void handleDeleteProduct(confirmTarget.product.id);
+          }
         }}
       />
     </>

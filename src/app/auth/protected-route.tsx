@@ -10,7 +10,7 @@ export function ProtectedRoute() {
   if (status === "loading") {
     return (
       <div className="h-full">
-        <div className="text-muted-foreground flex min-h-full items-center justify-center gap-2">
+        <div className="flex min-h-full items-center justify-center gap-2">
           <Spinner />
           checking for session...
         </div>

@@ -76,6 +76,9 @@ function ProductField({
   );
 }
 
+const MAX_PRODUCT_PRICE = 999999.99;
+const MAX_PRODUCT_STOCK = 10000;
+
 export function ProductFormFields({
   idPrefix,
   form,
@@ -177,9 +180,16 @@ export function ProductFormFields({
               id={`${idPrefix}-price`}
               type="number"
               min={0}
+              max={MAX_PRODUCT_PRICE}
               step="0.01"
               value={form.price}
-              onChange={(event) => onFieldChange("price", event.target.value)}
+              onChange={(event) => {
+                const value = event.target.value;
+
+                if (value === "" || Number(value) <= MAX_PRODUCT_PRICE) {
+                  onFieldChange("price", value);
+                }
+              }}
               aria-invalid={Boolean(errors.price)}
               className={cn(
                 fieldInputClass({ error: errors.price, mono: true }),
@@ -199,9 +209,16 @@ export function ProductFormFields({
             id={`${idPrefix}-stock`}
             type="number"
             min={0}
+            max={MAX_PRODUCT_STOCK}
             step="1"
             value={form.stock}
-            onChange={(event) => onFieldChange("stock", event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+
+              if (value === "" || Number(value) <= MAX_PRODUCT_STOCK) {
+                onFieldChange("stock", value);
+              }
+            }}
             aria-invalid={Boolean(errors.stock)}
             className={fieldInputClass({ error: errors.stock, mono: true })}
           />
@@ -328,7 +345,11 @@ export function ProductImageHeader({ count }: { readonly count: number }) {
   );
 }
 
-export function ProductImageGrid({ children }: { readonly children: React.ReactNode }) {
+export function ProductImageGrid({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   return (
     <div className="flex gap-2 overflow-x-auto p-1 [scrollbar-thin] *:size-20 sm:*:size-24 *:shrink-0">
       {children}
@@ -340,26 +361,84 @@ export function ProductImageTile({
   src,
   alt,
   isPrimary,
+  isSelected,
   mode,
   images,
   initialIndex,
+  draggable = false,
+  isDraggingThis = false,
+  isDragOverThis = false,
   onRemove,
   onSetPrimary,
+  onSelect,
+  onDragStart,
+  onDragOver,
+  onDragLeave,
+  onDrop,
+  onDragEnd,
 }: {
   readonly src: string;
   readonly alt: string;
   readonly isPrimary: boolean;
+  readonly isSelected?: boolean;
   readonly mode: "new" | "existing" | "view";
   readonly images?: PreviewImageItem[];
   readonly initialIndex?: number;
+  readonly draggable?: boolean;
+  readonly isDraggingThis?: boolean;
+  readonly isDragOverThis?: boolean;
   readonly onRemove?: () => void;
   readonly onSetPrimary?: () => void;
+  readonly onSelect?: () => void;
+  readonly onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
+  readonly onDragOver?: (event: React.DragEvent<HTMLDivElement>) => void;
+  readonly onDragLeave?: (event: React.DragEvent<HTMLDivElement>) => void;
+  readonly onDrop?: (event: React.DragEvent<HTMLDivElement>) => void;
+  readonly onDragEnd?: (event: React.DragEvent<HTMLDivElement>) => void;
 }) {
+  if (mode === "view") {
+    return (
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-label={`Select ${alt}`}
+        className={cn(
+          "relative aspect-square overflow-hidden rounded-md border bg-muted/20 transition-all cursor-pointer select-none",
+          isSelected
+            ? "border-2 border-primary ring-2 ring-primary/30 scale-105 shadow-sm opacity-100"
+            : "border-border opacity-70 hover:opacity-100 hover:border-primary/50",
+        )}
+      >
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          className="size-full object-cover rounded-[inherit]"
+        />
+        {isPrimary && (
+          <span className="absolute bottom-1 left-1 rounded bg-black/70 px-1 py-0.5 text-[9px] font-medium text-white backdrop-blur-xs">
+            Primary
+          </span>
+        )}
+      </button>
+    );
+  }
+
   return (
     <div
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
       className={cn(
-        "relative aspect-square overflow-hidden rounded-md border bg-clip-padding",
+        "relative aspect-square overflow-hidden rounded-md border bg-clip-padding transition-all duration-150 select-none",
+        draggable && "cursor-grab active:cursor-grabbing hover:shadow-xs",
         isPrimary ? "border-2 border-primary" : "border-border",
+        isDraggingThis && "opacity-30 scale-95 border-dashed border-primary",
+        isDragOverThis &&
+          "ring-2 ring-primary ring-offset-2 scale-105 shadow-md border-primary",
       )}
     >
       <ProductImagePreview
@@ -370,10 +449,14 @@ export function ProductImageTile({
         className="h-full w-full rounded-[inherit]"
       />
 
-      {mode !== "view" && onRemove && (
+      {onRemove && (
         <button
           type="button"
-          onClick={onRemove}
+          onMouseDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
           aria-label={`Remove ${alt}`}
           className="absolute right-1.5 top-1.5 z-20 flex size-4 items-center justify-center rounded-full border bg-background/90 text-muted-foreground shadow-sm backdrop-blur transition-colors hover:bg-background hover:text-destructive"
         >
@@ -381,12 +464,7 @@ export function ProductImageTile({
         </button>
       )}
 
-      {mode !== "view" && (
-        <ImageOverlayControls
-          isPrimary={isPrimary}
-          onSetPrimary={onSetPrimary}
-        />
-      )}
+      <ImageOverlayControls isPrimary={isPrimary} onSetPrimary={onSetPrimary} />
     </div>
   );
 }
@@ -454,7 +532,11 @@ export function ProductImageDropzone({
   );
 }
 
-export function ProductDetailGrid({ product }: { readonly product: ApiProduct }) {
+export function ProductDetailGrid({
+  product,
+}: {
+  readonly product: ApiProduct;
+}) {
   return (
     <div className="grid grid-cols-[120px_1fr] gap-x-4 gap-y-3 text-[13px]">
       <DetailLabel>SKU</DetailLabel>

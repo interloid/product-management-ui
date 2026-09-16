@@ -62,14 +62,10 @@ function ImagePreviewSlider({
   initialIndex?: number;
 }) {
   const hasMultiple = images.length > 1;
-
-  // Cloned slides: [LastImage, Image1, Image2, ..., ImageN, FirstImage] for infinite loop
   const slides = useMemo(() => {
     if (!hasMultiple) return images;
     return [images[images.length - 1], ...images, images[0]];
   }, [images, hasMultiple]);
-
-  // Track position: 1 is the first real image
   const [currentIndex, setCurrentIndex] = useState(() =>
     hasMultiple ? initialIndex + 1 : 0,
   );
@@ -83,15 +79,12 @@ function ImagePreviewSlider({
   const wheelLockRef = useRef(false);
   const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-  // Cleanup wheel timer on unmount
   useEffect(() => {
     return () => {
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
     };
   }, []);
 
-  // 0-based index for dots & thumbnails
   const realIndex = hasMultiple
     ? (currentIndex - 1 + images.length) % images.length
     : 0;
@@ -117,7 +110,6 @@ function ImagePreviewSlider({
     setCurrentIndex(idx + 1);
   }, []);
 
-  // When animation finishes: silently teleport if we are on a sentinel clone
   const handleTransitionEnd = () => {
     isAnimatingRef.current = false;
     if (!hasMultiple) return;
@@ -131,7 +123,6 @@ function ImagePreviewSlider({
     }
   };
 
-  // Re-enable transition after silent teleport
   useEffect(() => {
     if (!enableTransition) {
       const raf1 = requestAnimationFrame(() => {
@@ -144,18 +135,17 @@ function ImagePreviewSlider({
     }
   }, [enableTransition]);
 
-  // Unified Pointer Drag & Swipe (Mouse, Touch, and Stylus)
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!hasMultiple || isAnimatingRef.current) return;
-    if (e.button !== 0) return; // Only primary mouse button or touch
+    if (e.button !== 0) return;
 
     isPointerDownRef.current = true;
     pointerStartX.current = e.clientX;
     pointerStartTime.current = Date.now();
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
+    } catch (error) {
+      void error;
     }
   };
 
@@ -163,7 +153,6 @@ function ImagePreviewSlider({
     if (!isPointerDownRef.current || pointerStartX.current === null) return;
     const diff = e.clientX - pointerStartX.current;
 
-    // Small deadzone of 4px to distinguish click from drag
     if (!isDragging && Math.abs(diff) > 4) {
       setIsDragging(true);
     }
@@ -181,8 +170,8 @@ function ImagePreviewSlider({
       if (e.currentTarget.hasPointerCapture(e.pointerId)) {
         e.currentTarget.releasePointerCapture(e.pointerId);
       }
-    } catch {
-      // ignore
+    } catch (error) {
+      void error;
     }
 
     if (isDragging) {
@@ -203,30 +192,25 @@ function ImagePreviewSlider({
     pointerStartX.current = null;
   };
 
-  // Trackpad / Mouse Wheel Scroll (Light, responsive, and naturally unlocked)
   const handleWheel = (e: React.WheelEvent) => {
     if (!hasMultiple || isAnimatingRef.current || isDragging) return;
 
-    // If currently in motion/cooldown, drop momentum events without extending lock
     if (wheelLockRef.current) return;
 
     const absX = Math.abs(e.deltaX);
     const absY = Math.abs(e.deltaY);
 
-    // Ignore tiny noise
     if (absX < 8 && absY < 8) return;
 
     let shouldNext = false;
     let shouldPrev = false;
 
     if (absX >= absY) {
-      // Horizontal swipe (trackpad)
       if (absX >= 10) {
         shouldNext = e.deltaX > 0;
         shouldPrev = e.deltaX < 0;
       }
     } else {
-      // Vertical scroll (mouse wheel)
       if (absY >= 10) {
         shouldNext = e.deltaY > 0;
         shouldPrev = e.deltaY < 0;
@@ -237,7 +221,6 @@ function ImagePreviewSlider({
 
     e.stopPropagation();
 
-    // Lock for exactly the animation duration so momentum doesn't multi-skip
     wheelLockRef.current = true;
     if (shouldNext) {
       handleNext();
@@ -251,7 +234,6 @@ function ImagePreviewSlider({
     }, 320);
   };
 
-  // Keyboard Navigation
   useEffect(() => {
     if (!hasMultiple) return;
 
@@ -269,7 +251,6 @@ function ImagePreviewSlider({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [hasMultiple, handlePrev, handleNext]);
 
-  // Auto-scroll active thumbnail into view
   useEffect(() => {
     thumbnailRefs.current[realIndex]?.scrollIntoView({
       behavior: "smooth",
@@ -282,7 +263,6 @@ function ImagePreviewSlider({
 
   return (
     <div className="relative flex flex-col items-center gap-3">
-      {/* Main Image Row with Prev / Next Buttons flanking on the outside */}
       <div className="relative flex items-center justify-center gap-2 sm:gap-3 w-full">
         {hasMultiple && (
           <Button
@@ -299,8 +279,6 @@ function ImagePreviewSlider({
             <ChevronLeft className="size-5 transition-transform duration-150 group-hover:-translate-x-0.5" />
           </Button>
         )}
-
-        {/* Silky-Smooth Infinite Looping Slider Viewport */}
         <div
           className="relative overflow-hidden rounded-lg bg-muted/40 w-[75vw] sm:w-[560px] md:w-[640px] lg:w-[700px] max-w-full h-[55vh] sm:h-[460px] md:h-[500px] lg:h-[540px] max-h-[78vh] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
           onPointerDown={handlePointerDown}
@@ -309,7 +287,6 @@ function ImagePreviewSlider({
           onPointerCancel={handlePointerUp}
           onWheel={handleWheel}
         >
-          {/* Smooth Sliding Track */}
           <div
             onTransitionEnd={handleTransitionEnd}
             className="flex size-full will-change-transform"
@@ -334,7 +311,6 @@ function ImagePreviewSlider({
             ))}
           </div>
 
-          {/* Clickable Dotted Indicators */}
           {hasMultiple && (
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1.5 backdrop-blur-sm z-20">
               {images.map((_, idx) => (
@@ -374,7 +350,6 @@ function ImagePreviewSlider({
         )}
       </div>
 
-      {/* Thumbnails row */}
       {hasMultiple && (
         <div className="flex max-w-full gap-2 overflow-x-auto py-1 px-2">
           {images.map((img, idx) => (
