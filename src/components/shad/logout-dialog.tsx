@@ -51,9 +51,15 @@ export function LogoutDialog({
       // on builds where ProtectedRoute is not mounted.
       navigate("/login", { replace: true });
     } catch (error) {
-      toast.error(getUserFriendlyErrorMessage(error, "Failed to log out"), {
-        description: "You are still signed in. Please try again.",
-      });
+      toast.error(
+        getUserFriendlyErrorMessage(
+          error,
+          "Unable to log out right now. Please try again.",
+        ),
+        {
+          description: "You are still signed in. Please try again in a moment.",
+        },
+      );
     } finally {
       setIsLoggingOut(false);
     }

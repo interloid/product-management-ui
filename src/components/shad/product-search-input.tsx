@@ -1,6 +1,6 @@
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useSearch } from "@/context/use-search";
+import { useSearch } from "@/hooks/use-search";
 
 type ProductSearchInputProps = {
   className?: string;

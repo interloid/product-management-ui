@@ -19,7 +19,7 @@ import { revokeImageUrls } from "@/lib/utils";
 import {
   MAX_IMAGES,
   validateImage,
-} from "@/app/pages/dashboard/products/crud-operations/product-utils/product-constants";
+} from "@/app/pages/dashboard/products/crud-operations/product-utils/constants";
 
 export function useProductImages({
   maxImages = MAX_IMAGES,

@@ -3,7 +3,7 @@ import Header from "@/components/shad/header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useCallback, useMemo, useState } from "react";
 import { Outlet, useSearchParams } from "react-router-dom";
-import { SearchContext } from "@/context/search-context";
+import { SearchContext } from "@/context/search";
 import { useAuth } from "@/hooks/use-auth";
 import { AppFooter } from "@/components/shad/app-footer";
 

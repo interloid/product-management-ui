@@ -22,13 +22,13 @@ import type { ProductFormProps } from "@/types/props";
 import { createProduct, updateProduct } from "@/services/product-service";
 
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
-import { getPrimaryImage } from "./product-utils/product-utils";
+import { getPrimaryImage } from "./product-utils/helpers";
 import { useProductImages } from "@/hooks/use-product-images";
-import { useProductFormSheet } from "./product-utils/use-product-form-sheet";
-import { appendProductFormData } from "./product-utils/product-form-data";
+import { useProductFormSheet } from "@/hooks/use-product-form-sheet";
+import { appendProductFormData } from "./product-utils/form-data";
 
-import { PRODUCT_FORM_FIELDS } from "./product-utils/product-form-fields";
-import { MAX_IMAGES } from "./product-utils/product-constants";
+import { PRODUCT_FORM_FIELDS } from "./product-utils/form-fields";
+import { MAX_IMAGES } from "./product-utils/constants";
 import { ImageErrorBanner } from "./product-components/image-error-banner";
 import { ProductEditSkeleton } from "./product-components/product-edit-skeleton";
 import { ProductViewSkeleton } from "./product-components/product-view-skeleton";
@@ -323,7 +323,14 @@ export function ProductForm(props: ProductFormProps) {
       onOpenChange(false);
       props.onUpdated?.(updated);
     } catch (error) {
-      toast.error(getUserFriendlyErrorMessage(error));
+      toast.error(
+        getUserFriendlyErrorMessage(
+          error,
+          mode === "add"
+            ? "Unable to create product. Please check the form and try again."
+            : "Unable to update product. Please check the form and try again.",
+        ),
+      );
     } finally {
       setIsSubmitting(false);
     }

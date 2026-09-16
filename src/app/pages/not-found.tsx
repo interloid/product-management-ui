@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmptyProductPage from "@/components/shad/empty-page";
-import pageNotFoundImage from "@/assets/page-not-found.webp";
+import pageNotFoundImage from "@/assets/images/page-not-found.webp";
 
 export function NotFoundPage() {
   return (

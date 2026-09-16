@@ -5,7 +5,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ProductTableRow } from "./product-table-row";
+import { ProductTableRow } from "./table-row";
 import { SortableHeader } from "@/components/shad/sortable-header";
 import EmptyProductTableRow from "@/components/shad/empty-products";
 import type { ProductTableProps } from "@/types/props";

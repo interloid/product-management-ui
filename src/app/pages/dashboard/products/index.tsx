@@ -1,10 +1,14 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { toast } from "sonner";
-import { ProductTable } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table";
+import {
+  ProductTable,
+  ProductTableSkeleton,
+} from "@/app/pages/dashboard/products/crud-operations/product-components/product-table";
 import { ProductForm } from "@/app/pages/dashboard/products/crud-operations/product-form";
 import { ProductActionConfirmDialog } from "@/app/pages/dashboard/products/crud-operations/product-components/product-action-confirm-dialog";
-import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
-import { useSearch } from "@/context/use-search";
+import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
+import { useDebounce } from "@/hooks/use-debounce";
+import { useSearch } from "@/hooks/use-search";
 import {
   archiveProduct as archiveProductApi,
   deleteProduct as deleteProductApi,
@@ -24,7 +28,6 @@ import { ProductListSkeleton } from "@/components/shad/product-list-skeleton";
 import { TablePagination } from "@/components/shad/table-pagination";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters";
-import { ProductTableSkeleton } from "@/app/pages/dashboard/products/crud-operations/product-components/productTable/product-table-skeleton";
 import { ProductSearchInput } from "@/components/shad/product-search-input";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 
@@ -58,7 +61,7 @@ export default function ProductsPage() {
   } | null>(null);
   const [isActionPending, setIsActionPending] = useState(false);
   const isActionPendingRef = useRef(false);
-  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+  const debouncedSearch = useDebounce(searchQuery, 400);
   const [sort, setSort] = useState<ProductSort>({
     field: null,
     order: "desc",
@@ -170,16 +173,13 @@ export default function ProductsPage() {
     setProductCount,
   ]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setArchiveId(null);
-      setDeleteId(null);
-      setDebouncedSearch(searchQuery);
-      setPage(1);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+  const [prevSearch, setPrevSearch] = useState(debouncedSearch);
+  if (debouncedSearch !== prevSearch) {
+    setPrevSearch(debouncedSearch);
+    setArchiveId(null);
+    setDeleteId(null);
+    setPage(1);
+  }
 
   const updateCategory = useCallback((value: ProductCategoryFilter) => {
     setArchiveId(null);
@@ -210,7 +210,6 @@ export default function ProductsPage() {
     setPriceRange("all");
     setSort({ field: null, order: "desc" });
     setSearchQuery("");
-    setDebouncedSearch("");
     setPage(1);
     setPageSize(10);
   }, [setSearchQuery]);
@@ -259,7 +258,10 @@ export default function ProductsPage() {
         refresh();
       } catch (error) {
         toast.error(
-          getUserFriendlyErrorMessage(error, "Failed to delete product"),
+          getUserFriendlyErrorMessage(
+            error,
+            "Unable to delete product. Please try again.",
+          ),
         );
       } finally {
         isActionPendingRef.current = false;
@@ -294,7 +296,10 @@ export default function ProductsPage() {
         refresh();
       } catch (error) {
         toast.error(
-          getUserFriendlyErrorMessage(error, "Failed to archive product"),
+          getUserFriendlyErrorMessage(
+            error,
+            "Unable to archive product. Please try again.",
+          ),
         );
       } finally {
         isActionPendingRef.current = false;
@@ -380,7 +385,10 @@ export default function ProductsPage() {
       } catch (error) {
         if (!ignore) {
           toast.error(
-            getUserFriendlyErrorMessage(error, "Failed to load product"),
+            getUserFriendlyErrorMessage(
+              error,
+              "Unable to load product details. Please try again.",
+            ),
           );
 
           setProductForm((current) => ({
@@ -391,7 +399,6 @@ export default function ProductsPage() {
         }
       }
     }
-
     void loadProduct();
 
     return () => {
@@ -468,7 +475,7 @@ export default function ProductsPage() {
           onPriceChange={updatePrice}
           onReset={resetFilters}
           searchSlot={
-            <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
+          <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
           }
           actionsSlot={
             <Button

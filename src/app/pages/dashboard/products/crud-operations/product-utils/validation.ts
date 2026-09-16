@@ -8,7 +8,7 @@ function parseRequiredNumber(
   const trimmed = value.trim();
 
   if (!trimmed) {
-    return `This ${fieldLabel.toLowerCase()} is required.`;
+    return `${fieldLabel} is required.`;
   }
 
   const parsed = Number(trimmed);
@@ -22,7 +22,7 @@ function parseRequiredNumber(
   }
 
   if (!options?.allowZero && parsed === 0) {
-    return `${fieldLabel} cannot be zero.`;
+    return `${fieldLabel} must be greater than zero.`;
   }
 
   if (options?.integer && !Number.isInteger(parsed)) {
@@ -36,15 +36,15 @@ export function validateProductFields(form: ProductForm): FormError {
   const errors: FormError = {};
 
   if (!form.name.trim()) {
-    errors.name = "This name is required.";
+    errors.name = "Product name is required.";
   }
 
   if (!form.sku.trim()) {
-    errors.sku = "This SKU is required.";
+    errors.sku = "SKU is required.";
   }
 
   if (!form.category) {
-    errors.category = "This category is required.";
+    errors.category = "Please select a category.";
   }
 
   const priceError = parseRequiredNumber(form.price, "Price");

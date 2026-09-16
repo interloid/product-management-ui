@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { ProductImage } from "./productTable/product-image";
+import { ProductImage } from "./product-table";
 import type { ProductActionConfirmDialogProps } from "@/types/props";
 
 export function ProductActionConfirmDialog({

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
+import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 import type { ImagePreviewDialogProps } from "@/types/props";
 import type { PreviewImageItem } from "@/types/product";
 
@@ -46,7 +46,7 @@ function PreviewImage({ src, alt }: { src: string; alt: string }) {
       {hasError && !isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
           <span className="text-sm font-medium text-muted-foreground">
-            Failed to load image
+            Image unavailable
           </span>
         </div>
       )}
@@ -283,7 +283,7 @@ function ImagePreviewSlider({
           </Button>
         )}
         <div
-          className="relative overflow-hidden rounded-lg bg-muted/40 w-[75vw] sm:w-[560px] md:w-[640px] lg:w-[700px] max-w-full h-[55vh] sm:h-[460px] md:h-[500px] lg:h-[540px] max-h-[78vh] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
+          className="relative overflow-hidden rounded-lg bg-muted/40 w-[75vw] sm:w-140 md:w-160 lg:w-175 max-w-full h-[55vh] sm:h-115 md:h-125 lg:h-135 max-h-[78vh] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}

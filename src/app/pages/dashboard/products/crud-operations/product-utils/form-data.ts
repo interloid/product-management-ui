@@ -1,4 +1,4 @@
-import { PRODUCT_FORM_FIELDS } from "./product-form-fields";
+import { PRODUCT_FORM_FIELDS } from "./form-fields";
 import type { ProductForm } from "@/types/product";
 
 function toNumericString(value: string): string {

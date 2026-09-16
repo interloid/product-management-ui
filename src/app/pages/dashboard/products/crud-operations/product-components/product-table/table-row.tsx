@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { ProductTableRowProps } from "@/types/props";
-import { ProductImage } from "./product-image";
+import { ProductImage } from "./image";
 import {
   formatDateTime,
   formatPrice,
@@ -17,8 +17,8 @@ import {
   getStatusLabel,
 } from "@/lib/converters";
 import { memo, useState } from "react";
-import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
-import { ProductActionConfirmationRow } from "./product-action-confirmation-row";
+import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
+import { ProductActionConfirmationRow } from "./action-confirmation-row";
 
 export const ProductTableRow = memo(function ProductTableRow({
   product,

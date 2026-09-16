@@ -27,7 +27,7 @@ import MicrosoftLogo from "@/components/icons/microsoft-logo";
 import { AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { type OAuthProvider } from "@/types/auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
-import interloidLogo from "@/assets/favicon.ico";
+import interloidLogo from "@/assets/icons/favicon.ico";
 
 export default function LoginPage({
   className,
@@ -35,7 +35,7 @@ export default function LoginPage({
 }: React.ComponentProps<"div">) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, sessionError } = useAuth();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isCapsLockOn, setIsCapsLockOn] = useState<boolean>(false);
   const [email, setEmail] = useState("");
@@ -73,7 +73,7 @@ export default function LoginPage({
   const validateEmail = (value: string): string | null => {
     const trimmed = value.trim();
     if (!trimmed) {
-      return "Email is required.";
+      return "Please enter your email address.";
     }
     if (trimmed.length > 254) {
       return "Email must be 254 characters or fewer.";
@@ -88,14 +88,14 @@ export default function LoginPage({
       /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
 
     if (!emailRegex.test(trimmed)) {
-      return "Please enter a valid email address";
+      return "Please enter a valid email address.";
     }
     return null;
   };
 
   const validatePassword = (value: string): string | null => {
     if (!value) {
-      return "Password is required.";
+      return "Please enter your password.";
     }
     if (value.length < 8) {
       return "Password must be at least 8 characters.";
@@ -169,7 +169,7 @@ export default function LoginPage({
       setServerError(
         getUserFriendlyErrorMessage(
           error,
-          "Unable to log in. Please try again.",
+          "Unable to sign in. Please try again.",
           { context: "login" },
         ),
       );
@@ -400,9 +400,9 @@ export default function LoginPage({
                     </label>
                   </div>
                   <Field>
-                    {(serverError || sessionError) && (
+                    {serverError && (
                       <p className="text-sm text-destructive font-medium">
-                        {serverError || sessionError}
+                        {serverError}
                       </p>
                     )}
                     <Button

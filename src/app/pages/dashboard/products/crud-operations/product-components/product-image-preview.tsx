@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ImagePreviewDialog } from "./image-preview-dialog";
 import type { ProductImagePreviewProps } from "@/types/props";
 import { Spinner } from "@/components/ui/spinner";
-import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
+import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 
 export function ProductImagePreview({
   src,
@@ -62,7 +62,7 @@ export function ProductImagePreview({
         {hasError && (
           <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-muted/50">
             <span className="text-[10px] font-medium text-muted-foreground">
-              Failed to load image
+              Image unavailable
             </span>
           </span>
         )}

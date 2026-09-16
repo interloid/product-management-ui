@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
-import interloidLogo from "@/assets/favicon.ico";
+import interloidLogo from "@/assets/icons/favicon.ico";
 
 export default function PasscodeRequestPage() {
   const navigate = useNavigate();

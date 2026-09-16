@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { validateProductFields } from "./product-validation";
+import { validateProductFields } from "@/app/pages/dashboard/products/crud-operations/product-utils/validation";
 import type {
   FormError,
   ProductForm,

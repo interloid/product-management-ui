@@ -18,7 +18,7 @@ import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import type { PasscodeLocationState } from "@/types/auth";
-import interloidLogo from "@/assets/favicon.ico";
+import interloidLogo from "@/assets/icons/favicon.ico";
 import { cn } from "@/lib/utils";
 import { getPasscodeErrorMessage } from "@/lib/errors";
 
@@ -103,7 +103,7 @@ export default function PasscodeVerifyPage() {
       <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:left-8 sm:top-8 sm:mb-0 sm:justify-start">
         <img
           src={interloidLogo}
-          alt="Interloid"
+          alt="interloid"
           className="h-5 w-5 object-contain"
         />
         <span className="text-sm font-semibold">Interloid</span>
@@ -130,7 +130,7 @@ export default function PasscodeVerifyPage() {
           <form onSubmit={handleSubmit} className="w-full" noValidate>
             <CardHeader className="px-1">
               <CardTitle className="text-lg font-bold">
-                Enter your passcode
+                Enter your Passcode
               </CardTitle>
 
               <CardDescription>
@@ -139,7 +139,7 @@ export default function PasscodeVerifyPage() {
 
               {email && (
                 <CardDescription>
-                  Enter the passcode sent to{" "}
+                  Enter the Passcode sent to{" "}
                   <span className="font-medium">{email}</span>
                 </CardDescription>
               )}

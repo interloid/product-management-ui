@@ -29,7 +29,7 @@ export function validateImage(file: File): ImageError | null {
       fileName: file.name,
       fileSize: file.size,
       message: `${file.name} wasn't added`,
-      details: `${formattedSize} exceeds the 5 MB limit (413). Compress it and try again.`,
+      details: `${formattedSize} exceeds the 5 MB limit. Please choose a smaller image.`,
     };
   }
 

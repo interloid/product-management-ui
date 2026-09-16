@@ -6,18 +6,26 @@ export interface LoginCredentials {
   remember_me: boolean;
 }
 
+export interface UserResponse {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  is_active: boolean;
+  role?: string;
+}
+
+export interface CurrentUserResponse {
+  success: boolean;
+  message: string;
+  data: UserResponse | null;
+}
+
 export interface LoginResponse {
   success: boolean;
   message: string;
-  data?: {
-    session_id?: string;
-    user?: {
-      id: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      is_active: boolean;
-    };
+  data?: null | {
+    user?: UserResponse;
   };
 }
 
@@ -30,15 +38,11 @@ export interface PasscodeRequestResponse {
 export interface PasscodeVerifyResponse {
   success: boolean;
   message: string;
-  data?: {
-    session_id?: string;
-    user?: {
-      id: string;
-      email: string;
-      first_name: string;
-      last_name: string;
-      is_active: boolean;
-    };
+  data?: null | {
+    access_token?: string;
+    expires_in?: number;
+    token_type?: string;
+    user?: UserResponse;
   };
 }
 

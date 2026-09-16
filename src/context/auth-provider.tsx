@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  getCurrentSession,
+  getCurrentUser,
   login as loginService,
   loginWithPasscode as loginWithPasscodeService,
   logout as logoutService,
@@ -10,9 +10,10 @@ import type {
   AuthStatus,
   AuthUser,
   LoginCredentials,
+  UserResponse,
 } from "@/types/auth";
 import { ApiError } from "@/lib/api-error";
-import { AuthContext } from "./auth-context";
+import { AuthContext } from "./auth";
 import { setSessionExpiredListener } from "@/lib/api";
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -33,11 +34,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       for (let attempt = 0; attempt <= maxRetries; attempt++) {
         try {
-          const response = await getCurrentSession();
-          const apiUser = response?.data?.user;
+          const response = await getCurrentUser();
+          const rawData = response?.data;
+          const apiUser =
+            rawData && "user" in rawData && rawData.user
+              ? (rawData.user as UserResponse)
+              : (rawData as UserResponse | null);
 
           if (!apiUser?.id || !apiUser?.email) {
-            throw new Error("Invalid user data");
+            if (!shouldIgnore()) {
+              setUser(null);
+              setStatus("unauthenticated");
+              setSessionError(null);
+            }
+            return false;
           }
 
           if (shouldIgnore()) {
@@ -58,7 +68,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
             return false;
           }
 
-          if (error instanceof ApiError && error.status === 401) {
+          if (
+            error instanceof ApiError &&
+            (error.status === 401 || error.status === 403 || error.status === 404)
+          ) {
             setUser(null);
             setStatus("unauthenticated");
             setSessionError(null);
@@ -74,7 +87,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           setUser(null);
           setStatus("unauthenticated");
-          setSessionError("Please check your connection and try again.");
+          setSessionError(null);
           return false;
         }
       }
@@ -84,24 +97,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [],
   );
 
-  const login = useCallback(async (credentials: LoginCredentials) => {
-    const response = await loginService(credentials);
-    const apiUser = response?.data?.user;
+  const login = useCallback(
+    async (credentials: LoginCredentials) => {
+      const response = await loginService(credentials);
 
-    if (!apiUser?.id || !apiUser?.email) {
-      throw new Error("Invalid user data returned from login");
-    }
+      if (response?.success === false) {
+        const serverMessage =
+          typeof response?.message === "string" ? response.message.trim() : "";
+        throw new Error(serverMessage || "Invalid email or password.");
+      }
 
-    const userData: AuthUser = {
-      id: apiUser.id,
-      email: apiUser.email,
-      name: `${apiUser.first_name ?? ""} ${apiUser.last_name ?? ""}`.trim(),
-    };
+      const isAuthenticated = await checkAuth();
 
-    setUser(userData);
-    setStatus("authenticated");
-    setSessionError(null);
-  }, []);
+      if (!isAuthenticated) {
+        throw new Error(
+          "Unable to verify your session after sign-in. Please try again.",
+        );
+      }
+    },
+    [checkAuth],
+  );
 
   const loginWithPasscode = useCallback(
     async (email: string, passcode: string) => {

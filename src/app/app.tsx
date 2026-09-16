@@ -9,20 +9,20 @@ import { ToasterMessage } from "@/components/shad/toaster";
 import { ErrorBoundary } from "@/components/shad/error-boundary";
 import { NotFoundPage } from "@/app/pages/not-found";
 import { useAuth } from "@/hooks/use-auth";
-const LoginForm = lazy(() => import("@/app/pages/Authentication/login"));
-const Callback = lazy(() => import("@/app/pages/Authentication/callback"));
+const LoginForm = lazy(() => import("@/app/pages/auth/login"));
+const Callback = lazy(() => import("@/app/pages/auth/callback"));
 const DashboardLayout = lazy(() => import("@/layouts/dashboard"));
 const Orders = lazy(() => import("@/app/pages/dashboard/orders"));
-const Products = lazy(() => import("@/app/pages/dashboard/products/products"));
+const Products = lazy(() => import("@/app/pages/dashboard/products"));
 const Categories = lazy(() => import("@/app/pages/dashboard/categories"));
 const Customers = lazy(() => import("@/app/pages/dashboard/customers"));
 const Reports = lazy(() => import("@/app/pages/dashboard/reports"));
 const Settings = lazy(() => import("@/app/pages/dashboard/settings"));
 const PasscodeRequestPage = lazy(
-  () => import("@/app/pages/Authentication/passcode/request"),
+  () => import("@/app/pages/auth/passcode/request"),
 );
 const PasscodeVerifyPage = lazy(
-  () => import("@/app/pages/Authentication/passcode/verify"),
+  () => import("@/app/pages/auth/passcode/verify"),
 );
 
 function RootRedirect() {
@@ -31,7 +31,6 @@ function RootRedirect() {
   if (status === "loading") {
     return <LoadingScreen />;
   }
-
   return (
     <Navigate
       to={status === "authenticated" ? "/products" : "/login"}

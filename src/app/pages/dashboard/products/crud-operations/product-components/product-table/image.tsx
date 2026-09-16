@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/product-utils";
+import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 import type { ProductImageProps } from "@/types/props";
 
 export function ProductImage({

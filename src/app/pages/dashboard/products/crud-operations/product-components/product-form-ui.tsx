@@ -33,7 +33,7 @@ import type {
 } from "@/types/product";
 import { ProductImagePreview } from "./product-image-preview";
 import { ImageOverlayControls } from "./image-overlay-controls";
-import { MAX_IMAGES } from "../product-utils/product-constants";
+import { MAX_IMAGES } from "../product-utils/constants";
 
 function fieldInputClass({
   error,

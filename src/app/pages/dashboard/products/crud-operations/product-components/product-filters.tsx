@@ -50,7 +50,7 @@ export function ProductFilters({
     pageSize === 10;
 
   return (
-    <div className="flex w-full flex-wrap items-center gap-2 min-[1440px]:flex-row-reverse min-[1440px]:justify-between">
+    <div className="flex w-full flex-wrap items-center gap-2 min-[1448px]:flex-row-reverse min-[1440px]:justify-between">
       {(searchSlot || actionsSlot) && (
         <div className="flex min-w-0 items-center gap-2">
           {searchSlot}

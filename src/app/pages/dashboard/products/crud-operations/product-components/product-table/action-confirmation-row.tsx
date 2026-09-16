@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Spinner } from "@/components/ui/spinner";
-import { ProductImage } from "./product-image";
+import { ProductImage } from "./image";
 import type { ProductActionConfirmationRowProps } from "@/types/props";
 
 export function ProductActionConfirmationRow({
