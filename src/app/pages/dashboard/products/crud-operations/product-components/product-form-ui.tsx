@@ -552,7 +552,7 @@ export function ProductDetailGrid({
       <DetailValue>{product.category_name}</DetailValue>
 
       <DetailLabel>Price</DetailLabel>
-      <DetailValue className="font-mono text-xs">
+      <DetailValue className="font-bold text-xs">
         {formatPrice(product.price)}
       </DetailValue>
 
