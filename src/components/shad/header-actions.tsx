@@ -24,9 +24,16 @@ export function HeaderActions({ user }: HeaderActionsProps) {
           </Avatar>
         </TooltipTrigger>
 
-        <TooltipContent side="bottom" align="end" sideOffset={6}>
-          <p className="font-medium">{user?.name}</p>
-          <p className="text-xs text-muted-foreground">{user?.email}</p>
+        <TooltipContent
+          side="bottom"
+          align="end"
+          sideOffset={6}
+          className="flex-col items-start gap-1"
+        >
+          <p className="text-sm font-medium leading-tight">{user?.name}</p>
+          <p className="text-xs leading-tight text-muted-foreground">
+            {user?.email}
+          </p>
         </TooltipContent>
       </Tooltip>
 
