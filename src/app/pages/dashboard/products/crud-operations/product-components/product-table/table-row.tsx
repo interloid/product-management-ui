@@ -19,6 +19,7 @@ import {
 import { memo, useState } from "react";
 import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 import { ProductActionConfirmationRow } from "./action-confirmation-row";
+import { CategoryBadge } from "@/components/shad/category-badge";
 
 export const ProductTableRow = memo(function ProductTableRow({
   product,
@@ -95,8 +96,8 @@ export const ProductTableRow = memo(function ProductTableRow({
           {product.name}
         </button>
       </TableCell>
-      <TableCell className="hidden truncate text-sm text-muted-foreground md:table-cell">
-        {product.category_name}
+      <TableCell className="hidden truncate md:table-cell">
+        <CategoryBadge name={product.category_name} className="max-w-full truncate" />
       </TableCell>
       <TableCell className="font-mono text-sm whitespace-nowrap">
         {formatPrice(product.price)}

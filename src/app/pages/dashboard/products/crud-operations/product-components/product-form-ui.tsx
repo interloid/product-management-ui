@@ -33,6 +33,7 @@ import type {
 } from "@/types/product";
 import { ProductImagePreview } from "./product-image-preview";
 import { ImageOverlayControls } from "./image-overlay-controls";
+import { CategoryBadge } from "@/components/shad/category-badge";
 import { MAX_IMAGES } from "../product-utils/constants";
 
 function fieldInputClass({
@@ -523,6 +524,9 @@ export function ProductImageDropzone({
         <span className="px-1 text-center text-[10px] text-muted-foreground">
           {remainingSlots} {remainingSlots === 1 ? "slot" : "slots"} left
         </span>
+        <span className="px-1 text-center text-[10px] font-mono text-muted-foreground/70">
+          Max size: 5 MB
+        </span>
       </label>
 
       <Input
@@ -549,7 +553,9 @@ export function ProductDetailGrid({
       <DetailValue className="font-mono text-xs">{product.sku}</DetailValue>
 
       <DetailLabel>Category</DetailLabel>
-      <DetailValue>{product.category_name}</DetailValue>
+      <DetailValue>
+        <CategoryBadge name={product.category_name} />
+      </DetailValue>
 
       <DetailLabel>Price</DetailLabel>
       <DetailValue className="font-bold text-xs">
