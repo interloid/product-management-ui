@@ -485,7 +485,7 @@ export default function ProductsPage() {
 
   return (
     <>
-      <div ref={tableTopRef} className="w-full space-y-4">
+      <div ref={tableTopRef} className="w-full min-w-0 max-w-full space-y-4">
         {isInitialLoad ? (
           <ProductFiltersSkeleton />
         ) : (
@@ -502,7 +502,7 @@ export default function ProductsPage() {
             onPriceChange={updatePrice}
             onReset={resetFilters}
             searchSlot={
-              <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
+              <ProductSearchInput className="flex-1 min-[1100px]:w-100 min-[1100px]:flex-none" />
             }
             actionsSlot={
               <Button
@@ -516,7 +516,7 @@ export default function ProductsPage() {
             }
           />
         )}
-        <div className="relative">
+        <div className="relative min-w-0 max-w-full">
           {isInitialLoad ? (
             <ProductTableSkeleton />
           ) : (

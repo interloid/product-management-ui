@@ -18,10 +18,10 @@ import { ListRestart } from "lucide-react";
 
 const priceRanges = [
   { value: "all", label: "All" },
-  { value: "0-50", label: "$0-$50" },
-  { value: "50-100", label: "$50-$100" },
-  { value: "100-250", label: "$100-$250" },
-  { value: "250-500", label: "$250-$500" },
+  { value: "0-50", label: "$0–$50" },
+  { value: "50-100", label: "$50–$100" },
+  { value: "100-250", label: "$100–$250" },
+  { value: "250-500", label: "$250–$500" },
   { value: "500+", label: "$500+" },
 ];
 
@@ -50,22 +50,16 @@ export function ProductFilters({
     pageSize === 10;
 
   return (
-    <div className="flex w-full flex-wrap items-center gap-2 min-[1448px]:flex-row-reverse min-[1440px]:justify-between">
-      {(searchSlot || actionsSlot) && (
-        <div className="flex min-w-0 items-center gap-2">
-          {searchSlot}
-          {actionsSlot}
-        </div>
-      )}
-      <div className="flex flex-wrap min-w-0 items-center gap-1!">
+    <div className="flex w-full flex-wrap items-center justify-between gap-3 min-w-0">
+      <div className="flex flex-wrap items-center gap-2 min-w-0">
         <Select
           value={category}
           onValueChange={(value) =>
             onCategoryChange(value as ProductCategoryFilter)
           }
         >
-          <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
-            <span className="text-sm">Category:</span>
+          <SelectTrigger className="h-9 w-auto min-w-31.25 text-xs font-medium cursor-pointer">
+            <span className="text-muted-foreground mr-1">Category:</span>
             <SelectValue />
           </SelectTrigger>
           <SelectContent
@@ -73,20 +67,20 @@ export function ProductFilters({
             side="bottom"
             align="start"
             sideOffset={4}
-            avoidCollisions={false}
-            className="w-fit p-1! "
+            className="w-44 p-1"
           >
             {categories.map((item) => (
               <SelectItem
                 key={item.value}
                 value={item.value}
-                className="hover:bg-primary-hover!"
+                className="text-xs cursor-pointer hover:bg-primary-hover!"
               >
                 {item.value}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+
         <div className="flex flex-wrap items-center gap-1">
           {statusFilters.map((item) => {
             const active = status === item.value;
@@ -98,8 +92,8 @@ export function ProductFilters({
                 size="sm"
                 className={
                   active
-                    ? "h-9 rounded-md px-3 sm:px-4"
-                    : "h-9 rounded-md px-3 font-normal hover:bg-primary-hover! hover:border-primary sm:px-4"
+                    ? "h-9 rounded-md px-3 sm:px-4 cursor-pointer"
+                    : "h-9 rounded-md px-3 font-normal hover:bg-primary-hover hover:border-primary sm:px-4 cursor-pointer"
                 }
                 onClick={() => onStatusChange(item.value)}
               >
@@ -108,10 +102,10 @@ export function ProductFilters({
             );
           })}
         </div>
-        <div className="mx-1 hidden h-6 w-px bg-border md:block" />
+
         <Select value={priceRange} onValueChange={onPriceChange}>
-          <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
-            <span className="text-xs">Price</span>
+          <SelectTrigger className="h-9 w-auto min-w-26.25 text-xs font-medium cursor-pointer">
+            <span className="text-muted-foreground mr-1">Price:</span>
             <SelectValue />
           </SelectTrigger>
           <SelectContent
@@ -119,41 +113,46 @@ export function ProductFilters({
             side="bottom"
             align="start"
             sideOffset={4}
-            avoidCollisions={false}
-            className="w-fit p-1"
+            className="w-36 p-1"
           >
             {priceRanges.map((range) => (
               <SelectItem
                 key={range.value}
                 value={range.value}
-                className="hover:bg-primary-hover!"
+                className="text-xs cursor-pointer hover:bg-primary-hover!"
               >
                 {range.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <div className="flex items-center gap-1 text-xs text-muted-text">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-9 px-3 hover:border-primary hover:bg-primary-hover!"
-                onClick={onReset}
-                aria-label="Reset filters"
-                disabled={isDefaultFilters}
-              >
-                <ListRestart className="size-5" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="right">
-              <p>Clear Filters</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
+
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="size-9 shrink-0 cursor-pointer"
+              onClick={onReset}
+              aria-label="Reset filters"
+              disabled={isDefaultFilters}
+            >
+              <ListRestart className="size-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p>Reset filters</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
+
+      {(searchSlot || actionsSlot) && (
+        <div className="flex items-center gap-2 min-w-0 w-full min-[1100px]:w-auto">
+          {searchSlot}
+          {actionsSlot}
+        </div>
+      )}
     </div>
   );
 }

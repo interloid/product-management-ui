@@ -17,23 +17,19 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
   const title = TITLES[pathname] ?? "Dashboard";
 
   return (
-    <header className="sticky top-0 z-30 flex min-h-16 w-full flex-col border-b sm:min-h-16 sm:flex-row sm:items-center">
-      <div className="flex min-h-16 flex-1 items-center gap-2 px-3 sm:px-4 md:w-1/2">
-        <div className="flex flex-1 items-center gap-2 md:w-1/4 lg:w-1/4 xl:w-1/4">
-          <MobileMenuButton />
-          <div className="flex gap-2 w-full">
-          <h1 className="flex items-center gap-1 line-clamp-1 text-md font-bold">
-            {title}
-            {pathname === "/products" && (
-              <span className="text-sm font-normal text-muted-foreground">
-                ({productCount})
-              </span>
-            )}
-          </h1>
-          </div>
-        </div>
-        <HeaderActions user={user} />
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b bg-background px-3 sm:px-4">
+      <div className="flex items-center gap-2 min-w-0">
+        <MobileMenuButton />
+        <h1 className="flex items-center gap-1 line-clamp-1 text-md font-bold truncate">
+          {title}
+          {pathname === "/products" && (
+            <span className="text-sm font-normal text-muted-foreground shrink-0">
+              ({productCount})
+            </span>
+          )}
+        </h1>
       </div>
+      <HeaderActions user={user} />
     </header>
   );
 }

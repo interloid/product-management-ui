@@ -9,11 +9,21 @@ export default function Settings() {
   return (
     <EmptyPage
       icon={SettingsIcon}
-      title="Nothing here yet"
-      description="Settings isn't part of this build. The nav item routes to this placeholder so the shell feels complete."
+      badge="Workspace Admin"
+      title="Settings & Preferences"
+      description="Manage workspace security, developer API tokens, team member roles, and third-party webhook integrations."
+      features={[
+        "Granular team role-based access control (RBAC)",
+        "API keys, webhook endpoints, and developer sandboxes",
+        "Single Sign-On (SSO) and multi-factor authentication (MFA)",
+      ]}
     >
-      <Button variant="secondary" onClick={() => navigate("/products")}>
-        Go to Products
+      <Button
+        variant="default"
+        onClick={() => navigate("/products")}
+        className="cursor-pointer"
+      >
+        Back to Products
       </Button>
     </EmptyPage>
   );

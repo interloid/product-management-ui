@@ -1,19 +1,37 @@
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import EmptyPage from "@/components/shad/empty-page";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 
 export default function Reports() {
   const navigate = useNavigate();
 
   return (
     <EmptyPage
-      icon={FileText}
-      title="Nothing here yet"
-      description="Reports isn't part of this build. The nav item routes to this placeholder so the shell feels complete."
+      icon={BarChart3}
+      badge="Analytics Suite"
+      title="Reports & Business Intelligence"
+      description="Gain deep operational visibility into sales velocity, inventory turnover, gross margins, and revenue forecasts."
+      features={[
+        "Real-time revenue, gross margin, and stock burn-rate charts",
+        "Predictive stock depletion dates and re-order triggers",
+        "Scheduled automated CSV/PDF report delivery to team inboxes",
+      ]}
     >
-      <Button variant="secondary" onClick={() => navigate("/products")}>
-        Go to Products
+      <Button
+        variant="default"
+        onClick={() => navigate("/products")}
+        className="cursor-pointer"
+      >
+        View Products
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => toast.info("You've been added to the early access list for Reports & Analytics!")}
+        className="cursor-pointer"
+      >
+        Request Early Access
       </Button>
     </EmptyPage>
   );

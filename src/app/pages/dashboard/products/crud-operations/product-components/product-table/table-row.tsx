@@ -77,7 +77,7 @@ export const ProductTableRow = memo(function ProductTableRow({
           <ProductImage src={primaryImage?.url} alt={product.name} />
           <span
             title={product.sku}
-            className="font-mono text-xs text-muted-foreground min-[420px]:inline truncate min-w-0"
+            className="font-mono text-xs text-muted-foreground tabular-nums min-[420px]:inline truncate min-w-0"
           >
             {product.sku}
           </span>
@@ -91,7 +91,7 @@ export const ProductTableRow = memo(function ProductTableRow({
             onView();
           }}
           title={product.name}
-          className="block w-full truncate text-left text-sm font-semibold hover:underline"
+          className="block w-full truncate text-left text-sm font-semibold hover:underline cursor-pointer"
         >
           {product.name}
         </button>
@@ -99,10 +99,10 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell className="hidden truncate md:table-cell">
         <CategoryBadge name={product.category_name} className="max-w-full truncate" />
       </TableCell>
-      <TableCell className="font-mono text-sm whitespace-nowrap">
+      <TableCell className="font-mono text-sm font-medium whitespace-nowrap tabular-nums">
         {formatPrice(product.price)}
       </TableCell>
-      <TableCell className="text-sm pl-3 whitespace-nowrap">
+      <TableCell className="font-mono text-sm pl-3 whitespace-nowrap tabular-nums">
         {product.stock}
       </TableCell>
       <TableCell className="whitespace-nowrap">
@@ -110,7 +110,7 @@ export const ProductTableRow = memo(function ProductTableRow({
           {getStatusLabel(product.status)}
         </Badge>
       </TableCell>
-      <TableCell className="hidden text-xs text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis">
+      <TableCell className="hidden text-xs text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis tabular-nums">
         {formatDateTime(product.updated_at)}
       </TableCell>
       <TableCell onClick={(event) => event.stopPropagation()}>

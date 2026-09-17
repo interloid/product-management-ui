@@ -48,7 +48,7 @@
   --color-primary-hover: #edf1fb;
   --color-muted-text: #71717b;
   --color-hover-text: #23366e;
-  --color-cancel-button-background: oklch(63.7% 0.237 25.331);
+  --color-cancel-button-background: #dc2626;
   --font-sans: "Geist Variable", sans-serif;
 }
 
@@ -56,7 +56,7 @@
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
-  --cancel-button-background: oklch(63.7% 0.237 25.331);
+  --cancel-button-background: #dc2626;
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);

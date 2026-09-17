@@ -53,12 +53,9 @@ export function ProductActionConfirmationRow({
             </Button>
 
             <Button
+              variant={confirmTone === "archive" ? "default" : "destructive"}
               size="sm"
-              className={
-                confirmTone === "archive"
-                  ? "bg-primary text-white hover:bg-primary/90"
-                  : "bg-cancel-button-background text-white hover:bg-cancel-button-background/80!"
-              }
+              className="cursor-pointer"
               onClick={onConfirm}
               disabled={isPending}
             >

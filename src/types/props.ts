@@ -144,9 +144,11 @@ export type EmptyPageProps = {
   icon?: ComponentType<{
     className?: string;
   }>;
+  badge?: string;
   title?: string;
   image?: string;
   description?: string;
+  features?: string[];
   children?: ReactNode;
 };
 

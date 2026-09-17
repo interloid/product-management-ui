@@ -9,11 +9,21 @@ export default function Categories() {
   return (
     <EmptyPage
       icon={Tags}
-      title="Nothing here yet"
-      description="Categories isn't part of this build. The nav item routes to this placeholder so the shell feels complete."
+      badge="Catalog Taxonomies"
+      title="Category Hierarchy & Attributes"
+      description="Organize your product line with structured taxonomy trees, attribute templates, and category-level discount rules."
+      features={[
+        "Multi-level nested categories, sub-categories, and collections",
+        "Category-wide custom attributes (sizes, colors, materials)",
+        "Bulk product reassignment and drag-and-drop hierarchy",
+      ]}
     >
-      <Button variant="secondary" onClick={() => navigate("/products")}>
-        Go to Products
+      <Button
+        variant="default"
+        onClick={() => navigate("/products")}
+        className="cursor-pointer"
+      >
+        Manage Products
       </Button>
     </EmptyPage>
   );

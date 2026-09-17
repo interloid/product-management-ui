@@ -268,7 +268,7 @@ function ImagePreviewSlider({
   return (
     <div className="relative flex flex-col items-center gap-2.5 sm:gap-3 w-full">
       {/* Main Image Slider with Previous and Next Buttons on the sides as before */}
-      <div className="relative flex items-center justify-center gap-2 sm:gap-3 w-full">
+      <div className="relative flex items-center justify-center gap-2 sm:gap-3 lg:gap-4 w-full">
         {hasMultiple && (
           <Button
             type="button"
@@ -279,14 +279,14 @@ function ImagePreviewSlider({
               handlePrev();
             }}
             aria-label="Previous image"
-            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-sm backdrop-blur hover:bg-background"
+            className="group size-9 sm:size-10 lg:size-11 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-sm backdrop-blur hover:bg-background cursor-pointer"
           >
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-5 lg:size-6" />
           </Button>
         )}
 
         <div
-          className="relative flex-1 min-w-0 overflow-hidden rounded-lg sm:rounded-xl bg-muted/30 border border-border/40 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-96 max-h-[50vh] sm:max-h-[58vh] min-h-[210px] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
+          className="relative flex-1 min-w-0 overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl bg-muted/30 border border-border/40 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-[480px] xl:h-[540px] max-h-[50vh] sm:max-h-[58vh] lg:max-h-[68vh] xl:max-h-[72vh] min-h-[210px] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -353,9 +353,9 @@ function ImagePreviewSlider({
               handleNext();
             }}
             aria-label="Next image"
-            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-sm backdrop-blur hover:bg-background"
+            className="group size-9 sm:size-10 lg:size-11 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-sm backdrop-blur hover:bg-background cursor-pointer"
           >
-            <ChevronRight className="size-5" />
+            <ChevronRight className="size-5 lg:size-6" />
           </Button>
         )}
       </div>
@@ -372,7 +372,7 @@ function ImagePreviewSlider({
                 type="button"
                 onClick={() => handleSelectImage(idx)}
                 aria-label={`View image ${idx + 1}`}
-                className={`relative size-10 sm:size-12 shrink-0 overflow-hidden rounded-md border transition-all ${
+                className={`relative size-10 sm:size-12 lg:size-14 shrink-0 overflow-hidden rounded-md lg:rounded-lg border transition-all cursor-pointer ${
                   idx === realIndex
                     ? "border-primary ring-2 ring-primary/40 opacity-100 shadow-xs"
                     : "border-border/60 opacity-60 hover:opacity-100 hover:border-border"
@@ -407,7 +407,7 @@ export function ImagePreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl p-3 sm:p-4 pt-8 sm:pt-9 rounded-xl sm:rounded-2xl overflow-hidden max-h-[90vh]">
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-lg md:max-w-xl lg:max-w-4xl xl:max-w-5xl p-3 sm:p-4 lg:p-6 pt-8 sm:pt-9 lg:pt-10 rounded-xl sm:rounded-2xl overflow-hidden max-h-[90vh] lg:max-h-[92vh]">
         {open && images.length > 0 && (
           <ImagePreviewSlider
             key={initialIndex}

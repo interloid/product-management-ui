@@ -109,7 +109,7 @@ export function LogoutDialog({
             variant="destructive"
             disabled={isLoggingOut}
             onClick={handleLogout}
-            className="cursor-pointer bg-cancel-button-background/85 text-white hover:bg-destructive"
+            className="cursor-pointer"
           >
             {isLoggingOut && <Spinner className="mr-2 size-4" />}
             {isLoggingOut ? "Logging out..." : "Log out"}

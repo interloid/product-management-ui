@@ -29,16 +29,16 @@ export function ProductTable({
   onResetFilters,
 }: Readonly<ProductTableProps>) {
   return (
-    <div className="overflow-hidden rounded-lg border">
+    <div className="w-full min-w-0 max-w-full overflow-hidden rounded-lg border">
       <Table
         className="table-fixed min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
-        <TableHeader className="sticky top-0 z-20 h-14! bg-muted/95 backdrop-blur-xs [&_th]:bg-muted">
-          <TableRow className="bg-muted text-xs text-muted-text hover:bg-muted">
-            <TableHead className="w-[17%] min-w-38.75 pl-5!">SKU</TableHead>
-            <TableHead className="w-[20%] min-w-40">PRODUCT NAME</TableHead>
-            <TableHead className="hidden md:table-cell w-[10%] min-w-25">
+        <TableHeader className="sticky top-0 z-20 h-12 bg-muted/95 backdrop-blur-xs [&_th]:bg-muted">
+          <TableRow className="bg-muted text-[11px] font-semibold tracking-wider uppercase hover:bg-muted">
+            <TableHead className="w-[17%] min-w-38.75 pl-5! text-[11px] font-semibold tracking-wider uppercase">SKU</TableHead>
+            <TableHead className="w-[20%] min-w-40 text-[11px] font-semibold tracking-wider uppercase">PRODUCT NAME</TableHead>
+            <TableHead className="hidden md:table-cell w-[10%] min-w-25 text-[11px] font-semibold tracking-wider uppercase">
               CATEGORY
             </TableHead>
             <SortableHeader
@@ -69,7 +69,7 @@ export function ProductTable({
               onSort={onSort}
               className="hidden md:table-cell w-[15%] min-w-40"
             />
-            <TableHead className="w-[10%] min-w-23.75 text-center xl:text-left">
+            <TableHead className="w-[10%] min-w-23.75 text-center xl:text-left text-[11px] font-semibold tracking-wider uppercase text-muted-foreground">
               ACTIONS
             </TableHead>
           </TableRow>

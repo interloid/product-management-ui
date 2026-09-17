@@ -1,51 +1,74 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { LogOut, Settings } from "lucide-react";
 import type { HeaderActionsProps } from "@/types/props";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogoutDialog } from "./logout-dialog";
 import { getInitials } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { resolveApiUrl } from "@/lib/api";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function HeaderActions({ user }: HeaderActionsProps) {
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const initials = getInitials(user?.name ?? "");
   const avatarSrc = resolveApiUrl(user?.avatar);
 
   return (
-    <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5 sm:gap-2 md:w-3/4 lg:w-3/4 xl:w-3/4 2xl:w-1/2">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Avatar className="hidden size-9 cursor-default lg:flex">
-            <AvatarImage src={avatarSrc} alt={user?.name ?? "User"} />
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-        </TooltipTrigger>
+    <div className="ml-auto flex shrink-0 items-center justify-end gap-2">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            className="flex items-center gap-2 rounded-full p-0.5 outline-none transition-transform hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            aria-label="User menu"
+          >
+            <Avatar className="size-8.5 border border-border/80 shadow-xs">
+              <AvatarImage src={avatarSrc} alt={user?.name ?? "User"} />
+              <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
+            </Avatar>
+          </button>
+        </DropdownMenuTrigger>
 
-        <TooltipContent
-          side="bottom"
-          align="end"
-          sideOffset={6}
-          className="flex-col items-start gap-1"
-        >
-          <p className="text-sm font-medium leading-tight">{user?.name}</p>
-          <p className="text-xs leading-tight text-muted-foreground">
-            {user?.email}
-          </p>
-        </TooltipContent>
-      </Tooltip>
+        <DropdownMenuContent align="end" className="w-56 p-1.5 shadow-md">
+          <DropdownMenuLabel className="p-2 font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-semibold leading-none text-foreground">
+                {user?.name ?? "User"}
+              </p>
+              <p className="text-xs leading-none text-muted-foreground truncate">
+                {user?.email ?? ""}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link to="/settings" className="flex items-center gap-2">
+              <Settings className="size-4 text-muted-foreground" />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant="destructive"
+            onSelect={() => setShowLogoutDialog(true)}
+            className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/40"
+          >
+            <LogOut className="size-4 mr-2" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <LogoutDialog
-        trigger={
-          <Button
-            variant="destructive"
-            className="cursor-pointer bg-cancel-button-background px-2.5 text-sm text-white hover:bg-destructive! sm:px-3"
-          >
-            Log out
-          </Button>
-        }
+        open={showLogoutDialog}
+        onOpenChange={setShowLogoutDialog}
       />
     </div>
   );

@@ -74,10 +74,10 @@ export default function DashboardLayout() {
       <SidebarProvider>
         <AppSidebar user={user} />
 
-        <SidebarInset>
+        <SidebarInset className="min-w-0 max-w-full overflow-x-hidden">
           <Header user={user} productCount={productCount} />
 
-          <main className="flex h-full flex-1 flex-col justify-between p-3 sm:p-4">
+          <main className="flex h-full flex-1 flex-col justify-between p-3 sm:p-4 min-w-0 max-w-full overflow-x-hidden">
             <Outlet />
           </main>
 
