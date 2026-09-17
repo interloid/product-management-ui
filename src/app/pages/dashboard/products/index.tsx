@@ -28,7 +28,17 @@ import { ProductListSkeleton } from "@/components/shad/product-list-skeleton";
 import { TablePagination } from "@/components/shad/table-pagination";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters";
+import { ProductFiltersSkeleton } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters-skeleton";
 import { ProductSearchInput } from "@/components/shad/product-search-input";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { TriangleAlert } from "lucide-react";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 
 export default function ProductsPage() {
@@ -254,7 +264,7 @@ export default function ProductsPage() {
           open: false,
           loading: false,
         });
-        toast.success("Product deleted successfully");
+        toast.success("Product deleted successfully", { id: "delete-success" });
         refresh();
       } catch (error) {
         toast.error(
@@ -262,6 +272,7 @@ export default function ProductsPage() {
             error,
             "Unable to delete product. Please try again.",
           ),
+          { id: "delete-error" },
         );
       } finally {
         isActionPendingRef.current = false;
@@ -292,7 +303,7 @@ export default function ProductsPage() {
           open: false,
           loading: false,
         });
-        toast.success("Product archived successfully");
+        toast.success("Product archived successfully", { id: "archive-success" });
         refresh();
       } catch (error) {
         toast.error(
@@ -300,6 +311,7 @@ export default function ProductsPage() {
             error,
             "Unable to archive product. Please try again.",
           ),
+          { id: "archive-error" },
         );
       } finally {
         isActionPendingRef.current = false;
@@ -389,6 +401,7 @@ export default function ProductsPage() {
               error,
               "Unable to load product details. Please try again.",
             ),
+            { id: "load-product-error" },
           );
 
           setProductForm((current) => ({
@@ -449,12 +462,23 @@ export default function ProductsPage() {
   if (loadError) {
     return (
       <div className="flex min-h-50 items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-center">
-          <p className="text-sm text-destructive font-medium">{loadError}</p>
-          <Button type="button" variant="outline" onClick={refresh}>
-            Try again
-          </Button>
-        </div>
+        <Empty className="max-w-md">
+          <EmptyHeader>
+            <EmptyMedia
+              variant="icon"
+              className="bg-destructive/10 text-destructive [&_svg:not([class*='size-'])]:size-6"
+            >
+              <TriangleAlert className="size-6" />
+            </EmptyMedia>
+            <EmptyTitle>Something went wrong</EmptyTitle>
+            <EmptyDescription>{loadError}</EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <Button type="button" variant="outline" onClick={refresh}>
+              Try again
+            </Button>
+          </EmptyContent>
+        </Empty>
       </div>
     );
   }
@@ -462,32 +486,36 @@ export default function ProductsPage() {
   return (
     <>
       <div ref={tableTopRef} className="w-full space-y-4">
-        <ProductFilters
-          category={category}
-          status={status}
-          priceRange={priceRange}
-          sort={sort}
-          searchQuery={searchQuery}
-          page={page}
-          pageSize={pageSize}
-          onCategoryChange={updateCategory}
-          onStatusChange={updateStatus}
-          onPriceChange={updatePrice}
-          onReset={resetFilters}
-          searchSlot={
-            <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
-          }
-          actionsSlot={
-            <Button
-              type="button"
-              className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4"
-              onClick={openAdd}
-            >
-              <span className="hidden sm:inline">Add Product</span>
-              <span className="sm:hidden">Add</span>
-            </Button>
-          }
-        />
+        {isInitialLoad ? (
+          <ProductFiltersSkeleton />
+        ) : (
+          <ProductFilters
+            category={category}
+            status={status}
+            priceRange={priceRange}
+            sort={sort}
+            searchQuery={searchQuery}
+            page={page}
+            pageSize={pageSize}
+            onCategoryChange={updateCategory}
+            onStatusChange={updateStatus}
+            onPriceChange={updatePrice}
+            onReset={resetFilters}
+            searchSlot={
+              <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
+            }
+            actionsSlot={
+              <Button
+                type="button"
+                className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4"
+                onClick={openAdd}
+              >
+                <span className="hidden sm:inline">Add Product</span>
+                <span className="sm:hidden">Add</span>
+              </Button>
+            }
+          />
+        )}
         <div className="relative">
           {isInitialLoad ? (
             <ProductTableSkeleton />

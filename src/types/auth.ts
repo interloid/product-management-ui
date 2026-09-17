@@ -11,6 +11,7 @@ export interface UserResponse {
   email: string;
   first_name: string;
   last_name: string;
+  avatar_url?: string;
   is_active: boolean;
   role?: string;
 }

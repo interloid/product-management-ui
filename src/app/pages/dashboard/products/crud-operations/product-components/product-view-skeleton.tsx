@@ -41,7 +41,7 @@ export function ProductViewSkeleton() {
             <Skeleton className="h-4 w-16" />
 
             <Skeleton className="h-4 w-14" />
-            <Skeleton className="h-6 w-20 rounded-full" />
+            <Skeleton className="h-6 w-20 rounded-md" />
 
             <Skeleton className="h-4 w-20" />
             <div className="space-y-2">

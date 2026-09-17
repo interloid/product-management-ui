@@ -65,7 +65,7 @@ export function ProductFilters({
           }
         >
           <SelectTrigger className="h-9 w-fit hover:bg-primary-hover! hover:border-primary">
-            <span className="text-xs">Category:</span>
+            <span className="text-sm">Category:</span>
             <SelectValue />
           </SelectTrigger>
           <SelectContent
@@ -74,7 +74,7 @@ export function ProductFilters({
             align="start"
             sideOffset={4}
             avoidCollisions={false}
-            className="w-fit"
+            className="w-fit p-1! "
           >
             {categories.map((item) => (
               <SelectItem
@@ -98,8 +98,8 @@ export function ProductFilters({
                 size="sm"
                 className={
                   active
-                    ? "h-9 rounded-full px-3 sm:px-4"
-                    : "h-9 rounded-full px-3 font-normal hover:bg-primary-hover! hover:border-primary sm:px-4"
+                    ? "h-9 rounded-md px-3 sm:px-4"
+                    : "h-9 rounded-md px-3 font-normal hover:bg-primary-hover! hover:border-primary sm:px-4"
                 }
                 onClick={() => onStatusChange(item.value)}
               >
@@ -120,7 +120,7 @@ export function ProductFilters({
             align="start"
             sideOffset={4}
             avoidCollisions={false}
-            className="w-fit"
+            className="w-fit p-1"
           >
             {priceRanges.map((range) => (
               <SelectItem

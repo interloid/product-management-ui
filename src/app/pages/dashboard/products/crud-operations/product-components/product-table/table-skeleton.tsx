@@ -81,7 +81,7 @@ export function ProductTableSkeleton() {
               </TableCell>
 
               <TableCell>
-                <Skeleton className="h-5 w-16 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-md" />
               </TableCell>
 
               <TableCell className="hidden md:table-cell">

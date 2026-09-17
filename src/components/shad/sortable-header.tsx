@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { MoveDown, MoveUp } from "lucide-react";
 import { TableHead } from "@/components/ui/table";
 import type { SortableTableHeadProps } from "@/types/props";
 
@@ -20,19 +20,19 @@ export function SortableHeader({
       >
         <span className="whitespace-nowrap text-xs">{label}</span>
 
-        <span className="flex flex-col -space-y-1 shrink-0">
-          <ArrowUp
-            className={`size-3 ${
+        <span className="flex items-center shrink-0">
+          <MoveUp
+            className={`size-3 transition-colors ${
               isActive && sort.order === "asc"
-                ? "text-foreground"
-                : "text-muted-foreground/40"
+                ? "text-primary"
+                : "text-muted-foreground/40 hover:text-muted-foreground"
             }`}
           />
-          <ArrowDown
-            className={`size-3 ${
+          <MoveDown
+            className={`size-3 transition-colors ${
               isActive && sort.order === "desc"
-                ? "text-foreground"
-                : "text-muted-foreground/40"
+                ? "text-primary"
+                : "text-muted-foreground/40 hover:text-muted-foreground"
             }`}
           />
         </span>

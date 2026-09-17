@@ -268,7 +268,9 @@ export function ProductForm(props: ProductFormProps) {
     }
 
     if (totalImageCount > MAX_IMAGES) {
-      toast.error(`You can have a maximum of ${MAX_IMAGES} images.`);
+      toast.error(`You can have a maximum of ${MAX_IMAGES} images.`, {
+      id: "max-images",
+    });
       return;
     }
 
@@ -308,7 +310,7 @@ export function ProductForm(props: ProductFormProps) {
 
       if (mode === "add") {
         await createProduct(formData);
-        toast.success("Product created successfully");
+        toast.success("Product created successfully", { id: "create-success" });
         resetProductForm();
         onOpenChange(false);
         props.onCreated?.();
@@ -317,7 +319,7 @@ export function ProductForm(props: ProductFormProps) {
 
       const updated = await updateProduct(product!.id, formData);
 
-      toast.success("Product updated successfully");
+      toast.success("Product updated successfully", { id: "update-success" });
 
       resetProductForm();
       onOpenChange(false);
@@ -330,6 +332,7 @@ export function ProductForm(props: ProductFormProps) {
             ? "Unable to create product. Please check the form and try again."
             : "Unable to update product. Please check the form and try again.",
         ),
+        { id: "save-error" },
       );
     } finally {
       setIsSubmitting(false);
@@ -349,7 +352,6 @@ export function ProductForm(props: ProductFormProps) {
               <SheetTitle className="truncate text-[15px] font-semibold">
                 {product.name}
               </SheetTitle>
-
               <p className="mt-0.5 font-mono text-xs text-muted-foreground">
                 {product.sku}
               </p>
@@ -494,6 +496,14 @@ export function ProductForm(props: ProductFormProps) {
                         : `${product?.name ?? "Product"} image`
                     }
                     isPrimary={image.isPrimary}
+                    images={orderedActiveImages.map((img) => ({
+                      src: img.url,
+                      alt:
+                        img.type === "new"
+                          ? img.file.name
+                          : `${product?.name ?? "Product"} image`,
+                    }))}
+                    initialIndex={index}
                     mode={image.type}
                     draggable={!isSubmitting && orderedActiveImages.length > 1}
                     isDraggingThis={draggedTileIndex === index}
@@ -525,7 +535,7 @@ export function ProductForm(props: ProductFormProps) {
                     key={`removed-${image.id}`}
                     className="relative flex aspect-square items-center justify-center rounded-md border border-dashed border-destructive bg-destructive/5"
                   >
-                    <span className="px-2 text-center text-[10px] font-medium text-destructive">
+                    <span className="px-2 text-center text-[11px] font-medium text-destructive">
                       Removed on save
                     </span>
                     <button

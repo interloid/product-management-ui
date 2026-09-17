@@ -58,6 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             id: apiUser.id,
             email: apiUser.email,
             name: `${apiUser.first_name ?? ""} ${apiUser.last_name ?? ""}`.trim(),
+            avatar: apiUser.avatar_url,
           };
           setUser(userData);
           setStatus("authenticated");

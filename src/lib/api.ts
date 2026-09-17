@@ -1,11 +1,52 @@
 import { ApiError } from "@/lib/api-error";
+import { toast } from "sonner";
 import type { ApiRequestOptions, JsonBody } from "@/types/product";
 
 export const API_BASE_URL = import.meta.env.DEV
   ? ""
   : (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/+$/, "");
 
+export function resolveApiUrl(url?: string | null): string | undefined {
+  if (!url) return undefined;
+  if (
+    /^https?:\/\//i.test(url) ||
+    url.startsWith("data:") ||
+    url.startsWith("blob:")
+  ) {
+    return url;
+  }
+  if (!API_BASE_URL) return url;
+  return `${API_BASE_URL}${url.startsWith("/") ? url : `/${url}`}`;
+}
+
 const API_TIMEOUT = 15_000;
+
+const AUTO_RELOAD_COOLDOWN_MS = 60_000;
+const AUTO_RELOAD_DELAY_MS = 2_000;
+
+let lastAutoReloadAt = 0;
+let autoReloadScheduled = false;
+
+function scheduleAutoReload() {
+  const now = Date.now();
+
+  if (autoReloadScheduled || now - lastAutoReloadAt < AUTO_RELOAD_COOLDOWN_MS) {
+    return;
+  }
+
+  autoReloadScheduled = true;
+  lastAutoReloadAt = now;
+
+  toast.error("Something went wrong", {
+    id: "auto-reload",
+    description: "Refreshing the page automatically…",
+  });
+
+  window.setTimeout(() => {
+    autoReloadScheduled = false;
+    window.location.reload();
+  }, AUTO_RELOAD_DELAY_MS);
+}
 
 const CREDENTIAL_AUTH_ENDPOINTS = new Set([
   "/api/v1/auth/login",
@@ -302,6 +343,10 @@ export async function apiRequest<T>(
     if (!response.ok) {
       const isAuthEndpoint = CREDENTIAL_AUTH_ENDPOINTS.has(endpoint);
       const isRetry = Boolean(options._isRetry);
+
+      if (response.status === 500 && !isAuthEndpoint) {
+        scheduleAutoReload();
+      }
 
       if (response.status === 401 && !isAuthEndpoint && !isRetry) {
         const refreshSucceeded = await requestTokenRefresh();

@@ -74,7 +74,7 @@ export function ProductActionConfirmDialog({
             className={
               confirmTone === "archive"
                 ? "h-9 px-4 text-sm bg-primary/90 text-white hover:bg-primary cursor-pointer"
-                : "h-9 px-4 text-sm bg-cancel-button-background/90! text-white hover:bg-cancel-button-background cursor-pointer"
+                : "h-9 px-4 text-sm bg-cancel-button-background text-white hover:bg-cancel-button-background/85! cursor-pointer"
             }
             onClick={onConfirm}
             disabled={isPending}

@@ -15,7 +15,7 @@ import {
   FieldSeparator,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -169,6 +169,7 @@ export default function LoginPage({
           "Unable to sign in. Please try again.",
           { context: "login" },
         ),
+        { id: "login-failed" },
       );
     } finally {
       setLoading(false);
@@ -178,7 +179,26 @@ export default function LoginPage({
   const handleProviderLogin = (provider: OAuthProvider) => {
     setProviderLoading(provider);
     loginWithProvider(provider);
+
+    window.setTimeout(
+      () =>
+        setProviderLoading((current) =>
+          current === provider ? null : current,
+        ),
+      15_000,
+    );
   };
+
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        setProviderLoading(null);
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
 
   return (
     <div className="flex min-h-full w-full flex-col items-center justify-center p-4 sm:p-6 md:p-10">
@@ -186,7 +206,7 @@ export default function LoginPage({
         <span className="text-sm font-light text-muted-foreground">
           Powered by{" "}
         </span>
-        <span className="text-sm font-semibold">Interloid</span>
+        <div className="flex">
         <img
           src={interloidLogo}
           alt="Interloid"
@@ -194,6 +214,8 @@ export default function LoginPage({
           height={20}
           className="h-5 w-5 object-contain"
         />
+        <span className="text-sm font-semibold">Interloid</span>
+        </div>
       </div>
       <div className="w-full border rounded-[10px] max-w-lg">
         <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -399,7 +421,7 @@ export default function LoginPage({
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full h-10 text-sm font-semibold shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/35 transition-all disabled:opacity-60 disabled:shadow-none"
+                      className="w-full h-10 text-sm font-semibold transition-colors disabled:opacity-60 border-none"
                     >
                       {loading ? (
                         <>

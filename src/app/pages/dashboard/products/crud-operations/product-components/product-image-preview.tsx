@@ -51,7 +51,7 @@ export function ProductImagePreview({
           draggable={false}
           onLoad={handleLoad}
           onError={handleError}
-          className="h-full w-full rounded-[inherit] object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+          className="h-full w-full rounded-[inherit] object-cover"
         />
         {isLoading && (
           <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-muted/50">
@@ -61,13 +61,13 @@ export function ProductImagePreview({
 
         {hasError && (
           <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-muted/50">
-            <span className="text-[10px] font-medium text-muted-foreground">
+            <span className="text-[11px] font-medium text-muted-foreground">
               Image unavailable
             </span>
           </span>
         )}
         {!isLoading && !hasError && (
-          <span className="pointer-events-none absolute inset-0 m-auto flex size-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+          <span className="pointer-events-none absolute inset-0 m-auto flex size-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
             <Eye className="size-4" />
           </span>
         )}

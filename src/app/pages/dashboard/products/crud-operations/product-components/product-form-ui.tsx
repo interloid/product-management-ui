@@ -140,9 +140,9 @@ export function ProductFormFields({
               id={`${idPrefix}-category`}
               aria-invalid={Boolean(errors.category)}
               className={cn(
-                "h-9 w-full focus-visible:ring-primary/20",
+                "h-9 w-full hover:border-primary hover:bg-primary-hover focus-visible:ring-primary/20",
                 errors.category
-                  ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                  ? "border-destructive hover:border-destructive hover:bg-destructive/5 focus-visible:border-destructive focus-visible:ring-destructive/20"
                   : "focus-visible:border-primary",
               )}
             >
@@ -154,9 +154,14 @@ export function ProductFormFields({
               align="start"
               sideOffset={4}
               avoidCollisions={false}
+              className="p-1"
             >
               {productCategories.map((category) => (
-                <SelectItem key={category.value} value={category.value}>
+                <SelectItem
+                  key={category.value}
+                  value={category.value}
+                  className="hover:bg-primary-hover!"
+                >
                   {category.label}
                 </SelectItem>
               ))}
@@ -231,7 +236,7 @@ export function ProductFormFields({
               onFieldChange("status", value as ProductStatus)
             }
           >
-            <SelectTrigger id={`${idPrefix}-status`} className="h-9 w-full">
+            <SelectTrigger id={`${idPrefix}-status`} className="h-9 w-full  hover:border-primary hover:bg-primary-hover focus-visible:ring-primary/20">
               <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent
@@ -240,9 +245,14 @@ export function ProductFormFields({
               align="start"
               sideOffset={4}
               avoidCollisions={false}
+              className="p-1"
             >
               {statuses.map((status) => (
-                <SelectItem key={status.value} value={status.value}>
+                <SelectItem
+                  key={status.value}
+                  value={status.value}
+                  className="hover:bg-primary-hover!"
+                >
                   {status.label}
                 </SelectItem>
               ))}
@@ -405,7 +415,7 @@ export function ProductImageTile({
         className={cn(
           "relative aspect-square overflow-hidden rounded-md border bg-muted/20 transition-all cursor-pointer select-none",
           isSelected
-            ? "border-2 border-primary ring-2 ring-primary/30 scale-105 shadow-sm opacity-100"
+            ? "border-2 border-primary ring-2 ring-primary/30 shadow-sm opacity-100"
             : "border-border opacity-70 hover:opacity-100 hover:border-primary/50",
         )}
       >
@@ -416,7 +426,7 @@ export function ProductImageTile({
           className="size-full object-cover rounded-[inherit]"
         />
         {isPrimary && (
-          <span className="absolute bottom-1 left-1 rounded bg-black/70 px-1 py-0.5 text-[9px] font-medium text-white backdrop-blur-xs">
+          <span className="absolute bottom-1 left-1 rounded bg-primary px-1 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">
             Primary
           </span>
         )}
@@ -433,12 +443,11 @@ export function ProductImageTile({
       onDrop={onDrop}
       onDragEnd={onDragEnd}
       className={cn(
-        "relative aspect-square overflow-hidden rounded-md border bg-clip-padding transition-all duration-150 select-none",
-        draggable && "cursor-grab active:cursor-grabbing hover:shadow-xs",
+        "relative aspect-square overflow-hidden rounded-md border bg-clip-padding transition-colors duration-150 select-none",
+        draggable && "cursor-grab active:cursor-grabbing",
         isPrimary ? "border-2 border-primary" : "border-border",
-        isDraggingThis && "opacity-30 scale-95 border-dashed border-primary",
-        isDragOverThis &&
-          "ring-2 ring-primary ring-offset-2 scale-105 shadow-md border-primary",
+        isDraggingThis && "opacity-30 border-dashed border-primary",
+        isDragOverThis && "ring-2 ring-primary ring-offset-2 border-primary",
       )}
     >
       <ProductImagePreview
@@ -498,24 +507,21 @@ export function ProductImageDropzone({
         onDragLeave={dragHandlers.onDragLeave}
         onDrop={dragHandlers.onDrop}
         className={cn(
-          "group flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border border-dashed transition-all duration-200",
+          "group flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border border-dashed transition-colors duration-200",
           isDragging
-            ? "border-primary bg-primary/10 text-primary scale-[1.02]"
-            : "border-border text-muted-foreground hover:border-primary hover:bg-primary-hover/50 hover:text-foreground",
+            ? "border-primary bg-primary/10 text-primary"
+            : "border-border text-muted-foreground hover:border-primary hover:bg-muted hover:text-foreground",
           isSubmitting && "pointer-events-none opacity-60",
         )}
       >
-        <span className="text-xl font-light leading-none transition-transform duration-150 group-hover:scale-110">
+        <span className="text-lg font-light leading-none">
           +
         </span>
-        <span className="mt-0.5 px-1 text-center text-[10px] font-medium">
+        <span className="mt-1 px-1 text-center text-[11px] font-medium">
           {isDragging ? "Drop images here" : "Add images"}
         </span>
-        <span className="px-1 text-center text-[9px] text-muted-foreground">
+        <span className="px-1 text-center text-[10px] text-muted-foreground">
           {remainingSlots} {remainingSlots === 1 ? "slot" : "slots"} left
-        </span>
-        <span className="font-mono text-[8px] text-muted-foreground/70">
-          Max 5MB
         </span>
       </label>
 

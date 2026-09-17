@@ -57,6 +57,7 @@ export function LogoutDialog({
           "Unable to log out right now. Please try again.",
         ),
         {
+          id: "logout-failed",
           description: "You are still signed in. Please try again in a moment.",
         },
       );

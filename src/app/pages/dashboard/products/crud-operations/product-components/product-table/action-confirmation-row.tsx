@@ -57,7 +57,7 @@ export function ProductActionConfirmationRow({
               className={
                 confirmTone === "archive"
                   ? "bg-primary text-white hover:bg-primary/90"
-                  : "bg-cancel-button-background/90! text-white hover:bg-cancel-button-background"
+                  : "bg-cancel-button-background text-white hover:bg-cancel-button-background/80!"
               }
               onClick={onConfirm}
               disabled={isPending}

@@ -29,7 +29,7 @@ export default function PasscodeRequestPage() {
     const trimmedEmail = email.trim();
 
     if (!trimmedEmail) {
-      toast.error("Please enter your email address.");
+      toast.error("Please enter your email address.", { id: "passcode-email" });
       return;
     }
 
@@ -40,10 +40,11 @@ export default function PasscodeRequestPage() {
       if (!response.success) {
         toast.error(
           response.message || "Unable to send the passcode. Please try again.",
+          { id: "passcode-send-failed" },
         );
         return;
       }
-      toast.success("Passcode sent successfully.");
+      toast.success("Passcode sent successfully.", { id: "passcode-sent" });
       navigate("/passcode/verify", {
         state: {
           email: trimmedEmail,
@@ -55,6 +56,7 @@ export default function PasscodeRequestPage() {
           error,
           "Unable to send the passcode. Please try again.",
         ),
+        { id: "passcode-request-failed" },
       );
     } finally {
       setIsLoading(false);

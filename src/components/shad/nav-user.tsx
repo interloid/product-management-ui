@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { resolveApiUrl } from "@/lib/api";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +21,15 @@ import { getInitials } from "@/lib/utils";
 export function NavUser({ user }: { user: AuthUser | null }) {
   const { state } = useSidebar();
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [avatarError, setAvatarError] = useState(false);
   const initials = getInitials(user?.name ?? "");
+  const avatarSrc = resolveApiUrl(user?.avatar);
+  const [prevAvatarSrc, setPrevAvatarSrc] = useState(avatarSrc);
+
+  if (avatarSrc !== prevAvatarSrc) {
+    setPrevAvatarSrc(avatarSrc);
+    setAvatarError(false);
+  }
 
   return (
     <SidebarMenu className="ml-0">
@@ -32,7 +41,13 @@ export function NavUser({ user }: { user: AuthUser | null }) {
               className="hover:bg-primary-hover! data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 shrink-0 rounded-lg">
-                <AvatarImage src={user?.avatar} alt={user?.name ?? ""} />
+                {avatarSrc && !avatarError && (
+                  <AvatarImage
+                    src={avatarSrc}
+                    alt={user?.name ?? ""}
+                    onError={() => setAvatarError(true)}
+                  />
+                )}
                 <AvatarFallback className="rounded-lg">
                   {initials}
                 </AvatarFallback>

@@ -279,7 +279,7 @@ function ImagePreviewSlider({
               handlePrev();
             }}
             aria-label="Previous image"
-            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-md backdrop-blur hover:bg-background"
+            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-sm backdrop-blur hover:bg-background"
           >
             <ChevronLeft className="size-5" />
           </Button>
@@ -353,7 +353,7 @@ function ImagePreviewSlider({
               handleNext();
             }}
             aria-label="Next image"
-            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-md backdrop-blur hover:bg-background"
+            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-sm backdrop-blur hover:bg-background"
           >
             <ChevronRight className="size-5" />
           </Button>
@@ -374,7 +374,7 @@ function ImagePreviewSlider({
                 aria-label={`View image ${idx + 1}`}
                 className={`relative size-10 sm:size-12 shrink-0 overflow-hidden rounded-md border transition-all ${
                   idx === realIndex
-                    ? "border-primary ring-2 ring-primary/40 scale-105 opacity-100 shadow-xs"
+                    ? "border-primary ring-2 ring-primary/40 opacity-100 shadow-xs"
                     : "border-border/60 opacity-60 hover:opacity-100 hover:border-border"
                 }`}
               >
