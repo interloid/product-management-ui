@@ -37,7 +37,6 @@ export function ProductActionConfirmationRow({
 
             <div className="min-w-0">
               <p className="truncate text-start text-sm font-medium">{title}</p>
-
               <p className="text-sm text-muted-foreground">{description}</p>
             </div>
           </div>
@@ -58,7 +57,7 @@ export function ProductActionConfirmationRow({
               className={
                 confirmTone === "archive"
                   ? "bg-primary text-white hover:bg-primary/90"
-                  : "bg-red-600 text-white hover:bg-red-700"
+                  : "bg-cancel-button-background/90! text-white hover:bg-cancel-button-background"
               }
               onClick={onConfirm}
               disabled={isPending}

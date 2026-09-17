@@ -79,6 +79,7 @@ function ImagePreviewSlider({
   const wheelLockRef = useRef(false);
   const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
   useEffect(() => {
     return () => {
       if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
@@ -265,7 +266,8 @@ function ImagePreviewSlider({
   if (!images.length) return null;
 
   return (
-    <div className="relative flex flex-col items-center gap-3">
+    <div className="relative flex flex-col items-center gap-2.5 sm:gap-3 w-full">
+      {/* Main Image Slider with Previous and Next Buttons on the sides as before */}
       <div className="relative flex items-center justify-center gap-2 sm:gap-3 w-full">
         {hasMultiple && (
           <Button
@@ -277,13 +279,14 @@ function ImagePreviewSlider({
               handlePrev();
             }}
             aria-label="Previous image"
-            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-md backdrop-blur hover:bg-background hover:scale-105 active:scale-95 transition-all"
+            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-md backdrop-blur hover:bg-background"
           >
-            <ChevronLeft className="size-5 transition-transform duration-150 group-hover:-translate-x-0.5" />
+            <ChevronLeft className="size-5" />
           </Button>
         )}
+
         <div
-          className="relative overflow-hidden rounded-lg bg-muted/40 w-[75vw] sm:w-140 md:w-160 lg:w-175 max-w-full h-[55vh] sm:h-115 md:h-125 lg:h-135 max-h-[78vh] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
+          className="relative flex-1 min-w-0 overflow-hidden rounded-lg sm:rounded-xl bg-muted/30 border border-border/40 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-96 max-h-[50vh] sm:max-h-[58vh] min-h-[210px] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -304,7 +307,7 @@ function ImagePreviewSlider({
             {slides.map((img, idx) => (
               <div
                 key={`${img.src}-${idx}`}
-                className="size-full shrink-0 flex items-center justify-center p-2"
+                className="size-full shrink-0 flex items-center justify-center p-2 sm:p-3"
               >
                 <PreviewImage
                   src={img.src}
@@ -314,8 +317,12 @@ function ImagePreviewSlider({
             ))}
           </div>
 
+          {/* Static Indicator Dots without stretching animation */}
           {hasMultiple && (
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1.5 backdrop-blur-sm z-20">
+            <div
+              onPointerDown={(e) => e.stopPropagation()}
+              className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-black/55 dark:bg-black/70 px-2.5 py-1 backdrop-blur-xs z-20"
+            >
               {images.map((_, idx) => (
                 <button
                   key={idx}
@@ -325,10 +332,10 @@ function ImagePreviewSlider({
                     handleSelectImage(idx);
                   }}
                   aria-label={`Go to image ${idx + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                  className={`size-1.5 rounded-full ${
                     idx === realIndex
-                      ? "w-4 bg-white"
-                      : "w-1.5 bg-white/50 hover:bg-white/80"
+                      ? "bg-white"
+                      : "bg-white/50 hover:bg-white/80"
                   }`}
                 />
               ))}
@@ -346,36 +353,39 @@ function ImagePreviewSlider({
               handleNext();
             }}
             aria-label="Next image"
-            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-md backdrop-blur hover:bg-background hover:scale-105 active:scale-95 transition-all"
+            className="group size-9 sm:size-10 shrink-0 rounded-full bg-background/95 text-foreground border border-border shadow-md backdrop-blur hover:bg-background"
           >
-            <ChevronRight className="size-5 transition-transform duration-150 group-hover:translate-x-0.5" />
+            <ChevronRight className="size-5" />
           </Button>
         )}
       </div>
 
       {hasMultiple && (
-        <div className="flex max-w-full gap-2 overflow-x-auto py-1 px-2">
-          {images.map((img, idx) => (
-            <button
-              key={`${img.src}-${idx}`}
-              ref={(el) => {
-                thumbnailRefs.current[idx] = el;
-              }}
-              type="button"
-              onClick={() => handleSelectImage(idx)}
-              className={`relative size-12 shrink-0 overflow-hidden rounded-md border transition-all ${
-                idx === realIndex
-                  ? "border-primary ring-2 ring-primary/30 scale-105"
-                  : "border-border opacity-60 hover:opacity-100"
-              }`}
-            >
-              <img
-                src={img.src}
-                alt={img.alt ?? ""}
-                className="size-full object-cover"
-              />
-            </button>
-          ))}
+        <div className="w-full overflow-hidden">
+          <div className="mx-auto flex w-fit max-w-full gap-1.5 sm:gap-2 overflow-x-auto py-0.5 sm:py-1 px-0.5 scrollbar-none">
+            {images.map((img, idx) => (
+              <button
+                key={`${img.src}-${idx}`}
+                ref={(el) => {
+                  thumbnailRefs.current[idx] = el;
+                }}
+                type="button"
+                onClick={() => handleSelectImage(idx)}
+                aria-label={`View image ${idx + 1}`}
+                className={`relative size-10 sm:size-12 shrink-0 overflow-hidden rounded-md border transition-all ${
+                  idx === realIndex
+                    ? "border-primary ring-2 ring-primary/40 scale-105 opacity-100 shadow-xs"
+                    : "border-border/60 opacity-60 hover:opacity-100 hover:border-border"
+                }`}
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt ?? ""}
+                  className="size-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>
@@ -397,7 +407,7 @@ export function ImagePreviewDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl! w-fit overflow-hidden p-3 sm:p-5">
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-lg md:max-w-xl lg:max-w-2xl p-3 sm:p-4 pt-8 sm:pt-9 rounded-xl sm:rounded-2xl overflow-hidden max-h-[90vh]">
         {open && images.length > 0 && (
           <ImagePreviewSlider
             key={initialIndex}

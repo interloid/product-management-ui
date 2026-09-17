@@ -475,7 +475,7 @@ export default function ProductsPage() {
           onPriceChange={updatePrice}
           onReset={resetFilters}
           searchSlot={
-          <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
+            <ProductSearchInput className="min-w-44 flex-1 lg:w-80 lg:flex-none" />
           }
           actionsSlot={
             <Button

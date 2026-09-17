@@ -9,7 +9,10 @@ export function AppFooter() {
           <Link to="/help" className="transition-colors hover:text-foreground">
             Help
           </Link>
-          <Link to="/privacy" className="transition-colors hover:text-foreground">
+          <Link
+            to="/privacy"
+            className="transition-colors hover:text-foreground"
+          >
             Privacy
           </Link>
           <Link to="/terms" className="transition-colors hover:text-foreground">

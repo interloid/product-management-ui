@@ -39,7 +39,9 @@ export function isTechnicalMessage(msg: string): boolean {
     /failed with status/i.test(trimmed) ||
     /status code/i.test(trimmed) ||
     /\bhttp\s*\d{3}\b/i.test(trimmed) ||
-    (/\b(400|401|403|404|405|409|413|422|429|500|502|503|504)\b/.test(trimmed) &&
+    (/\b(400|401|403|404|405|409|413|422|429|500|502|503|504)\b/.test(
+      trimmed,
+    ) &&
       /\b(status|code|error|exception|bad request|unauthorized|forbidden|not found|conflict|unprocessable|internal server|gateway)\b/i.test(
         trimmed,
       ))
@@ -348,14 +350,14 @@ export function getPasscodeErrorMessage(error: unknown): string {
       error.status === 404 ||
       error.status === 422
     ) {
-      return "Invalid or expired passcode. Please try again.";
+      return "Invalid or expired Passcode. Please try again.";
     }
 
     if (error.message && !isTechnicalMessage(error.message)) {
       return cleanUserMessage(error.message);
     }
 
-    return "Invalid or expired passcode. Please try again.";
+    return "Invalid or expired Passcode. Please try again.";
   }
 
   if (error instanceof Error) {
@@ -364,5 +366,5 @@ export function getPasscodeErrorMessage(error: unknown): string {
     }
   }
 
-  return "Invalid or expired passcode. Please try again.";
+  return "Invalid or expired Passcode. Please try again.";
 }

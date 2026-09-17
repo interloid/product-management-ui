@@ -76,7 +76,7 @@ export const ProductTableRow = memo(function ProductTableRow({
           <ProductImage src={primaryImage?.url} alt={product.name} />
           <span
             title={product.sku}
-            className="hidden font-mono text-xs text-muted-foreground min-[420px]:inline truncate min-w-0"
+            className="font-mono text-xs text-muted-foreground min-[420px]:inline truncate min-w-0"
           >
             {product.sku}
           </span>

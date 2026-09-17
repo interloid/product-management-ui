@@ -400,7 +400,7 @@ export function ProductForm(props: ProductFormProps) {
           </div>
         </div>
 
-        <SheetFooter className="border-t px-5 py-3">
+        <SheetFooter className="border-t px-2 md:px-5 py-3">
           <div className="flex w-full flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               {product.status !== "archived" && props.onArchive && (
@@ -409,7 +409,7 @@ export function ProductForm(props: ProductFormProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => props.onArchive?.(product)}
-                  className="gap-1.5 text-xs hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                  className="gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
                 >
                   <Archive className="size-3.5" />
                   <span>Archive</span>

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
@@ -42,7 +43,6 @@ export default function LoginPage({
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [serverError, setServerError] = useState("");
   const [providerLoading, setProviderLoading] = useState<string | null>(null);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -109,7 +109,6 @@ export default function LoginPage({
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     setEmail(val);
-    if (serverError) setServerError("");
     if (emailError) {
       const err = validateEmail(val);
       setEmailError(err ?? "");
@@ -124,7 +123,6 @@ export default function LoginPage({
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     setPassword(val);
-    if (serverError) setServerError("");
     if (passwordError) {
       const err = validatePassword(val);
       setPasswordError(err ?? "");
@@ -138,7 +136,6 @@ export default function LoginPage({
 
   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setServerError("");
 
     const eErr = validateEmail(email);
     const pErr = validatePassword(password);
@@ -166,7 +163,7 @@ export default function LoginPage({
         replace: true,
       });
     } catch (error) {
-      setServerError(
+      toast.error(
         getUserFriendlyErrorMessage(
           error,
           "Unable to sign in. Please try again.",
@@ -179,7 +176,6 @@ export default function LoginPage({
   };
 
   const handleProviderLogin = (provider: OAuthProvider) => {
-    setServerError("");
     setProviderLoading(provider);
     loginWithProvider(provider);
   };
@@ -400,11 +396,6 @@ export default function LoginPage({
                     </label>
                   </div>
                   <Field>
-                    {serverError && (
-                      <p className="text-sm text-destructive font-medium">
-                        {serverError}
-                      </p>
-                    )}
                     <Button
                       type="submit"
                       disabled={loading}

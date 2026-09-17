@@ -70,7 +70,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
           if (
             error instanceof ApiError &&
-            (error.status === 401 || error.status === 403 || error.status === 404)
+            (error.status === 401 ||
+              error.status === 403 ||
+              error.status === 404)
           ) {
             setUser(null);
             setStatus("unauthenticated");

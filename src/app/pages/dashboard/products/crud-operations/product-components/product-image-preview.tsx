@@ -66,7 +66,6 @@ export function ProductImagePreview({
             </span>
           </span>
         )}
-
         {!isLoading && !hasError && (
           <span className="pointer-events-none absolute inset-0 m-auto flex size-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white opacity-0 shadow-lg backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
             <Eye className="size-4" />

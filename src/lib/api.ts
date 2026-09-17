@@ -131,22 +131,62 @@ function extractDetailMessage(detail: unknown): string | null {
 function getDefaultStatusMessage(status: number): string {
   switch (status) {
     case 400:
-      return "Invalid request. Please check your information.";
+      return "Some information is missing or incorrect. Please check and try again.";
+
     case 401:
       return "Please sign in to continue.";
+
     case 403:
       return "You don't have permission to perform this action.";
+
     case 404:
-      return "The requested resource could not be found.";
+      return "The item you're looking for could not be found.";
+
     case 409:
-      return "A conflict occurred. This record may already exist.";
+      return "This action cannot be completed because the information already exists.";
+
     case 422:
-      return "Some of the provided information is invalid. Please check your input.";
+      return "Some information is not valid. Please check and try again.";
+
     case 429:
-      return "Too many requests. Please wait a moment and try again.";
+      return "Too many attempts. Please wait a moment and try again.";
+
+    case 500:
+      return "Something went wrong. Please try again shortly.";
+
+    case 501:
+      return "This feature is not currently available.";
+
+    case 502:
+      return "We're having trouble connecting right now. Please try again shortly.";
+
+    case 503:
+      return "The service is temporarily unavailable. Please try again shortly.";
+
+    case 504:
+      return "This is taking longer than expected. Please try again shortly.";
+
+    case 505:
+      return "Something went wrong. Please try again.";
+
+    case 506:
+      return "Something went wrong. Please try again later.";
+
+    case 507:
+      return "We couldn't save the information right now. Please try again later.";
+
+    case 508:
+      return "Something went wrong while completing this action. Please try again later.";
+
+    case 510:
+      return "We couldn't complete this action. Please try again.";
+
+    case 511:
+      return "Please complete the required network sign-in to continue.";
+
     default:
       if (status >= 500) {
-        return "Our servers are experiencing a temporary issue. Please try again shortly.";
+        return "Something went wrong. Please try again shortly.";
       }
       return "Something went wrong. Please try again.";
   }
