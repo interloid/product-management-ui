@@ -285,7 +285,7 @@ function ImagePreviewSlider({
         )}
 
         <div
-          className="relative flex-1 min-w-0 overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl bg-muted/30 border border-border/40 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-[480px] xl:h-[540px] max-h-[50vh] sm:max-h-[58vh] lg:max-h-[68vh] xl:max-h-[72vh] min-h-[210px] flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
+          className="relative flex-1 min-w-0 overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl bg-muted/30 border border-border/40 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-120 xl:h-135 max-h-[50vh] sm:max-h-[58vh] lg:max-h-[68vh] xl:max-h-[72vh] min-h-52.5 flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}

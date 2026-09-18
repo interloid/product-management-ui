@@ -26,7 +26,12 @@ export function NavMain({ items }: NavMainProps) {
               >
                 <NavLink
                   to={item.url}
-                  onClick={() => setOpenMobile(false)}
+                  onClick={() => {
+                    setOpenMobile(false);
+                    if (item.url === "/categories") {
+                      window.dispatchEvent(new CustomEvent("refresh-categories"));
+                    }
+                  }}
                   className="block w-full group-data-[collapsible=icon]:w-10"
                 >
                   {({ isActive }) => (

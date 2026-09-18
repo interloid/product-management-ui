@@ -52,7 +52,9 @@ export default function ProductsPage() {
     setProductCount,
     addTrigger,
   } = useSearch();
-  const { filterCategoryOptions, formCategoryOptions } = useCategories();
+  const { filterCategoryOptions, formCategoryOptions } = useCategories({
+    autoFetch: false,
+  });
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -243,6 +245,34 @@ export default function ProductsPage() {
       setConfirmTarget({ product, kind });
     },
     [],
+  );
+
+  const handleArchiveClick = useCallback(
+    (id: string) => {
+      if (typeof window !== "undefined" && window.innerWidth < 768) {
+        const targetProduct = products.find((p) => p.id === id);
+        if (targetProduct) {
+          openConfirm(targetProduct, "archive");
+          return;
+        }
+      }
+      setArchiveId(id);
+    },
+    [products, openConfirm],
+  );
+
+  const handleDeleteClick = useCallback(
+    (id: string) => {
+      if (typeof window !== "undefined" && window.innerWidth < 768) {
+        const targetProduct = products.find((p) => p.id === id);
+        if (targetProduct) {
+          openConfirm(targetProduct, "delete");
+          return;
+        }
+      }
+      setDeleteId(id);
+    },
+    [products, openConfirm],
   );
 
   const handleDeleteProduct = useCallback(
@@ -548,10 +578,10 @@ export default function ProductsPage() {
                   showNoResults={showNoResults}
                   sort={sort}
                   onSort={handleSort}
-                  onArchive={setArchiveId}
+                  onArchive={handleArchiveClick}
                   onCancelArchive={() => setArchiveId(null)}
                   onConfirmArchive={handleArchiveProduct}
-                  onDelete={setDeleteId}
+                  onDelete={handleDeleteClick}
                   onCancelDelete={() => setDeleteId(null)}
                   onConfirmDelete={handleDeleteProduct}
                   onResetFilters={resetFilters}

@@ -1,5 +1,4 @@
 import { ApiError } from "@/lib/api-error";
-import { notifyToast } from "@/lib/toast";
 import type { ApiRequestOptions, JsonBody } from "@/types/product";
 
 export const API_BASE_URL = import.meta.env.DEV
@@ -20,33 +19,7 @@ export function resolveApiUrl(url?: string | null): string | undefined {
 }
 
 const API_TIMEOUT = 15_000;
-
-const AUTO_RELOAD_COOLDOWN_MS = 60_000;
-const AUTO_RELOAD_DELAY_MS = 2_000;
-
-let lastAutoReloadAt = 0;
-let autoReloadScheduled = false;
-
-function scheduleAutoReload() {
-  const now = Date.now();
-
-  if (autoReloadScheduled || now - lastAutoReloadAt < AUTO_RELOAD_COOLDOWN_MS) {
-    return;
-  }
-
-  autoReloadScheduled = true;
-  lastAutoReloadAt = now;
-
-  notifyToast("error", "Something went wrong", {
-    id: "auto-reload",
-    description: "Refreshing the page automatically…",
-  });
-
-  window.setTimeout(() => {
-    autoReloadScheduled = false;
-    window.location.reload();
-  }, AUTO_RELOAD_DELAY_MS);
-}
+const UPLOAD_TIMEOUT = 60_000;
 
 const CREDENTIAL_AUTH_ENDPOINTS = new Set([
   "/api/v1/auth/login",
@@ -296,18 +269,32 @@ export async function apiRequest<T>(
 
   let timedOut = false;
 
+  const isFormData = options.body instanceof FormData;
+  const timeoutDuration =
+    options.timeout ?? (isFormData ? UPLOAD_TIMEOUT : API_TIMEOUT);
+
   const timeoutId = setTimeout(() => {
     timedOut = true;
     controller.abort();
-  }, API_TIMEOUT);
+  }, timeoutDuration);
 
-  const signal = options.signal
-    ? AbortSignal.any([options.signal, controller.signal])
-    : controller.signal;
+  let signal: AbortSignal = controller.signal;
+  if (options.signal) {
+    if (typeof AbortSignal.any === "function") {
+      signal = AbortSignal.any([options.signal, controller.signal]);
+    } else {
+      if (options.signal.aborted) {
+        controller.abort();
+      } else {
+        options.signal.addEventListener("abort", () => controller.abort(), {
+          once: true,
+        });
+      }
+      signal = controller.signal;
+    }
+  }
 
   try {
-    const isFormData = options.body instanceof FormData;
-
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
       body: prepareRequestBody(options.body),
@@ -344,10 +331,6 @@ export async function apiRequest<T>(
     if (!response.ok) {
       const isAuthEndpoint = CREDENTIAL_AUTH_ENDPOINTS.has(endpoint);
       const isRetry = Boolean(options._isRetry);
-
-      if (response.status === 500 && !isAuthEndpoint) {
-        scheduleAutoReload();
-      }
 
       if (response.status === 401 && !isAuthEndpoint && !isRetry) {
         const refreshSucceeded = await requestTokenRefresh();

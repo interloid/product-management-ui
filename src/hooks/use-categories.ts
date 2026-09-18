@@ -5,9 +5,13 @@ import type { ApiCategory } from "@/types/category";
 
 let cachedCategories: ApiCategory[] | null = null;
 
-export function useCategories() {
-  const [categories, setCategories] = useState<ApiCategory[]>(() => cachedCategories ?? []);
-  const [isLoading, setIsLoading] = useState<boolean>(() => cachedCategories === null);
+export function useCategories({
+  autoFetch = false,
+}: { autoFetch?: boolean } = {}) {
+  const [categories, setCategories] = useState<ApiCategory[]>(
+    () => cachedCategories ?? [],
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(() => autoFetch);
   const [error, setError] = useState<Error | null>(null);
 
   const refetch = useCallback(async () => {
@@ -25,13 +29,15 @@ export function useCategories() {
   }, []);
 
   useEffect(() => {
+    if (!autoFetch) {
+      return;
+    }
+
     let ignore = false;
 
     async function load() {
-      if (cachedCategories !== null) {
-        return;
-      }
       try {
+        setIsLoading(true);
         const res = await getCategories({ page: 1, pageSize: 100 });
         if (ignore) return;
         cachedCategories = res.categories;
@@ -51,11 +57,27 @@ export function useCategories() {
     return () => {
       ignore = true;
     };
-  }, []);
+  }, [autoFetch]);
 
-  const formCategoryOptions = categories.length > 0
-    ? categories.map((c) => ({ value: c.name, label: c.name }))
-    : defaultProductCategories;
+  useEffect(() => {
+    if (!autoFetch) {
+      return;
+    }
+
+    const handleRefresh = () => {
+      void refetch();
+    };
+
+    window.addEventListener("refresh-categories", handleRefresh);
+    return () => {
+      window.removeEventListener("refresh-categories", handleRefresh);
+    };
+  }, [autoFetch, refetch]);
+
+  const formCategoryOptions =
+    categories.length > 0
+      ? categories.map((c) => ({ value: c.name, label: c.name }))
+      : defaultProductCategories;
 
   const filterCategoryOptions = [
     { value: "All", label: "All" },

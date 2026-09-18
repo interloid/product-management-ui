@@ -121,6 +121,7 @@ export type JsonBody = object;
 export type ApiRequestOptions = Omit<RequestInit, "body"> & {
   body?: BodyInit | JsonBody;
   _isRetry?: boolean;
+  timeout?: number;
 };
 
 export type ProductFormMode = "add" | "view" | "edit";

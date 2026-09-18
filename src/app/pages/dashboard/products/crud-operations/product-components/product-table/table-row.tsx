@@ -1,4 +1,4 @@
-import { Check, Copy, Eye, MoreHorizontal } from "lucide-react";
+import { Check, Copy, Eye, MoreHorizontal, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -160,26 +160,26 @@ export const ProductTableRow = memo(function ProductTableRow({
         {product.stock === 0 ? (
           <span
             title="Out of stock"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-destructive tabular-nums"
+            className="inline-flex items-center gap-1.5 font-semibold text-destructive"
           >
-            <span className="size-1.5 rounded-full bg-destructive shrink-0" />
-            0
+            <Package className="size-3.5 shrink-0 text-destructive" />
+            <span>0</span>
           </span>
         ) : product.stock <= 10 ? (
           <span
             title={`Low stock (${product.stock} left)`}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 tabular-nums"
+            className="inline-flex items-center gap-1.5 font-medium text-amber-600 dark:text-amber-400"
           >
-            <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
-            {product.stock}
+            <Package className="size-3.5 shrink-0 text-amber-500" />
+            <span>{product.stock}</span>
           </span>
         ) : (
           <span
             title={`In stock (${product.stock})`}
-            className="inline-flex items-center gap-1.5 text-xs tabular-nums text-foreground"
+            className="inline-flex items-center gap-1.5 text-foreground"
           >
-            <span className="size-1.5 rounded-full bg-emerald-500/80 shrink-0" />
-            {product.stock}
+            <Package className="size-3.5 shrink-0 text-muted-foreground/70" />
+            <span>{product.stock}</span>
           </span>
         )}
       </TableCell>

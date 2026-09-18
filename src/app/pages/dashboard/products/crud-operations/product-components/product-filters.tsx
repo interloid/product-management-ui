@@ -100,7 +100,7 @@ export function ProductFilters({
           <ListRestart className="size-4" />
         </Button>
       </TooltipTrigger>
-      <TooltipContent side="top">
+      <TooltipContent side="right">
         <p>Reset filters</p>
       </TooltipContent>
     </Tooltip>
