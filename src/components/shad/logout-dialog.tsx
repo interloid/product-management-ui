@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { notifyToast } from "@/lib/toast";
 
 import {
   Dialog,
@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/hooks/use-auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
@@ -27,6 +28,7 @@ export function LogoutDialog({
   const navigate = useNavigate();
   const [internalOpen, setInternalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [logoutAllDevices, setLogoutAllDevices] = useState(false);
 
   const isControlled = controlledOpen !== undefined;
   const isOpen = isControlled ? controlledOpen : internalOpen;
@@ -34,6 +36,9 @@ export function LogoutDialog({
   const handleOpenChange = (nextOpen: boolean) => {
     if (isLoggingOut) {
       return;
+    }
+    if (!nextOpen) {
+      setLogoutAllDevices(false);
     }
     if (isControlled) {
       setControlledOpen?.(nextOpen);
@@ -45,13 +50,14 @@ export function LogoutDialog({
   async function handleLogout() {
     try {
       setIsLoggingOut(true);
-      await logout();
+      await logout({ allDevices: logoutAllDevices });
       handleOpenChange(false);
       // Do not rely on the route guard alone: logout must leave the dashboard
       // on builds where ProtectedRoute is not mounted.
       navigate("/login", { replace: true });
     } catch (error) {
-      toast.error(
+      notifyToast(
+        "error",
         getUserFriendlyErrorMessage(
           error,
           "Unable to log out right now. Please try again.",
@@ -92,6 +98,21 @@ export function LogoutDialog({
             page.
           </DialogDescription>
         </DialogHeader>
+
+        <div className="flex items-center gap-2.5 py-1">
+          <Checkbox
+            id="logout-all-devices"
+            checked={logoutAllDevices}
+            onCheckedChange={(checked) => setLogoutAllDevices(Boolean(checked))}
+            disabled={isLoggingOut}
+          />
+          <label
+            htmlFor="logout-all-devices"
+            className="text-xs font-medium text-muted-foreground cursor-pointer select-none leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Sign out of all devices and active sessions
+          </label>
+        </div>
 
         <DialogFooter>
           <DialogClose asChild>

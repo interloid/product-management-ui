@@ -7,11 +7,12 @@ export function ProductViewSkeleton() {
       aria-busy="true"
       aria-label="Loading product"
     >
-      <div className="border-b px-5 py-4">
-        <div className="space-y-2">
+      <div className="border-b px-5 py-4 flex items-center justify-between gap-3">
+        <div className="space-y-2 min-w-0 flex-1">
           <Skeleton className="h-5 w-3/5" />
           <Skeleton className="h-3 w-24" />
         </div>
+        <Skeleton className="size-8 rounded-md shrink-0" />
       </div>
 
       <div className="flex-1 overflow-y-auto p-5">

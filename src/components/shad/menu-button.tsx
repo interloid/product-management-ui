@@ -7,16 +7,16 @@ export function MobileMenuButton() {
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant="outline"
       size="icon"
-      className="size-9 shrink-0 md:hidden border-2"
+      className="size-8.5 shrink-0 rounded-lg border-border/80 bg-background text-muted-foreground shadow-2xs hover:bg-muted/80 hover:text-foreground active:scale-95 cursor-pointer md:hidden"
       onClick={(event) => {
         event.stopPropagation();
         toggleSidebar();
       }}
       aria-label="Open navigation menu"
     >
-      <Menu className="size-5" />
+      <Menu className="size-4 text-muted-foreground" strokeWidth={2.25} />
     </Button>
   );
 }

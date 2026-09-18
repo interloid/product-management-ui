@@ -267,7 +267,6 @@ function ImagePreviewSlider({
 
   return (
     <div className="relative flex flex-col items-center gap-2.5 sm:gap-3 w-full">
-      {/* Main Image Slider with Previous and Next Buttons on the sides as before */}
       <div className="relative flex items-center justify-center gap-2 sm:gap-3 lg:gap-4 w-full">
         {hasMultiple && (
           <Button
@@ -316,8 +315,6 @@ function ImagePreviewSlider({
               </div>
             ))}
           </div>
-
-          {/* Static Indicator Dots without stretching animation */}
           {hasMultiple && (
             <div
               onPointerDown={(e) => e.stopPropagation()}

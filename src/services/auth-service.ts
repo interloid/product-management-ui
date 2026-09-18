@@ -34,6 +34,12 @@ export async function logout(): Promise<void> {
   });
 }
 
+export async function logoutAll(): Promise<void> {
+  await apiRequest("/api/v1/auth/logout-all", {
+    method: "POST",
+  });
+}
+
 export function requestPasscode(
   email: string,
 ): Promise<PasscodeRequestResponse> {

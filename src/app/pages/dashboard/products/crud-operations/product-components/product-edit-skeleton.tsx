@@ -7,8 +7,9 @@ export function ProductEditSkeleton() {
       aria-busy="true"
       aria-label="Loading product"
     >
-      <div className="border-b px-5 py-4">
+      <div className="border-b px-5 py-4 flex items-center justify-between gap-3">
         <Skeleton className="h-5 w-3/5" />
+        <Skeleton className="size-8 rounded-md shrink-0" />
       </div>
 
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-5">

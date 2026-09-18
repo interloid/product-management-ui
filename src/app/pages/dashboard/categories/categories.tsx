@@ -1,30 +1,34 @@
 import { useNavigate } from "react-router-dom";
-import EmptyPage from "@/components/shad/empty-page";
+import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tags } from "lucide-react";
 
 export default function Categories() {
   const navigate = useNavigate();
 
   return (
-    <EmptyPage
-      icon={Tags}
-      badge="Catalog Taxonomies"
-      title="Category Hierarchy & Attributes"
-      description="Organize your product line with structured taxonomy trees, attribute templates, and category-level discount rules."
-      features={[
-        "Multi-level nested categories, sub-categories, and collections",
-        "Category-wide custom attributes (sizes, colors, materials)",
-        "Bulk product reassignment and drag-and-drop hierarchy",
-      ]}
-    >
-      <Button
-        variant="default"
-        onClick={() => navigate("/products")}
-        className="cursor-pointer"
-      >
-        Manage Products
-      </Button>
-    </EmptyPage>
+    <div className="flex w-full flex-col gap-5">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            Categories
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5 sm:text-sm">
+            Manage product taxonomy and classification categories across the catalog.
+          </p>
+        </div>
+
+        <div>
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => navigate("/products")}
+            className="h-9 gap-1.5 cursor-pointer"
+          >
+            Manage Products
+            <ArrowUpRight className="size-3.5" />
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

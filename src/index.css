@@ -179,6 +179,15 @@ div#root {
   animation: shimmer 1.5s linear infinite;
 }
 
+[data-sonner-toast][data-removed="true"][data-swipe-out="false"] {
+  --y: translateY(0) !important;
+  transform: translateX(calc(100% + 32px)) !important;
+  opacity: 0 !important;
+  transition:
+    transform 320ms ease-in,
+    opacity 320ms ease-in !important;
+}
+
 [data-slot="table-container"]::-webkit-scrollbar {
   width: 6px;
   height: 6px;

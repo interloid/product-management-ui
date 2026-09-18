@@ -72,7 +72,7 @@ export interface AuthContextValue {
   login: (credentials: LoginCredentials) => Promise<void>;
   loginWithPasscode: (email: string, passcode: string) => Promise<void>;
   checkAuth: () => Promise<boolean>;
-  logout: () => Promise<void>;
+  logout: (options?: { allDevices?: boolean }) => Promise<void>;
 }
 
 export interface AuthProviderProps {

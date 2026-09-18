@@ -13,15 +13,15 @@ export function getStatusLabel(status: string): string {
 export function getStatusClassName(status: string) {
   switch (status) {
     case "active":
-      return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800/50 dark:bg-emerald-950/40 dark:text-emerald-400";
+      return "rounded-full border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-medium text-[11px] px-2.5 py-0.5 shadow-2xs";
     case "draft":
-      return "border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/50 dark:bg-sky-950/40 dark:text-sky-400";
+      return "rounded-full border-sky-500/25 bg-sky-500/10 text-sky-700 dark:text-sky-400 font-medium text-[11px] px-2.5 py-0.5 shadow-2xs";
     case "out_of_stock":
-      return "border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-800/50 dark:bg-orange-950/40 dark:text-orange-400";
+      return "rounded-full border-amber-500/25 bg-amber-500/10 text-amber-700 dark:text-amber-400 font-medium text-[11px] px-2.5 py-0.5 shadow-2xs";
     case "archived":
-      return "border-slate-200 bg-slate-100 text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400";
+      return "rounded-full border-zinc-500/20 bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 font-medium text-[11px] px-2.5 py-0.5 shadow-2xs";
     default:
-      return "";
+      return "rounded-full text-[11px] px-2.5 py-0.5";
   }
 }
 
@@ -46,3 +46,40 @@ export function formatDateTime(dateString: string): string {
     hour12: true,
   });
 }
+
+export function formatRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
+
+  const now = Date.now();
+  const diffInSeconds = Math.floor((now - date.getTime()) / 1000);
+
+  if (diffInSeconds < 0 || diffInSeconds < 60) {
+    return "just now";
+  }
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) {
+    return `${diffInMinutes}m ago`;
+  }
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) {
+    return `${diffInHours}h ago`;
+  }
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays === 1) {
+    return "yesterday";
+  }
+  if (diffInDays < 30) {
+    return `${diffInDays}d ago`;
+  }
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) {
+    return `${diffInMonths}mo ago`;
+  }
+  const diffInYears = Math.floor(diffInDays / 365);
+  return `${diffInYears}y ago`;
+}
+

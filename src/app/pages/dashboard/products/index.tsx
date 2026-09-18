@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
-import { toast } from "sonner";
+import { notifyToast } from "@/lib/toast";
 import {
   ProductTable,
   ProductTableSkeleton,
@@ -9,6 +9,7 @@ import { ProductActionConfirmDialog } from "@/app/pages/dashboard/products/crud-
 import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useSearch } from "@/hooks/use-search";
+import { useCategories } from "@/hooks/use-categories";
 import {
   archiveProduct as archiveProductApi,
   deleteProduct as deleteProductApi,
@@ -38,7 +39,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { TriangleAlert } from "lucide-react";
+import { Plus, TriangleAlert } from "lucide-react";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 
 export default function ProductsPage() {
@@ -51,6 +52,7 @@ export default function ProductsPage() {
     setProductCount,
     addTrigger,
   } = useSearch();
+  const { filterCategoryOptions, formCategoryOptions } = useCategories();
   const [products, setProducts] = useState<ApiProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -264,10 +266,13 @@ export default function ProductsPage() {
           open: false,
           loading: false,
         });
-        toast.success("Product deleted successfully", { id: "delete-success" });
+        notifyToast("success", "Product deleted successfully", {
+          id: "delete-success",
+        });
         refresh();
       } catch (error) {
-        toast.error(
+        notifyToast(
+          "error",
           getUserFriendlyErrorMessage(
             error,
             "Unable to delete product. Please try again.",
@@ -303,10 +308,13 @@ export default function ProductsPage() {
           open: false,
           loading: false,
         });
-        toast.success("Product archived successfully", { id: "archive-success" });
+        notifyToast("success", "Product archived successfully", {
+          id: "archive-success",
+        });
         refresh();
       } catch (error) {
-        toast.error(
+        notifyToast(
+          "error",
           getUserFriendlyErrorMessage(
             error,
             "Unable to archive product. Please try again.",
@@ -396,7 +404,8 @@ export default function ProductsPage() {
         }
       } catch (error) {
         if (!ignore) {
-          toast.error(
+          notifyToast(
+            "error",
             getUserFriendlyErrorMessage(
               error,
               "Unable to load product details. Please try again.",
@@ -501,17 +510,18 @@ export default function ProductsPage() {
             onStatusChange={updateStatus}
             onPriceChange={updatePrice}
             onReset={resetFilters}
+            categoryOptions={filterCategoryOptions}
             searchSlot={
-              <ProductSearchInput className="flex-1 min-[1100px]:w-100 min-[1100px]:flex-none" />
+              <ProductSearchInput className="flex-1 min-[1100px]:w-175 min-[1100px]:flex-none min-[1382px]:w-64" />
             }
             actionsSlot={
               <Button
                 type="button"
-                className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4"
+                className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4 gap-1.5"
                 onClick={openAdd}
               >
-                <span className="hidden sm:inline">Add Product</span>
-                <span className="sm:hidden">Add</span>
+                <Plus className="size-4 shrink-0" />
+                <span>Add Product</span>
               </Button>
             }
           />
@@ -558,6 +568,7 @@ export default function ProductsPage() {
           product={productForm.product}
           open={productForm.open}
           loading={productForm.loading}
+          categoryOptions={formCategoryOptions}
           onOpenChange={handleProductFormOpenChange}
           onEdit={openEdit}
           onArchive={(product) => {

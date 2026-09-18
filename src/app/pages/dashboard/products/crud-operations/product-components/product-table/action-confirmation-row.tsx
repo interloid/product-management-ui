@@ -27,8 +27,8 @@ export function ProductActionConfirmationRow({
         colSpan={8}
         className={
           confirmTone === "archive"
-            ? "border-l-2 border-l-blue-600 py-4"
-            : "border-l-2 border-l-cancel-button-background py-4"
+            ? "border-l-[3px] border-l-blue-600 py-4"
+            : "border-l-[3px] border-l-cancel-button-background py-4"
         }
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

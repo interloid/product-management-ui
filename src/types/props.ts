@@ -90,6 +90,7 @@ export type ProductFiltersProps = {
   onStatusChange: (value: ProductStatusFilter) => void;
   onPriceChange: (value: string) => void;
   onReset: () => void;
+  categoryOptions?: Array<{ value: string; label: string }>;
   searchSlot?: React.ReactNode;
   actionsSlot?: React.ReactNode;
 };
@@ -196,6 +197,7 @@ export type ProductFormProps = {
   open: boolean;
   loading?: boolean;
   onOpenChange: (open: boolean) => void;
+  categoryOptions?: Array<{ value: string; label: string }>;
   onCreated?: () => void;
   onUpdated?: (product: ApiProduct) => void;
   onEdit?: (product: ApiProduct) => void;

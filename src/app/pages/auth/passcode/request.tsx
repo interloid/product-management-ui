@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { notifyToast } from "@/lib/toast";
 import { requestPasscode } from "@/services/auth-service";
 import {
   Card,
@@ -29,7 +29,9 @@ export default function PasscodeRequestPage() {
     const trimmedEmail = email.trim();
 
     if (!trimmedEmail) {
-      toast.error("Please enter your email address.", { id: "passcode-email" });
+      notifyToast("error", "Please enter your email address.", {
+        id: "passcode-email",
+      });
       return;
     }
 
@@ -38,20 +40,24 @@ export default function PasscodeRequestPage() {
 
       const response = await requestPasscode(trimmedEmail);
       if (!response.success) {
-        toast.error(
+        notifyToast(
+          "error",
           response.message || "Unable to send the passcode. Please try again.",
           { id: "passcode-send-failed" },
         );
         return;
       }
-      toast.success("Passcode sent successfully.", { id: "passcode-sent" });
+      notifyToast("success", "Passcode sent successfully.", {
+        id: "passcode-sent",
+      });
       navigate("/passcode/verify", {
         state: {
           email: trimmedEmail,
         },
       });
     } catch (error) {
-      toast.error(
+      notifyToast(
+        "error",
         getUserFriendlyErrorMessage(
           error,
           "Unable to send the passcode. Please try again.",

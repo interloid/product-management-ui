@@ -12,8 +12,15 @@ export function CategoryBadge({
   const tone = categoryToneFor(name);
 
   return (
-    <Badge variant="outline" className={cn("rounded-sm", tone.badge, className)}>
-      {name}
+    <Badge
+      variant="outline"
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium border transition-colors shadow-2xs",
+        tone.badge,
+        className,
+      )}
+    >
+      <span className="truncate">{name}</span>
     </Badge>
   );
 }

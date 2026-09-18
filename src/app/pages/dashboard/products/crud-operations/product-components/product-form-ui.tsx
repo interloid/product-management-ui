@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -85,12 +86,24 @@ export function ProductFormFields({
   form,
   errors,
   onFieldChange,
+  categoryOptions = productCategories,
 }: {
   readonly idPrefix: string;
   readonly form: ProductForm;
   readonly errors: FormError;
   readonly onFieldChange: FormFieldChange;
+  readonly categoryOptions?: Array<{ value: string; label: string }>;
 }) {
+  const finalCategoryOptions = useMemo(() => {
+    if (
+      form.category &&
+      !categoryOptions.some((c) => c.value.toLowerCase() === form.category.toLowerCase())
+    ) {
+      return [{ value: form.category, label: form.category }, ...categoryOptions];
+    }
+    return categoryOptions;
+  }, [categoryOptions, form.category]);
+
   return (
     <>
       <ProductField
@@ -157,7 +170,7 @@ export function ProductFormFields({
               avoidCollisions={false}
               className="p-1"
             >
-              {productCategories.map((category) => (
+              {finalCategoryOptions.map((category) => (
                 <SelectItem
                   key={category.value}
                   value={category.value}
@@ -311,7 +324,7 @@ export function ProductFormActions({
   readonly disabled?: boolean;
 }) {
   return (
-    <div className="flex h-16 shrink-0 items-center gap-2 border-t px-5">
+    <div className="sticky bottom-0 z-10 flex h-16 shrink-0 items-center gap-2 border-t border-border/80 bg-background/85 backdrop-blur-md px-5">
       <div className="flex-1" />
       <Button
         type="button"
@@ -548,7 +561,7 @@ export function ProductDetailGrid({
   readonly product: ApiProduct;
 }) {
   return (
-    <div className="grid grid-cols-[120px_1fr] gap-x-4 gap-y-3 text-[13px]">
+    <div className="grid grid-cols-[120px_1fr] sm:gap-x-4 gap-y-3 text-[13px]">
       <DetailLabel>SKU</DetailLabel>
       <DetailValue className="font-mono text-xs">{product.sku}</DetailValue>
 

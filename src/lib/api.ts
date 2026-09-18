@@ -1,5 +1,5 @@
 import { ApiError } from "@/lib/api-error";
-import { toast } from "sonner";
+import { notifyToast } from "@/lib/toast";
 import type { ApiRequestOptions, JsonBody } from "@/types/product";
 
 export const API_BASE_URL = import.meta.env.DEV
@@ -37,7 +37,7 @@ function scheduleAutoReload() {
   autoReloadScheduled = true;
   lastAutoReloadAt = now;
 
-  toast.error("Something went wrong", {
+  notifyToast("error", "Something went wrong", {
     id: "auto-reload",
     description: "Refreshing the page automatically…",
   });
@@ -51,6 +51,7 @@ function scheduleAutoReload() {
 const CREDENTIAL_AUTH_ENDPOINTS = new Set([
   "/api/v1/auth/login",
   "/api/v1/auth/logout",
+  "/api/v1/auth/logout-all",
   "/api/v1/auth/me",
   "/api/v1/auth/refresh",
   "/api/v1/auth/passcode/request",

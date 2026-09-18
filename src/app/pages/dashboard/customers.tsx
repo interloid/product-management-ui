@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { notifyToast } from "@/lib/toast";
 import EmptyPage from "@/components/shad/empty-page";
 import { Button } from "@/components/ui/button";
 import { Users } from "lucide-react";
@@ -28,7 +28,9 @@ export default function Customers() {
       </Button>
       <Button
         variant="outline"
-        onClick={() => toast.info("You've been added to the early access list for Customers!")}
+        onClick={() =>
+          notifyToast("info", "You've been added to the early access list for Customers!")
+        }
         className="cursor-pointer"
       >
         Join Beta Waitlist

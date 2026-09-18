@@ -4,6 +4,7 @@ import {
   login as loginService,
   loginWithPasscode as loginWithPasscodeService,
   logout as logoutService,
+  logoutAll as logoutAllService,
 } from "@/services/auth-service";
 import type {
   AuthProviderProps,
@@ -136,19 +137,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     [checkAuth],
   );
 
-  const logout = useCallback(async () => {
-    try {
-      await logoutService();
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        clearSession();
-        return;
+  const logout = useCallback(
+    async (options?: { allDevices?: boolean }) => {
+      try {
+        if (options?.allDevices) {
+          await logoutAllService();
+        } else {
+          await logoutService();
+        }
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 401) {
+          clearSession();
+          return;
+        }
+        throw error;
       }
-      throw error;
-    }
 
-    clearSession();
-  }, [clearSession]);
+      clearSession();
+    },
+    [clearSession],
+  );
 
   useEffect(() => {
     setSessionExpiredListener(clearSession);

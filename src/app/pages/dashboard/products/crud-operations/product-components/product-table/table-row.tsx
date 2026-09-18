@@ -1,4 +1,4 @@
-import { Eye, MoreHorizontal } from "lucide-react";
+import { Check, Copy, Eye, MoreHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,12 +7,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { TableCell, TableRow } from "@/components/ui/table";
 import type { ProductTableRowProps } from "@/types/props";
 import { ProductImage } from "./image";
 import {
   formatDateTime,
   formatPrice,
+  formatRelativeTime,
   getStatusClassName,
   getStatusLabel,
 } from "@/lib/converters";
@@ -37,6 +43,7 @@ export const ProductTableRow = memo(function ProductTableRow({
 }: ProductTableRowProps) {
   const primaryImage = getPrimaryImage(product);
   const [actionsOpen, setActionsOpen] = useState(false);
+  const [isCopiedSku, setIsCopiedSku] = useState(false);
 
   if (isArchiving) {
     return (
@@ -69,18 +76,65 @@ export const ProductTableRow = memo(function ProductTableRow({
   }
   return (
     <TableRow
-      className="relative w-full cursor-pointer hover:bg-primary-hover"
+      className="group/row w-full cursor-pointer hover:bg-primary-hover transition-colors"
       onClick={onView}
     >
-      <TableCell className="overflow-hidden">
+      <TableCell className="relative overflow-hidden pl-5! group-hover/row:shadow-[inset_3px_0_0_0_var(--primary)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.75 before:bg-primary before:opacity-0 group-hover/row:before:opacity-100 before:transition-opacity">
         <div className="flex items-center gap-2.5 min-w-0">
-          <ProductImage src={primaryImage?.url} alt={product.name} />
-          <span
-            title={product.sku}
-            className="font-mono text-xs text-muted-foreground tabular-nums min-[420px]:inline truncate min-w-0"
+          {primaryImage?.url ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div
+                  className="cursor-pointer shrink-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onView();
+                  }}
+                >
+                  <ProductImage src={primaryImage.url} alt={product.name} />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent
+                side="right"
+                align="center"
+                sideOffset={8}
+                hideArrow
+                className="pointer-events-none z-50 rounded-lg border bg-popover p-1.5 text-popover-foreground shadow-xl"
+              >
+                <div className="flex flex-col items-center gap-1.5">
+                  <img
+                    src={primaryImage.url}
+                    alt={product.name}
+                    className="size-36 rounded-md object-cover"
+                  />
+                  <span className="max-w-36 truncate px-1 text-center text-[11px] font-medium text-muted-foreground">
+                    {product.name}
+                  </span>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          ) : (
+            <ProductImage src={undefined} alt={product.name} />
+          )}
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              void navigator.clipboard.writeText(product.sku);
+              setIsCopiedSku(true);
+              setTimeout(() => setIsCopiedSku(false), 1500);
+            }}
+            title={isCopiedSku ? "Copied!" : `Copy SKU: ${product.sku}`}
+            className="group/sku inline-flex items-center gap-1 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer truncate min-w-0"
           >
-            {product.sku}
-          </span>
+            <span className="truncate tabular-nums">{product.sku}</span>
+            {isCopiedSku ? (
+              <Check className="size-3 text-emerald-600 shrink-0" />
+            ) : (
+              <Copy className="size-3 shrink-0 opacity-0 group-hover/sku:opacity-100 transition-opacity text-muted-foreground" />
+            )}
+          </button>
         </div>
       </TableCell>
       <TableCell className="overflow-hidden">
@@ -91,7 +145,7 @@ export const ProductTableRow = memo(function ProductTableRow({
             onView();
           }}
           title={product.name}
-          className="block w-full truncate text-left text-sm font-semibold hover:underline cursor-pointer"
+          className="block w-full truncate text-left text-[13px] font-semibold text-foreground hover:text-primary transition-colors cursor-pointer"
         >
           {product.name}
         </button>
@@ -102,8 +156,32 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell className="font-mono text-sm font-medium whitespace-nowrap tabular-nums">
         {formatPrice(product.price)}
       </TableCell>
-      <TableCell className="font-mono text-sm pl-3 whitespace-nowrap tabular-nums">
-        {product.stock}
+      <TableCell className="font-mono text-sm whitespace-nowrap tabular-nums">
+        {product.stock === 0 ? (
+          <span
+            title="Out of stock"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-destructive tabular-nums"
+          >
+            <span className="size-1.5 rounded-full bg-destructive shrink-0" />
+            0
+          </span>
+        ) : product.stock <= 10 ? (
+          <span
+            title={`Low stock (${product.stock} left)`}
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 tabular-nums"
+          >
+            <span className="size-1.5 rounded-full bg-amber-500 shrink-0" />
+            {product.stock}
+          </span>
+        ) : (
+          <span
+            title={`In stock (${product.stock})`}
+            className="inline-flex items-center gap-1.5 text-xs tabular-nums text-foreground"
+          >
+            <span className="size-1.5 rounded-full bg-emerald-500/80 shrink-0" />
+            {product.stock}
+          </span>
+        )}
       </TableCell>
       <TableCell className="whitespace-nowrap">
         <Badge variant="outline" className={getStatusClassName(product.status)}>
@@ -111,7 +189,16 @@ export const ProductTableRow = memo(function ProductTableRow({
         </Badge>
       </TableCell>
       <TableCell className="hidden text-xs text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis tabular-nums">
-        {formatDateTime(product.updated_at)}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span className="cursor-default border-b border-dotted border-muted-foreground/40 hover:text-foreground transition-colors">
+              {formatRelativeTime(product.updated_at)}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent side="top">
+            <p className="text-xs">{formatDateTime(product.updated_at)}</p>
+          </TooltipContent>
+        </Tooltip>
       </TableCell>
       <TableCell onClick={(event) => event.stopPropagation()}>
         <div className="flex items-center justify-end flex-row-reverse gap-1.5">
@@ -155,7 +242,7 @@ export const ProductTableRow = memo(function ProductTableRow({
                     setActionsOpen(false);
                     onArchive();
                   }}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:bg-primary-hover!"
                 >
                   Archive
                 </DropdownMenuItem>
@@ -168,7 +255,7 @@ export const ProductTableRow = memo(function ProductTableRow({
                   setActionsOpen(false);
                   onEdit();
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer hover:bg-primary-hover!"
               >
                 Edit
               </DropdownMenuItem>

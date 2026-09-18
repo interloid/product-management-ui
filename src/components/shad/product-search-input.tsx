@@ -15,7 +15,6 @@ export function ProductSearchInput({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't trigger if user is already typing in a textarea or another input
       const target = e.target as HTMLElement | null;
       const isTypingElsewhere =
         target &&
@@ -52,7 +51,7 @@ export function ProductSearchInput({
       <Input
         ref={inputRef}
         type="search"
-        placeholder="Search products, SKU..."
+        placeholder="Search for products, SKU..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         className="h-9 w-full pl-9 pr-11 text-xs focus-visible:border-primary focus-visible:ring-primary/20 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"

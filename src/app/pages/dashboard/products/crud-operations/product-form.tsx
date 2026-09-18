@@ -1,8 +1,15 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { Archive, RotateCcw, Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { Archive, RotateCcw, Trash2, X } from "lucide-react";
+import { notifyToast } from "@/lib/toast";
 
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
@@ -92,7 +99,7 @@ function getForm(
 }
 
 export function ProductForm(props: ProductFormProps) {
-  const { mode, open, onOpenChange } = props;
+  const { mode, open, onOpenChange, categoryOptions } = props;
 
   const product = props.product ?? null;
   const loading = props.loading ?? false;
@@ -268,9 +275,9 @@ export function ProductForm(props: ProductFormProps) {
     }
 
     if (totalImageCount > MAX_IMAGES) {
-      toast.error(`You can have a maximum of ${MAX_IMAGES} images.`, {
-      id: "max-images",
-    });
+      notifyToast("error", `You can have a maximum of ${MAX_IMAGES} images.`, {
+        id: "max-images",
+      });
       return;
     }
 
@@ -310,7 +317,9 @@ export function ProductForm(props: ProductFormProps) {
 
       if (mode === "add") {
         await createProduct(formData);
-        toast.success("Product created successfully", { id: "create-success" });
+        notifyToast("success", "Product created successfully", {
+          id: "create-success",
+        });
         resetProductForm();
         onOpenChange(false);
         props.onCreated?.();
@@ -319,13 +328,16 @@ export function ProductForm(props: ProductFormProps) {
 
       const updated = await updateProduct(product!.id, formData);
 
-      toast.success("Product updated successfully", { id: "update-success" });
+      notifyToast("success", "Product updated successfully", {
+        id: "update-success",
+      });
 
       resetProductForm();
       onOpenChange(false);
       props.onUpdated?.(updated);
     } catch (error) {
-      toast.error(
+      notifyToast(
+        "error",
         getUserFriendlyErrorMessage(
           error,
           mode === "add"
@@ -346,8 +358,8 @@ export function ProductForm(props: ProductFormProps) {
 
     return (
       <>
-        <SheetHeader className="border-b px-5 py-4">
-          <div className="flex items-center gap-3">
+        <SheetHeader className="sticky top-0 z-10 border-b border-border/80 bg-background/85 backdrop-blur-md px-5 py-4">
+          <div className="flex items-center justify-between gap-3">
             <div className="min-w-0 flex-1">
               <SheetTitle className="truncate text-[15px] font-semibold">
                 {product.name}
@@ -356,6 +368,16 @@ export function ProductForm(props: ProductFormProps) {
                 {product.sku}
               </p>
             </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => onOpenChange(false)}
+              className="size-8 shrink-0 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+              aria-label="Close view drawer"
+            >
+              <X className="size-4" />
+            </Button>
           </div>
         </SheetHeader>
 
@@ -402,34 +424,77 @@ export function ProductForm(props: ProductFormProps) {
           </div>
         </div>
 
-        <SheetFooter className="border-t px-2 md:px-5 py-3">
+        <SheetFooter className="sticky bottom-0 z-10 border-t border-border/80 bg-background/85 backdrop-blur-md px-2 md:px-5 py-3">
           <div className="flex w-full flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              {product.status !== "archived" && props.onArchive && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => props.onArchive?.(product)}
-                  className="gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
-                >
-                  <Archive className="size-3.5" />
-                  <span>Archive</span>
-                </Button>
-              )}
+              <div className="hidden items-center gap-2 sm:flex">
+                {product.status !== "archived" && props.onArchive && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => props.onArchive?.(product)}
+                    className="gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                  >
+                    <Archive className="size-3.5" />
+                    <span>Archive</span>
+                  </Button>
+                )}
 
-              {props.onDelete && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => props.onDelete?.(product)}
-                  className="gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive!"
-                >
-                  <Trash2 className="size-3.5" />
-                  <span>Delete</span>
-                </Button>
-              )}
+                {props.onDelete && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => props.onDelete?.(product)}
+                    className="gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive!"
+                  >
+                    <Trash2 className="size-3.5" />
+                    <span>Delete</span>
+                  </Button>
+                )}
+              </div>
+
+              <div className="sm:hidden">
+                {(product.status !== "archived" && props.onArchive) ||
+                props.onDelete ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 text-xs  hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                      >
+                        <span>Actions</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-44!">
+                      {product.status !== "archived" && props.onArchive && (
+                        <DropdownMenuItem
+                          onClick={() => props.onArchive?.(product)}
+                          className="gap-2 text-xs text-primary"
+                        >
+                          <Archive className="size-3.5" />
+                          <span>Archive</span>
+                        </DropdownMenuItem>
+                      )}
+                      {props.onDelete && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => props.onDelete?.(product)}
+                            className="gap-2 text-xs text-destructive focus:text-destructive!"
+                          >
+                            <Trash2 className="size-3.5" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
+              </div>
             </div>
 
             <div className="ml-auto flex items-center gap-2">
@@ -465,12 +530,22 @@ export function ProductForm(props: ProductFormProps) {
 
     return (
       <>
-        <SheetHeader className="flex flex-row items-center gap-3 border-b px-5 py-4">
+        <SheetHeader className="sticky top-0 z-10 flex flex-row items-center justify-between gap-3 border-b border-border/80 bg-background/85 backdrop-blur-md px-5 py-4">
           <div className="min-w-0 flex-1">
             <SheetTitle className="text-[15px] font-semibold">
               {isEdit ? product?.name : "Add Product"}
             </SheetTitle>
           </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => handleSheetOpenChange(false)}
+            className="size-8 shrink-0 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer"
+            aria-label={isEdit ? "Close edit drawer" : "Close add drawer"}
+          >
+            <X className="size-4" />
+          </Button>
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="contents" noValidate>
@@ -480,6 +555,7 @@ export function ProductForm(props: ProductFormProps) {
               form={form}
               errors={errors}
               onFieldChange={updateField}
+              categoryOptions={categoryOptions}
             />
 
             <div className="grid gap-3">
@@ -596,6 +672,7 @@ export function ProductForm(props: ProductFormProps) {
         onOpenChange={mode === "view" ? onOpenChange : handleSheetOpenChange}
       >
         <SheetContent
+          showCloseButton={false}
           className={
             mode === "view" ? "gap-0 sm:max-w-xl!" : "gap-0 p-0 sm:max-w-xl!"
           }

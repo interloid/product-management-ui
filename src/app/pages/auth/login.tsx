@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { notifyToast } from "@/lib/toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
@@ -163,7 +163,8 @@ export default function LoginPage({
         replace: true,
       });
     } catch (error) {
-      toast.error(
+      notifyToast(
+        "error",
         getUserFriendlyErrorMessage(
           error,
           "Unable to sign in. Please try again.",
