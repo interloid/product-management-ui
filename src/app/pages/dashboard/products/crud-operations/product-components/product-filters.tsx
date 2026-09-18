@@ -14,7 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ListRestart } from "lucide-react";
+import { ListRestart, Rows3, Rows4 } from "lucide-react";
 import { PriceSliderFilter } from "./price-slider-filter";
 
 export function ProductFilters({
@@ -25,6 +25,8 @@ export function ProductFilters({
   searchQuery,
   page = 1,
   pageSize = 10,
+  density = "comfortable",
+  onToggleDensity,
   onCategoryChange,
   onStatusChange,
   onPriceChange,
@@ -85,6 +87,30 @@ export function ProductFilters({
     />
   );
 
+  const renderDensityButton = () => {
+    if (!onToggleDensity) return null;
+    const isCompact = density === "compact";
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-9 shrink-0 cursor-pointer"
+            onClick={onToggleDensity}
+            aria-label={isCompact ? "Switch to comfortable view" : "Switch to compact view"}
+          >
+            {isCompact ? <Rows3 className="size-4" /> : <Rows4 className="size-4" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p>{isCompact ? "Switch to comfortable view" : "Switch to compact view"}</p>
+        </TooltipContent>
+      </Tooltip>
+    );
+  };
+
   const renderResetButton = () => (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -143,6 +169,7 @@ export function ProductFilters({
         <div className="flex items-center gap-2 w-full">
           {renderCategorySelect("flex-1 min-w-0")}
           {renderPriceSelect("flex-1 min-w-0")}
+          {renderDensityButton()}
           {renderResetButton()}
         </div>
       </div>
@@ -174,6 +201,7 @@ export function ProductFilters({
           </div>
 
           {renderPriceSelect()}
+          {renderDensityButton()}
           {renderResetButton()}
         </div>
 

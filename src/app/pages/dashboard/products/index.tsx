@@ -27,6 +27,7 @@ import type {
 } from "@/types/product";
 import { ProductListSkeleton } from "@/components/shad/product-list-skeleton";
 import { TablePagination } from "@/components/shad/table-pagination";
+import type { TableDensity } from "@/types/props";
 import { Button } from "@/components/ui/button";
 import { ProductFilters } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters";
 import { ProductFiltersSkeleton } from "@/app/pages/dashboard/products/crud-operations/product-components/product-filters-skeleton";
@@ -63,6 +64,25 @@ export default function ProductsPage() {
   const [category, setCategory] = useState<ProductCategoryFilter>("All");
   const [status, setStatus] = useState<ProductStatusFilter>("All");
   const [priceRange, setPriceRange] = useState("all");
+  const [density, setDensity] = useState<TableDensity>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("product-table-density");
+      if (saved === "compact" || saved === "comfortable") {
+        return saved;
+      }
+    }
+    return "comfortable";
+  });
+
+  const toggleDensity = useCallback(() => {
+    setDensity((prev) => {
+      const next = prev === "comfortable" ? "compact" : "comfortable";
+      if (typeof window !== "undefined") {
+        localStorage.setItem("product-table-density", next);
+      }
+      return next;
+    });
+  }, []);
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -536,6 +556,8 @@ export default function ProductsPage() {
             searchQuery={searchQuery}
             page={page}
             pageSize={pageSize}
+            density={density}
+            onToggleDensity={toggleDensity}
             onCategoryChange={updateCategory}
             onStatusChange={updateStatus}
             onPriceChange={updatePrice}
@@ -570,6 +592,7 @@ export default function ProductsPage() {
               >
                 <ProductTable
                   products={products}
+                  density={density}
                   onView={openView}
                   onEdit={openEdit}
                   archiveId={archiveId}

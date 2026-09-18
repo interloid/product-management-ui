@@ -5,10 +5,18 @@ import { cn } from "@/lib/utils";
 function Table({
   className,
   containerClassName,
+  containerRef,
+  onContainerScroll,
   ...props
-}: React.ComponentProps<"table"> & { containerClassName?: string }) {
+}: React.ComponentProps<"table"> & {
+  containerClassName?: string;
+  containerRef?: React.Ref<HTMLDivElement>;
+  onContainerScroll?: React.UIEventHandler<HTMLDivElement>;
+}) {
   return (
     <div
+      ref={containerRef}
+      onScroll={onContainerScroll}
       data-slot="table-container"
       className={cn("relative w-full overflow-x-auto", containerClassName)}
     >

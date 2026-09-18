@@ -14,16 +14,16 @@ export function ProductTableSkeleton() {
   return (
     <div className="overflow-hidden rounded-lg border">
       <Table
-        className="table-fixed min-w-240"
+        className="table-fixed min-w-[640px] md:min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
         <TableHeader className="sticky top-0 z-20 bg-muted/95 backdrop-blur-xs shadow-xs [&_th]:bg-muted">
           <TableRow className="bg-muted text-xs">
-            <TableHead className="w-[17%] min-w-38.75">
+            <TableHead className="w-[22%] md:w-[17%] min-w-32 md:min-w-38.75">
               <Skeleton className="h-4 w-16" />
             </TableHead>
 
-            <TableHead className="w-[20%] min-w-40">
+            <TableHead className="w-[26%] md:w-[20%] min-w-36 md:min-w-40">
               <Skeleton className="h-4 w-28" />
             </TableHead>
 
@@ -31,23 +31,23 @@ export function ProductTableSkeleton() {
               <Skeleton className="h-4 w-20" />
             </TableHead>
 
-            <TableHead className="w-[9%] min-w-21.25">
+            <TableHead className="w-[14%] md:w-[9%] min-w-20 md:min-w-21.25">
               <Skeleton className="h-4 w-14" />
             </TableHead>
 
-            <TableHead className="w-[7%] min-w-17.5">
+            <TableHead className="w-[12%] md:w-[7%] min-w-18 md:min-w-20">
               <Skeleton className="h-4 w-12" />
             </TableHead>
 
-            <TableHead className="w-[11%] min-w-28.75">
+            <TableHead className="w-[14%] md:w-[11%] min-w-24 md:min-w-28.75">
               <Skeleton className="h-4 w-16" />
             </TableHead>
 
-            <TableHead className="hidden md:table-cell w-[16%] min-w-40">
+            <TableHead className="hidden md:table-cell w-[15%] min-w-40">
               <Skeleton className="h-4 w-20" />
             </TableHead>
 
-            <TableHead className="w-[10%] min-w-23.75 text-center!">
+            <TableHead className="w-[12%] md:w-[10%] min-w-20 md:min-w-23.75 text-center!">
               <Skeleton className="mx-auto h-4 w-14" />
             </TableHead>
           </TableRow>

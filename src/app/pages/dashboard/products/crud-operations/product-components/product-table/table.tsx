@@ -1,3 +1,6 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -16,6 +19,7 @@ export function ProductTable({
   deleteId,
   isActionPending = false,
   showNoResults = false,
+  density = "comfortable",
   sort,
   onSort,
   onView,
@@ -28,14 +32,41 @@ export function ProductTable({
   onConfirmDelete,
   onResetFilters,
 }: Readonly<ProductTableProps>) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const checkScroll = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const hasOverflow = el.scrollWidth > el.clientWidth;
+    setCanScrollLeft(el.scrollLeft > 4);
+    setCanScrollRight(hasOverflow && el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [checkScroll, products, density]);
+
+  const isCompact = density === "compact";
+
   return (
-    <div className="w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs ring-1 ring-black/4 dark:ring-white/6">
+    <div className="relative w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs ring-1 ring-black/4 dark:ring-white/6">
       <Table
+        containerRef={containerRef}
+        onContainerScroll={checkScroll}
         className="table-fixed min-w-[640px] md:min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
-        <TableHeader className="sticky top-0 z-20 h-12 bg-muted/90 backdrop-blur-md [&_th]:bg-muted/90">
-          <TableRow className="bg-muted/90 text-[11px] font-semibold tracking-wider uppercase hover:bg-muted/90">
+        <TableHeader className="sticky top-0 z-20 bg-muted/90 backdrop-blur-md [&_th]:bg-muted/90">
+          <TableRow
+            className={cn(
+              "bg-muted/90 text-[11px] font-semibold tracking-wider uppercase hover:bg-muted/90",
+              isCompact ? "h-9" : "h-12",
+            )}
+          >
             <TableHead className="w-[22%] md:w-[17%] min-w-32 md:min-w-38.75 pl-5! text-[11px] font-semibold tracking-wider uppercase">
               SKU
             </TableHead>
@@ -84,6 +115,7 @@ export function ProductTable({
               <ProductTableRow
                 key={product.id}
                 product={product}
+                density={density}
                 isArchiving={archiveId === product.id}
                 isDeleting={deleteId === product.id}
                 isActionPending={isActionPending}
@@ -105,6 +137,28 @@ export function ProductTable({
           )}
         </TableBody>
       </Table>
+
+      {/* Horizontal scroll indicators */}
+      {canScrollLeft && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 top-0 bottom-0 z-20 w-6 bg-gradient-to-r from-black/10 dark:from-black/35 to-transparent transition-opacity"
+        />
+      )}
+
+      {canScrollRight && (
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-0 top-0 bottom-0 z-20 w-6 bg-gradient-to-l from-black/10 dark:from-black/35 to-transparent transition-opacity"
+        />
+      )}
+
+      {canScrollRight && (
+        <div className="pointer-events-none absolute right-2.5 bottom-2.5 z-25 flex items-center gap-1 rounded-full border border-border/80 bg-background/95 px-2 py-0.5 text-[10px] font-medium text-muted-foreground shadow-xs backdrop-blur-xs md:hidden animate-pulse">
+          <span>Swipe</span>
+          <ChevronRight className="size-3" />
+        </div>
+      )}
     </div>
   );
 }

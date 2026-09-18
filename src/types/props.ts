@@ -44,11 +44,14 @@ export type ProductImagePreviewProps = {
   initialIndex?: number;
 };
 
+export type TableDensity = "comfortable" | "compact";
+
 export interface ProductTableRowProps {
   product: ApiProduct;
   isArchiving: boolean;
   isDeleting: boolean;
   isActionPending?: boolean;
+  density?: TableDensity;
   onView: () => void;
   onEdit: () => void;
   onArchive: () => void;
@@ -65,6 +68,7 @@ export type ProductTableProps = {
   deleteId: string | null;
   isActionPending?: boolean;
   showNoResults?: boolean;
+  density?: TableDensity;
   sort: ProductSort;
   onSort: (field: ProductSortField) => void;
   onView: (product: ApiProduct) => void;
@@ -86,6 +90,8 @@ export type ProductFiltersProps = {
   searchQuery?: string;
   page?: number;
   pageSize?: number;
+  density?: TableDensity;
+  onToggleDensity?: () => void;
   onCategoryChange: (value: ProductCategoryFilter) => void;
   onStatusChange: (value: ProductStatusFilter) => void;
   onPriceChange: (value: string) => void;
