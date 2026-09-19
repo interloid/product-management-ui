@@ -9,13 +9,15 @@ export function SortableHeader({
   sort,
   onSort,
   className,
+  style,
+  children,
 }: SortableTableHeadProps) {
   const isActive = sort.field === field;
 
   const renderSortIcon = () => {
     if (!isActive) {
       return (
-        <ArrowUpDown className="size-3.5 text-muted-foreground group-hover/sort:text-muted-foreground transition-colors shrink-0" />
+        <ArrowUpDown className="size-3.5 text-muted-foreground opacity-0 group-hover/sort:opacity-100 transition-opacity shrink-0" />
       );
     }
     if (sort.order === "asc") {
@@ -29,7 +31,7 @@ export function SortableHeader({
   };
 
   return (
-    <TableHead className={className}>
+    <TableHead className={cn("relative group/th", className)} style={style}>
       <button
         type="button"
         onClick={() => onSort(field)}
@@ -41,6 +43,7 @@ export function SortableHeader({
         <span className="whitespace-nowrap">{label}</span>
         {renderSortIcon()}
       </button>
+      {children}
     </TableHead>
   );
 }

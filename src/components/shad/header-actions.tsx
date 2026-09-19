@@ -26,10 +26,10 @@ export function HeaderActions({ user }: HeaderActionsProps) {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="flex items-center gap-2 rounded-full p-0.5 outline-none transition-transform hover:opacity-90 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 cursor-pointer"
+            className="group flex items-center gap-2 rounded-full p-0.5 outline-hidden cursor-pointer"
             aria-label="User menu"
           >
-            <Avatar className="size-8.5 border border-border/80 shadow-xs">
+            <Avatar className="size-8.5 border border-border/80 shadow-xs transition-all duration-200 group-hover:border-primary group-hover:ring-2 group-hover:ring-primary/20 group-focus-visible:border-primary group-focus-visible:ring-2 group-focus-visible:ring-primary/20">
               <AvatarImage src={avatarSrc} alt={user?.name ?? "User"} />
               <AvatarFallback className="text-xs font-medium">
                 {initials}
@@ -51,7 +51,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="cursor-pointer">
-            <Link to="/settings" className="flex items-center gap-2">
+            <Link to="/settings" className="flex items-center gap-2 hover:bg-primary-hover!">
               <Settings className="size-4 text-muted-foreground" />
               <span>Settings</span>
             </Link>

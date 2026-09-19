@@ -1,5 +1,5 @@
 import { useMemo, useState, type FormEvent } from "react";
-import { Archive, RotateCcw, Trash2, X } from "lucide-react";
+import { Archive, Check, Copy, RotateCcw, Trash2, X } from "lucide-react";
 import { notifyToast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
@@ -116,6 +116,7 @@ export function ProductForm(props: ProductFormProps) {
   }
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCopiedSku, setIsCopiedSku] = useState(false);
 
   const imageState = useProductImages({
     existingImages,
@@ -365,9 +366,29 @@ export function ProductForm(props: ProductFormProps) {
               <SheetTitle className="truncate text-[15px] font-semibold">
                 {product.name}
               </SheetTitle>
-              <p className="mt-0.5 font-mono text-xs text-muted-foreground">
-                {product.sku}
-              </p>
+              <div className="mt-0.5 flex items-center gap-1.5">
+                <span className="font-mono text-xs text-muted-foreground">
+                  {product.sku}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    void navigator.clipboard.writeText(product.sku);
+                    setIsCopiedSku(true);
+                    notifyToast("success", "SKU copied to clipboard");
+                    setTimeout(() => setIsCopiedSku(false), 1500);
+                  }}
+                  title={isCopiedSku ? "Copied!" : `Copy SKU: ${product.sku}`}
+                  className="inline-flex items-center justify-center size-5 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
+                  aria-label={`Copy SKU: ${product.sku}`}
+                >
+                  {isCopiedSku ? (
+                    <Check className="size-3 text-emerald-600" />
+                  ) : (
+                    <Copy className="size-3" />
+                  )}
+                </button>
+              </div>
             </div>
             <Button
               type="button"

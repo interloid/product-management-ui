@@ -1,4 +1,8 @@
-import { Check, Copy, Eye, MoreHorizontal } from "lucide-react";
+import {
+  MoreHorizontal,
+  SquareArrowOutUpRight,
+  TriangleAlert,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,7 +37,7 @@ export const ProductTableRow = memo(function ProductTableRow({
   isArchiving,
   isDeleting,
   isActionPending = false,
-  density = "comfortable",
+  density = "normal",
   onView,
   onEdit,
   onArchive,
@@ -44,9 +48,16 @@ export const ProductTableRow = memo(function ProductTableRow({
   onConfirmDelete,
 }: ProductTableRowProps) {
   const isCompact = density === "compact";
+  const isComfort = density === "comfort" || density === "comfortable";
+  const rowPadding = isCompact ? "py-1.5" : isComfort ? "py-4" : "py-2.5";
+  const imageSize = isCompact ? "size-8" : isComfort ? "size-10" : "size-9";
+  const actionButtonSize = isCompact
+    ? "size-7"
+    : isComfort
+      ? "size-8.5"
+      : "size-8";
   const primaryImage = getPrimaryImage(product);
   const [actionsOpen, setActionsOpen] = useState(false);
-  const [isCopiedSku, setIsCopiedSku] = useState(false);
 
   if (isArchiving) {
     return (
@@ -85,13 +96,13 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell
         className={cn(
           "relative overflow-hidden pl-5! group-hover/row:shadow-[inset_3px_0_0_0_var(--primary)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.75 before:bg-primary before:opacity-0 group-hover/row:before:opacity-100 before:transition-opacity",
-          isCompact ? "py-1.5" : "py-3",
+          rowPadding,
         )}
       >
         <div
           className={cn(
             "flex items-center min-w-0",
-            isCompact ? "gap-2" : "gap-2.5",
+            isCompact ? "gap-2" : isComfort ? "gap-3" : "gap-2.5",
           )}
         >
           {primaryImage?.url ? (
@@ -107,8 +118,7 @@ export const ProductTableRow = memo(function ProductTableRow({
                   <ProductImage
                     src={primaryImage.url}
                     alt={product.name}
-                    size={isCompact ? "size-8" : "size-10"}
-                    
+                    size={imageSize}
                   />
                 </div>
               </TooltipTrigger>
@@ -117,53 +127,33 @@ export const ProductTableRow = memo(function ProductTableRow({
                 align="center"
                 sideOffset={8}
                 hideArrow
-                className="pointer-events-none z-50 rounded-lg border bg-popover p-1.5 text-popover-foreground shadow-xl"
+                data-image-tooltip="true"
+                className=" flex flex-col items-center pointer-events-none z-50 p-0 bg-white! border-none! shadow-none!"
               >
-                <div className="flex flex-col items-center gap-1.5">
-                  <img
-                    src={primaryImage.url}
-                    alt={product.name}
-                    className="size-36 rounded-md object-cover"
-                  />
-                  <span className="max-w-36 truncate px-1 text-center text-[11px] font-medium text-muted-foreground">
-                    {product.name}
-                  </span>
-                </div>
+                <img
+                  src={primaryImage.url}
+                  alt={product.name}
+                  className="size-36 rounded-lg object-cover shadow-2xl border border-border/80"
+                />
+                <span className="max-w-36 truncate rounded-lg bg-background/95 px-3 py-0.5 text-center text-[11px] font-medium text-foreground shadow-xs border border-border/60">
+                  {product.name}
+                </span>
               </TooltipContent>
             </Tooltip>
           ) : (
-            <ProductImage
-              src={undefined}
-              alt={product.name}
-              size={isCompact ? "size-8" : "size-10"}
-            />
+            <ProductImage src={undefined} alt={product.name} size={imageSize} />
           )}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              void navigator.clipboard.writeText(product.sku);
-              setIsCopiedSku(true);
-              setTimeout(() => setIsCopiedSku(false), 1500);
-            }}
-            title={isCopiedSku ? "Copied!" : `Copy SKU: ${product.sku}`}
+          <span
             className={cn(
-              "group/sku inline-flex items-center gap-1 font-mono text-muted-foreground hover:text-foreground transition-colors cursor-pointer truncate min-w-0",
+              "font-mono text-muted-foreground truncate min-w-0 tabular-nums",
               isCompact ? "text-[11px]" : "text-xs",
             )}
           >
-            <span className="truncate tabular-nums">{product.sku}</span>
-            {isCopiedSku ? (
-              <Check className="size-3 text-emerald-600 shrink-0" />
-            ) : (
-              <Copy className="size-3 shrink-0 opacity-0 group-hover/sku:opacity-100 transition-opacity text-muted-foreground" />
-            )}
-          </button>
+            {product.sku}
+          </span>
         </div>
       </TableCell>
-      <TableCell
-        className={cn("overflow-hidden", isCompact ? "py-1.5" : "py-3")}
-      >
+      <TableCell className={cn("overflow-hidden", rowPadding)}>
         <button
           type="button"
           onClick={(e) => {
@@ -173,18 +163,17 @@ export const ProductTableRow = memo(function ProductTableRow({
           title={product.name}
           className={cn(
             "block w-full truncate text-left font-semibold text-foreground hover:text-primary transition-colors cursor-pointer",
-            isCompact ? "text-xs" : "text-[13px]",
+            isCompact
+              ? "text-xs"
+              : isComfort
+                ? "text-sm font-medium"
+                : "text-[13px]",
           )}
         >
           {product.name}
         </button>
       </TableCell>
-      <TableCell
-        className={cn(
-          "hidden truncate md:table-cell",
-          isCompact ? "py-1.5" : "py-3",
-        )}
-      >
+      <TableCell className={cn("hidden truncate md:table-cell", rowPadding)}>
         <CategoryBadge
           name={product.category_name}
           className="max-w-full truncate"
@@ -193,7 +182,8 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell
         className={cn(
           "font-mono font-medium whitespace-nowrap tabular-nums",
-          isCompact ? "py-1.5 text-xs" : "py-3 text-sm",
+          rowPadding,
+          isCompact ? "text-xs" : "text-sm",
         )}
       >
         {formatPrice(product.price)}
@@ -201,14 +191,16 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell
         className={cn(
           "font-medium whitespace-nowrap tabular-nums",
-          isCompact ? "py-1.5 text-xs" : "py-3 text-sm",
+          rowPadding,
+          isCompact ? "text-xs" : "text-sm",
         )}
       >
         {product.stock === 0 ? (
           <span
             title="Out of stock"
-            className="inline-flex items-center gap-1.5 font-semibold text-destructive"
+            className="inline-flex items-center gap-1 font-semibold text-destructive"
           >
+            <TriangleAlert className={cn(isCompact ? "size-3" : "size-3.5", "shrink-0")} />
             <span>0</span>
           </span>
         ) : product.stock <= 10 ? (
@@ -227,9 +219,7 @@ export const ProductTableRow = memo(function ProductTableRow({
           </span>
         )}
       </TableCell>
-      <TableCell
-        className={cn("whitespace-nowrap", isCompact ? "py-1.5" : "py-3")}
-      >
+      <TableCell className={cn("whitespace-nowrap", rowPadding)}>
         <Badge
           variant="outline"
           className={cn(
@@ -243,7 +233,8 @@ export const ProductTableRow = memo(function ProductTableRow({
       <TableCell
         className={cn(
           "hidden text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis tabular-nums",
-          isCompact ? "py-1.5 text-[11px]" : "py-3 text-xs",
+          rowPadding,
+          isCompact ? "text-[11px]" : "text-xs",
         )}
       >
         <Tooltip>
@@ -258,7 +249,7 @@ export const ProductTableRow = memo(function ProductTableRow({
         </Tooltip>
       </TableCell>
       <TableCell
-        className={cn(isCompact ? "py-1.5" : "py-3")}
+        className={cn(rowPadding)}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-end flex-row-reverse gap-1.5">
@@ -267,7 +258,7 @@ export const ProductTableRow = memo(function ProductTableRow({
             size="icon"
             className={cn(
               "border-none! shadow-none! hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
-              isCompact ? "size-7" : "size-8",
+              actionButtonSize,
             )}
             onClick={(event) => {
               event.stopPropagation();
@@ -275,7 +266,9 @@ export const ProductTableRow = memo(function ProductTableRow({
             }}
             title="View"
           >
-            <Eye className={isCompact ? "size-3.5" : "size-4"} />
+            <SquareArrowOutUpRight
+              className={isCompact ? "size-3.5" : "size-4"}
+            />
           </Button>
           <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
             <DropdownMenuTrigger asChild>
@@ -284,7 +277,7 @@ export const ProductTableRow = memo(function ProductTableRow({
                 size="icon"
                 className={cn(
                   "hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
-                  isCompact ? "size-7" : "size-8",
+                  actionButtonSize,
                 )}
                 onClick={(event) => {
                   event.stopPropagation();

@@ -24,7 +24,7 @@ const DEFAULT_MAX = 1000;
 const DEFAULT_STEP = 5;
 
 const PRESETS = [
-  { label: "All", min: 0, max: 1000 },
+  { label: "All", min: 0, max: 0 },
   { label: "< $50", min: 0, max: 50 },
   { label: "$50–$100", min: 50, max: 100 },
   { label: "$100–$250", min: 100, max: 250 },
@@ -37,7 +37,7 @@ function parseRange(
   maxLimit = DEFAULT_MAX,
 ): [number, number] {
   if (!rangeStr || rangeStr === "all") {
-    return [0, maxLimit];
+    return [0, 0];
   }
   if (rangeStr.endsWith("+")) {
     const minVal = Number(rangeStr.slice(0, -1));
@@ -52,7 +52,7 @@ function parseRange(
       Number.isFinite(maxVal) ? maxVal : maxLimit,
     ];
   }
-  return [0, maxLimit];
+  return [0, 0];
 }
 
 function serializeRange(
@@ -60,7 +60,7 @@ function serializeRange(
   max: number,
   maxLimit = DEFAULT_MAX,
 ): string {
-  if (min <= 0 && max >= maxLimit) {
+  if ((min <= 0 && max <= 0) || (min <= 0 && max >= maxLimit)) {
     return "all";
   }
   if (max >= maxLimit) {
@@ -108,21 +108,39 @@ export function PriceSliderFilter({
   const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     setMinInput(text);
+    if (text.trim() === "") return;
     const parsed = Number(text);
     if (!Number.isNaN(parsed)) {
-      const clamped = Math.max(min, Math.min(parsed, localRange[1]));
-      setLocalRange([clamped, localRange[1]]);
+      const clampedMin = Math.max(min, Math.min(parsed, max));
+      const nextMax = Math.max(clampedMin, localRange[1]);
+      setLocalRange([clampedMin, nextMax]);
+      if (nextMax !== localRange[1]) {
+        setMaxInput(String(nextMax));
+      }
     }
   };
 
   const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const text = e.target.value;
     setMaxInput(text);
+    if (text.trim() === "") return;
     const parsed = Number(text);
     if (!Number.isNaN(parsed)) {
-      const clamped = Math.min(max, Math.max(parsed, localRange[0]));
-      setLocalRange([localRange[0], clamped]);
+      const clampedMax = Math.min(max, Math.max(parsed, min));
+      const nextMin = Math.min(clampedMax, localRange[0]);
+      setLocalRange([nextMin, clampedMax]);
+      if (nextMin !== localRange[0]) {
+        setMinInput(String(nextMin));
+      }
     }
+  };
+
+  const handleMinInputBlur = () => {
+    setMinInput(String(localRange[0]));
+  };
+
+  const handleMaxInputBlur = () => {
+    setMaxInput(String(localRange[1]));
   };
 
   const applyRange = useCallback(
@@ -139,10 +157,10 @@ export function PriceSliderFilter({
   };
 
   const handleReset = () => {
-    const defaultRange: [number, number] = [min, max];
+    const defaultRange: [number, number] = [0, 0];
     setLocalRange(defaultRange);
-    setMinInput(String(min));
-    setMaxInput(String(max));
+    setMinInput("0");
+    setMaxInput("0");
     onChange("all");
     setOpen(false);
   };
@@ -175,7 +193,7 @@ export function PriceSliderFilter({
           type="button"
           variant="outline"
           className={cn(
-            "h-9 text-xs font-medium cursor-pointer justify-between gap-1.5 px-3 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
+            "h-9 text-xs xl:text-sm font-medium cursor-pointer justify-between gap-2 px-3 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
             isFiltered &&
               "border-primary/50 bg-primary/5 text-primary dark:text-primary-foreground font-semibold shadow-2xs",
             className,
@@ -185,31 +203,33 @@ export function PriceSliderFilter({
           <div className="flex items-center gap-1.5 min-w-0 truncate">
             <SlidersHorizontal
               className={cn(
-                "size-3.5 shrink-0",
+                "size-4 shrink-0",
                 isFiltered ? "text-primary" : "text-muted-foreground",
               )}
             />
-            <span className="text-muted-foreground font-normal">Price:</span>
-            <span className="truncate">{displayLabel}</span>
+            <span className="mr-1 xl:text-sm">Price:</span>
+            <span className="truncate text-xs xl:text-sm font-medium text-foreground">
+              {displayLabel}
+            </span>
           </div>
-          <ChevronDown className="size-3 shrink-0 text-muted-foreground opacity-60" />
+          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground opacity-60" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-80 p-4 space-y-4 shadow-xl border-border/80"
+        className="w-70 sm:w-96 p-5 space-y-4.5 shadow-xl border-border/80"
       >
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <SlidersHorizontal className="size-4 text-primary" />
-            <span className="text-xs font-semibold text-foreground">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="size-4.5 text-primary" />
+            <span className="text-xs lg:text-sm font-semibold text-foreground">
               Price Range
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-medium px-2 py-0.5 rounded-md bg-muted text-foreground">
+            <span className="text-xs sm:text-[13px] font-semibold px-2.5 py-1 rounded-md bg-muted text-foreground tracking-wide font-mono">
               {localRange[1] >= max
                 ? `$${localRange[0]}+`
                 : `$${localRange[0]} – $${localRange[1]}`}
@@ -223,12 +243,12 @@ export function PriceSliderFilter({
                 title="Reset to all prices"
                 className="size-6 text-muted-foreground hover:text-foreground cursor-pointer"
               >
-                <RotateCcw className="size-3" />
+                <RotateCcw className="size-3.5" />
               </Button>
             )}
           </div>
         </div>
-        <div className="py-2 px-1">
+        <div className="py-3 px-1.5">
           <Slider
             min={min}
             max={max}
@@ -237,70 +257,72 @@ export function PriceSliderFilter({
             onValueChange={handleSliderChange}
             aria-label="Price range slider"
           />
-          <div className="flex justify-between items-center text-[10px] text-muted-foreground mt-2 font-mono">
+          <div className="flex justify-between items-center text-xs text-muted-foreground mt-2.5 font-mono font-medium">
             <span>${min}</span>
             <span>${Math.round((max - min) / 2)}</span>
             <span>${max}+</span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-1">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1.5">
             <label
               htmlFor="price-min-input"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Min Price
             </label>
             <div className="relative">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
                 $
               </span>
               <Input
                 id="price-min-input"
                 type="number"
                 min={min}
-                max={localRange[1]}
+                max={max}
                 value={minInput}
                 onChange={handleMinInputChange}
+                onBlur={handleMinInputBlur}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleApply();
                 }}
-                className="h-8 pl-6 pr-2 text-xs font-mono"
+                className="h-9 pl-7 pr-3 text-sm font-mono font-medium"
               />
             </div>
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label
               htmlFor="price-max-input"
-              className="text-[11px] font-medium text-muted-foreground"
+              className="text-xs font-medium text-muted-foreground"
             >
               Max Price
             </label>
             <div className="relative">
-              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground">
                 $
               </span>
               <Input
                 id="price-max-input"
                 type="number"
-                min={localRange[0]}
+                min={min}
                 max={max}
                 value={maxInput}
                 onChange={handleMaxInputChange}
+                onBlur={handleMaxInputBlur}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleApply();
                 }}
-                className="h-8 pl-6 pr-2 text-xs font-mono"
+                className="h-9 pl-7 pr-3 text-sm font-mono font-medium"
               />
             </div>
           </div>
         </div>
-        <div className="space-y-1.5">
-          <span className="text-[11px] font-medium text-muted-foreground">
+        <div className="space-y-2">
+          <span className="text-xs font-medium text-muted-foreground">
             Quick Ranges
           </span>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {PRESETS.map((preset) => {
               const active =
                 localRange[0] === preset.min && localRange[1] === preset.max;
@@ -310,7 +332,7 @@ export function PriceSliderFilter({
                   type="button"
                   onClick={() => handlePresetSelect(preset.min, preset.max)}
                   className={cn(
-                    "text-[11px] px-2 py-0.5 rounded border transition-colors cursor-pointer",
+                    "text-xs px-2.5 py-1 rounded-md border font-medium transition-colors cursor-pointer",
                     active
                       ? "bg-primary text-primary-foreground border-primary font-medium"
                       : "bg-muted/50 border-border/70 text-foreground/80 hover:bg-muted hover:text-foreground",
@@ -322,13 +344,13 @@ export function PriceSliderFilter({
             })}
           </div>
         </div>
-        <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/70">
+        <div className="flex items-center justify-end gap-2 pt-3 border-t border-border/70">
           <Button
             type="button"
             variant="ghost"
             size="sm"
             onClick={() => setOpen(false)}
-            className="h-8 px-3 text-xs cursor-pointer"
+            className="h-9 px-3.5 text-xs cursor-pointer"
           >
             Cancel
           </Button>
@@ -336,7 +358,7 @@ export function PriceSliderFilter({
             type="button"
             size="sm"
             onClick={handleApply}
-            className="h-8 px-4 text-xs font-medium cursor-pointer"
+            className="h-9 px-4 text-xs font-medium cursor-pointer"
           >
             Apply Filter
           </Button>

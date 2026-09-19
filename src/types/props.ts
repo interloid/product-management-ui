@@ -44,7 +44,7 @@ export type ProductImagePreviewProps = {
   initialIndex?: number;
 };
 
-export type TableDensity = "comfortable" | "compact";
+export type TableDensity = "compact" | "normal" | "comfort" | "comfortable";
 
 export interface ProductTableRowProps {
   product: ApiProduct;
@@ -92,10 +92,12 @@ export type ProductFiltersProps = {
   pageSize?: number;
   density?: TableDensity;
   onToggleDensity?: () => void;
+  onDensityChange?: (density: TableDensity) => void;
   onCategoryChange: (value: ProductCategoryFilter) => void;
   onStatusChange: (value: ProductStatusFilter) => void;
   onPriceChange: (value: string) => void;
   onReset: () => void;
+  onResetColumns?: () => void;
   categoryOptions?: Array<{ value: string; label: string }>;
   searchSlot?: React.ReactNode;
   actionsSlot?: React.ReactNode;
@@ -107,6 +109,8 @@ export type SortableTableHeadProps = {
   sort: ProductSort;
   onSort: (field: ProductSortField) => void;
   className?: string;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
 };
 
 export type PaginationProps = {

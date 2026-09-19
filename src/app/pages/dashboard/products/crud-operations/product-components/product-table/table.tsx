@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -8,10 +8,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { ProductTableRow } from "./table-row";
 import { SortableHeader } from "@/components/shad/sortable-header";
 import EmptyProductTableRow from "@/components/shad/empty-products";
 import type { ProductTableProps } from "@/types/props";
+import { useTableColumnResize } from "./use-table-column-resize";
+import { ColumnResizeHandle } from "./column-resize-handle";
 
 export function ProductTable({
   products,
@@ -36,6 +43,17 @@ export function ProductTable({
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  const {
+    columnWidths,
+    totalTableWidth,
+    resizingCol,
+    isCustomized,
+    isMd,
+    handleStartResize,
+    handleResetColumn,
+    handleResetAll,
+  } = useTableColumnResize(containerRef);
+
   const checkScroll = useCallback(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -50,64 +68,176 @@ export function ProductTable({
     checkScroll();
     window.addEventListener("resize", checkScroll);
     return () => window.removeEventListener("resize", checkScroll);
-  }, [checkScroll, products, density]);
+  }, [checkScroll, products, density, columnWidths]);
 
   const isCompact = density === "compact";
+  const isComfort = density === "comfort" || density === "comfortable";
+
+  const colStyle = (key: keyof typeof columnWidths) =>
+    isMd
+      ? {
+          width: `${columnWidths[key]}px`,
+          minWidth: `${columnWidths[key]}px`,
+        }
+      : undefined;
+
+  const tableStyle =
+    isMd && totalTableWidth
+      ? {
+          minWidth: `${totalTableWidth}px`,
+        }
+      : undefined;
 
   return (
     <div className="relative w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs ring-1 ring-black/4 dark:ring-white/6">
       <Table
         containerRef={containerRef}
         onContainerScroll={checkScroll}
-        className="table-fixed min-w-160 md:min-w-240"
+        style={tableStyle}
+        className="w-full table-fixed min-w-160"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
         <TableHeader className="sticky top-0 z-20 bg-muted/90 backdrop-blur-md [&_th]:bg-muted/90">
           <TableRow
             className={cn(
               "bg-muted/90 text-[11px] font-semibold tracking-wider uppercase hover:bg-muted/90",
-              isCompact ? "h-9" : "h-12",
+              isCompact ? "h-9" : isComfort ? "h-13" : "h-11",
             )}
           >
-            <TableHead className="w-[22%] md:w-[17%] min-w-32 md:min-w-38.75 pl-5! text-[11px] font-semibold tracking-wider uppercase">
+            <TableHead
+              style={colStyle("sku")}
+              className="relative group/th w-[22%] md:w-auto pl-5! text-[11px] font-semibold tracking-wider uppercase"
+            >
               SKU
+              <ColumnResizeHandle
+                columnKey="sku"
+                label="SKU"
+                isResizing={resizingCol === "sku"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
             </TableHead>
-            <TableHead className="w-[26%] md:w-[20%] min-w-36 md:min-w-40 text-[11px] font-semibold tracking-wider uppercase">
+            <TableHead
+              style={colStyle("name")}
+              className="relative group/th w-[26%] md:w-auto text-[11px] font-semibold tracking-wider uppercase"
+            >
               PRODUCT NAME
+              <ColumnResizeHandle
+                columnKey="name"
+                label="Product Name"
+                isResizing={resizingCol === "name"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
             </TableHead>
-            <TableHead className="hidden md:table-cell md:w-[10%] min-w-25 text-[11px] font-semibold tracking-wider uppercase">
+            <TableHead
+              style={colStyle("category")}
+              className="relative group/th hidden md:table-cell md:w-auto text-[11px] font-semibold tracking-wider uppercase"
+            >
               CATEGORY
+              <ColumnResizeHandle
+                columnKey="category"
+                label="Category"
+                isResizing={resizingCol === "category"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
             </TableHead>
             <SortableHeader
               label="PRICE"
               field="price"
               sort={sort}
               onSort={onSort}
-              className="w-[14%] md:w-[9%] min-w-20 md:min-w-21.25"
-            />
+              style={colStyle("price")}
+              className="w-[14%] md:w-auto"
+            >
+              <ColumnResizeHandle
+                columnKey="price"
+                label="Price"
+                isResizing={resizingCol === "price"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
+            </SortableHeader>
             <SortableHeader
               label="STOCK"
               field="stock"
               sort={sort}
               onSort={onSort}
-              className="w-[12%] md:w-[7%] min-w-18 md:min-w-20"
-            />
+              style={colStyle("stock")}
+              className="w-[12%] md:w-auto"
+            >
+              <ColumnResizeHandle
+                columnKey="stock"
+                label="Stock"
+                isResizing={resizingCol === "stock"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
+            </SortableHeader>
             <SortableHeader
               label="STATUS"
               field="status"
               sort={sort}
               onSort={onSort}
-              className="w-[14%] md:w-[11%] min-w-24 md:min-w-28.75"
-            />
+              style={colStyle("status")}
+              className="w-[14%] md:w-auto"
+            >
+              <ColumnResizeHandle
+                columnKey="status"
+                label="Status"
+                isResizing={resizingCol === "status"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
+            </SortableHeader>
             <SortableHeader
               label="UPDATED"
               field="updated"
               sort={sort}
               onSort={onSort}
-              className="hidden md:table-cell md:w-[15%] min-w-40"
-            />
-            <TableHead className="w-[12%] md:w-[10%] min-w-20 md:min-w-23.75 text-center xl:text-left text-[11px] font-semibold tracking-wider uppercase">
-              ACTIONS
+              style={colStyle("updated")}
+              className="hidden md:table-cell md:w-auto"
+            >
+              <ColumnResizeHandle
+                columnKey="updated"
+                label="Updated"
+                isResizing={resizingCol === "updated"}
+                onStartResize={handleStartResize}
+                onResetColumn={handleResetColumn}
+              />
+            </SortableHeader>
+            <TableHead
+              style={colStyle("actions")}
+              className="group/actions w-[12%] md:w-auto text-[11px] font-semibold tracking-wider uppercase pr-4"
+            >
+              <div className="flex items-center justify-between gap-1.5">
+                <span>ACTIONS</span>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleResetAll();
+                      }}
+                      className={cn(
+                        "cursor-pointer p-1 rounded transition-all outline-none",
+                        isCustomized
+                          ? "text-primary hover:bg-primary-hover hover:text-primary"
+                          : "text-muted-foreground/50 opacity-0 group-hover/actions:opacity-100 hover:text-foreground hover:bg-muted/80",
+                      )}
+                      title="Reset all column widths to default"
+                      aria-label="Reset column widths"
+                    >
+                      <RotateCcw className="size-3.5" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p className="text-xs">Reset column widths</p>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
             </TableHead>
           </TableRow>
         </TableHeader>

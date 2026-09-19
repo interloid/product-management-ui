@@ -43,16 +43,21 @@ export function TablePagination({
             setPage(1);
           }}
         >
-          <SelectTrigger className="h-8 w-[65px] hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20">
+          <SelectTrigger className="h-8 w-16.25 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20">
             <SelectValue />
           </SelectTrigger>
-
-          <SelectContent>
+          <SelectContent
+            position="popper"
+            side="top"
+            align="start"
+            sideOffset={4}
+            className="min-w-20 p-1"
+          >
             {[10, 20, 30, 40, 50].map((size) => (
               <SelectItem
                 key={size}
                 value={String(size)}
-                className="hover:bg-primary-hover!"
+                className="text-xs cursor-pointer hover:bg-primary-hover!"
               >
                 {size}
               </SelectItem>

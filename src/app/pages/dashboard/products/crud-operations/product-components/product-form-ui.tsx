@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import { Check, Copy, X } from "lucide-react";
+import { notifyToast } from "@/lib/toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -566,10 +567,32 @@ export function ProductDetailGrid({
 }: {
   readonly product: ApiProduct;
 }) {
+  const [copiedSku, setCopiedSku] = useState(false);
+
   return (
     <div className="grid grid-cols-[120px_1fr] sm:gap-x-4 gap-y-3 text-[13px]">
       <DetailLabel>SKU</DetailLabel>
-      <DetailValue className="font-mono text-xs">{product.sku}</DetailValue>
+      <DetailValue className="font-mono text-xs flex items-center gap-1.5">
+        <span>{product.sku}</span>
+        <button
+          type="button"
+          onClick={() => {
+            void navigator.clipboard.writeText(product.sku);
+            setCopiedSku(true);
+            notifyToast("success", "SKU copied to clipboard");
+            setTimeout(() => setCopiedSku(false), 1500);
+          }}
+          title={copiedSku ? "Copied!" : `Copy SKU: ${product.sku}`}
+          className="inline-flex items-center justify-center size-5 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
+          aria-label={`Copy SKU: ${product.sku}`}
+        >
+          {copiedSku ? (
+            <Check className="size-3 text-emerald-600" />
+          ) : (
+            <Copy className="size-3" />
+          )}
+        </button>
+      </DetailValue>
 
       <DetailLabel>Category</DetailLabel>
       <DetailValue>

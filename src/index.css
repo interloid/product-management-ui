@@ -209,19 +209,3 @@ div#root {
   scrollbar-width: thin;
   scrollbar-color: oklch(0.7 0 0 / 40%) transparent;
 }
-
-[data-slot="tooltip-content"]:not(.bg-popover) {
-  background-color: #1e40af !important;
-  color: #ffffff !important;
-}
-
-[data-slot="tooltip-content"]:not(.bg-popover) svg.rotate-45,
-[data-slot="tooltip-content"]:not(.bg-popover) span[style*="position: absolute"] svg {
-  background-color: #1e40af !important;
-  fill: #1e40af !important;
-}
-
-[data-slot="tooltip-content"]:not(.bg-popover) svg.rotate-45 polygon,
-[data-slot="tooltip-content"]:not(.bg-popover) span[style*="position: absolute"] polygon {
-  fill: #1e40af !important;
-}

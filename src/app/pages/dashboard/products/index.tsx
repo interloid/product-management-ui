@@ -67,16 +67,33 @@ export default function ProductsPage() {
   const [density, setDensity] = useState<TableDensity>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("product-table-density");
-      if (saved === "compact" || saved === "comfortable") {
-        return saved;
+      if (
+        saved === "compact" ||
+        saved === "normal" ||
+        saved === "comfort" ||
+        saved === "comfortable"
+      ) {
+        return saved as TableDensity;
       }
     }
-    return "comfortable";
+    return "normal";
   });
+
+  const handleDensityChange = useCallback((next: TableDensity) => {
+    setDensity(next);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("product-table-density", next);
+    }
+  }, []);
 
   const toggleDensity = useCallback(() => {
     setDensity((prev) => {
-      const next = prev === "comfortable" ? "compact" : "comfortable";
+      const next: TableDensity =
+        prev === "compact"
+          ? "normal"
+          : prev === "normal"
+            ? "comfort"
+            : "compact";
       if (typeof window !== "undefined") {
         localStorage.setItem("product-table-density", next);
       }
@@ -558,6 +575,7 @@ export default function ProductsPage() {
             pageSize={pageSize}
             density={density}
             onToggleDensity={toggleDensity}
+            onDensityChange={handleDensityChange}
             onCategoryChange={updateCategory}
             onStatusChange={updateStatus}
             onPriceChange={updatePrice}

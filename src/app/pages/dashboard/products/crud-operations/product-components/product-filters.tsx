@@ -8,15 +8,26 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { ProductCategoryFilter } from "@/types/product";
-import type { ProductFiltersProps } from "@/types/props";
+import type { ProductFiltersProps, TableDensity } from "@/types/props";
 import { categories, statusFilters } from "@/lib/product-options";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FunnelX, Rows3, Rows4 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { FunnelX, RotateCcw, Rows2, Rows3, Rows4 } from "lucide-react";
 import { PriceSliderFilter } from "./price-slider-filter";
+import { triggerResetColumnWidths } from "./product-table/use-table-column-resize";
 
 export function ProductFilters({
   category,
@@ -26,12 +37,14 @@ export function ProductFilters({
   searchQuery,
   page = 1,
   pageSize = 10,
-  density = "comfortable",
+  density = "normal",
   onToggleDensity,
+  onDensityChange,
   onCategoryChange,
   onStatusChange,
   onPriceChange,
   onReset,
+  onResetColumns,
   categoryOptions = categories,
   searchSlot,
   actionsSlot,
@@ -54,12 +67,12 @@ export function ProductFilters({
     >
       <SelectTrigger
         className={cn(
-          "h-9 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
+          "h-9 text-xs xl:text-sm font-medium cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
           className ?? "w-auto min-w-31.25",
         )}
       >
-        <span className="text-muted-foreground mr-1">Category:</span>
-        <SelectValue />
+        <span className="mr-1 xl:text-sm">Category:</span>
+        <SelectValue className="text-xs xl:text-sm font-medium" />
       </SelectTrigger>
       <SelectContent
         position="popper"
@@ -72,7 +85,7 @@ export function ProductFilters({
           <SelectItem
             key={item.value}
             value={item.value}
-            className="text-xs cursor-pointer hover:bg-primary-hover!"
+            className="text-xs xl:text-sm cursor-pointer hover:bg-primary-hover!"
           >
             {item.value}
           </SelectItem>
@@ -85,45 +98,130 @@ export function ProductFilters({
     <PriceSliderFilter
       value={priceRange}
       onChange={onPriceChange}
-      className={className ?? "w-auto min-w-26.25"}
+      className={className ?? "w-auto min-w-34 sm:min-w-38"}
     />
   );
 
-  const renderDensityButton = () => {
-    if (!onToggleDensity) return null;
+  const renderDensityDropdown = (className?: string) => {
+    if (!onDensityChange && !onToggleDensity) return null;
     const isCompact = density === "compact";
+    const isComfort = density === "comfort" || density === "comfortable";
+    const canonicalDensity = isCompact
+      ? "compact"
+      : isComfort
+        ? "comfort"
+        : "normal";
+
+    const densityLabel = isCompact
+      ? "Compact"
+      : isComfort
+        ? "Comfort"
+        : "Normal";
+
     return (
-      <Tooltip>
-        <TooltipTrigger asChild>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
           <Button
             type="button"
             variant="outline"
-            size="icon"
-            className="size-9 shrink-0 cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
-            onClick={onToggleDensity}
-            aria-label={
-              isCompact
-                ? "Switch to comfortable view"
-                : "Switch to compact view"
-            }
+            className={cn(
+              "h-9 px-3 text-xs xl:text-sm font-medium cursor-pointer gap-1.5 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20 shrink-0",
+              className,
+            )}
+            aria-label={`Table density: ${densityLabel}`}
           >
             {isCompact ? (
-              <Rows3 className="size-4" />
+              <Rows4 className="size-4 shrink-0 text-muted-foreground" />
+            ) : isComfort ? (
+              <Rows2 className="size-4 shrink-0 text-muted-foreground" />
             ) : (
-              <Rows4 className="size-4" />
+              <Rows3 className="size-4 shrink-0 text-muted-foreground" />
             )}
+            <span className="text-xs xl:text-sm font-medium">Density</span>
           </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">
-          <p>
-            {isCompact
-              ? "Switch to comfortable view"
-              : "Switch to compact view"}
-          </p>
-        </TooltipContent>
-      </Tooltip>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-36 p-1">
+          <DropdownMenuLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase px-2 py-1">
+            Table Density
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup
+            value={canonicalDensity}
+            onValueChange={(val) => {
+              const selected = val as TableDensity;
+              if (onDensityChange) {
+                onDensityChange(selected);
+              } else if (onToggleDensity) {
+                onToggleDensity();
+              }
+            }}
+          >
+            <DropdownMenuRadioItem
+              value="compact"
+              className="text-xs cursor-pointer hover:bg-primary-hover! flex items-center gap-2 py-1.5"
+            >
+              <Rows4 className="size-3.5 text-muted-foreground shrink-0" />
+              <span>Compact</span>
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="normal"
+              className="text-xs cursor-pointer hover:bg-primary-hover! flex items-center gap-2 py-1.5"
+            >
+              <Rows3 className="size-3.5 text-muted-foreground shrink-0" />
+              <span>Normal</span>
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem
+              value="comfort"
+              className="text-xs cursor-pointer hover:bg-primary-hover! flex items-center gap-2 py-1.5"
+            >
+              <Rows2 className="size-3.5 text-muted-foreground shrink-0" />
+              <span>Comfort</span>
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={() => {
+              if (onResetColumns) {
+                onResetColumns();
+              } else {
+                triggerResetColumnWidths();
+              }
+            }}
+            className="text-xs cursor-pointer hover:bg-primary-hover! flex items-center gap-2 py-1.5 text-muted-foreground hover:text-foreground"
+          >
+            <RotateCcw className="size-3.5 shrink-0" />
+            <span>Reset columns</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   };
+
+  const renderResetColumnsButton = () => (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          className="size-9 shrink-0 cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
+          onClick={() => {
+            if (onResetColumns) {
+              onResetColumns();
+            } else {
+              triggerResetColumnWidths();
+            }
+          }}
+          aria-label="Reset column widths"
+        >
+          <RotateCcw className="size-3.5 text-muted-foreground" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom">
+        <p>Reset column widths</p>
+      </TooltipContent>
+    </Tooltip>
+  );
 
   const renderResetButton = () => (
     <Tooltip>
@@ -183,7 +281,8 @@ export function ProductFilters({
         <div className="flex items-center gap-2 w-full">
           {renderCategorySelect("flex-1 min-w-0")}
           {renderPriceSelect("flex-1 min-w-0")}
-          {renderDensityButton()}
+          {renderDensityDropdown()}
+          {renderResetColumnsButton()}
           {renderResetButton()}
         </div>
       </div>
@@ -203,8 +302,8 @@ export function ProductFilters({
                   size="sm"
                   className={
                     active
-                      ? "h-9 rounded-md px-3 sm:px-4 cursor-pointer"
-                      : "h-9 rounded-md px-3 font-normal hover:bg-primary-hover hover:border-primary sm:px-4 cursor-pointer"
+                      ? "h-9 rounded-md px-3 sm:px-4 text-xs xl:text-sm cursor-pointer"
+                      : "h-9 rounded-md px-3 font-normal text-xs xl:text-sm hover:bg-primary-hover hover:border-primary sm:px-4 cursor-pointer"
                   }
                   onClick={() => onStatusChange(item.value)}
                 >
@@ -215,7 +314,8 @@ export function ProductFilters({
           </div>
 
           {renderPriceSelect()}
-          {renderDensityButton()}
+          {renderDensityDropdown()}
+          {renderResetColumnsButton()}
           {renderResetButton()}
         </div>
 
