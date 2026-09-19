@@ -15,10 +15,13 @@ export function NotFoundPage() {
       title="Page not found"
       description="The page you're looking for doesn't exist."
     >
-      <Button asChild className="mt-1 shadow-sm transition-all hover:shadow-md cursor-pointer">
+      <Button
+        asChild
+        className="mt-1 shadow-sm transition-all hover:shadow-md cursor-pointer"
+      >
         <Link to={isAuthenticated ? "/products" : "/login"}>
           <ArrowLeft className="mr-1.5 size-4" />
-          {isAuthenticated ? "Back to Products" : "Back to Login"}
+          {isAuthenticated ? "Back to home" : "Back to Login"}
         </Link>
       </Button>
     </EmptyProductPage>

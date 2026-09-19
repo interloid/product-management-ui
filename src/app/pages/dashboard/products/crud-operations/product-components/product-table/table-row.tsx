@@ -1,4 +1,4 @@
-import { Check, Copy, Eye, MoreHorizontal, Package } from "lucide-react";
+import { Check, Copy, Eye, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -88,7 +88,12 @@ export const ProductTableRow = memo(function ProductTableRow({
           isCompact ? "py-1.5" : "py-3",
         )}
       >
-        <div className={cn("flex items-center min-w-0", isCompact ? "gap-2" : "gap-2.5")}>
+        <div
+          className={cn(
+            "flex items-center min-w-0",
+            isCompact ? "gap-2" : "gap-2.5",
+          )}
+        >
           {primaryImage?.url ? (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -103,6 +108,7 @@ export const ProductTableRow = memo(function ProductTableRow({
                     src={primaryImage.url}
                     alt={product.name}
                     size={isCompact ? "size-8" : "size-10"}
+                    
                   />
                 </div>
               </TooltipTrigger>
@@ -132,7 +138,6 @@ export const ProductTableRow = memo(function ProductTableRow({
               size={isCompact ? "size-8" : "size-10"}
             />
           )}
-
           <button
             type="button"
             onClick={(e) => {
@@ -156,7 +161,9 @@ export const ProductTableRow = memo(function ProductTableRow({
           </button>
         </div>
       </TableCell>
-      <TableCell className={cn("overflow-hidden", isCompact ? "py-1.5" : "py-3")}>
+      <TableCell
+        className={cn("overflow-hidden", isCompact ? "py-1.5" : "py-3")}
+      >
         <button
           type="button"
           onClick={(e) => {
@@ -172,19 +179,36 @@ export const ProductTableRow = memo(function ProductTableRow({
           {product.name}
         </button>
       </TableCell>
-      <TableCell className={cn("hidden truncate md:table-cell", isCompact ? "py-1.5" : "py-3")}>
-        <CategoryBadge name={product.category_name} className="max-w-full truncate" />
+      <TableCell
+        className={cn(
+          "hidden truncate md:table-cell",
+          isCompact ? "py-1.5" : "py-3",
+        )}
+      >
+        <CategoryBadge
+          name={product.category_name}
+          className="max-w-full truncate"
+        />
       </TableCell>
-      <TableCell className={cn("font-mono font-medium whitespace-nowrap tabular-nums", isCompact ? "py-1.5 text-xs" : "py-3 text-sm")}>
+      <TableCell
+        className={cn(
+          "font-mono font-medium whitespace-nowrap tabular-nums",
+          isCompact ? "py-1.5 text-xs" : "py-3 text-sm",
+        )}
+      >
         {formatPrice(product.price)}
       </TableCell>
-      <TableCell className={cn("font-mono whitespace-nowrap tabular-nums", isCompact ? "py-1.5 text-xs" : "py-3 text-sm")}>
+      <TableCell
+        className={cn(
+          "font-medium whitespace-nowrap tabular-nums",
+          isCompact ? "py-1.5 text-xs" : "py-3 text-sm",
+        )}
+      >
         {product.stock === 0 ? (
           <span
             title="Out of stock"
             className="inline-flex items-center gap-1.5 font-semibold text-destructive"
           >
-            <Package className={cn("shrink-0 text-destructive", isCompact ? "size-3" : "size-3.5")} />
             <span>0</span>
           </span>
         ) : product.stock <= 10 ? (
@@ -192,7 +216,6 @@ export const ProductTableRow = memo(function ProductTableRow({
             title={`Low stock (${product.stock} left)`}
             className="inline-flex items-center gap-1.5 font-medium text-amber-600 dark:text-amber-400"
           >
-            <Package className={cn("shrink-0 text-amber-500", isCompact ? "size-3" : "size-3.5")} />
             <span>{product.stock}</span>
           </span>
         ) : (
@@ -200,12 +223,13 @@ export const ProductTableRow = memo(function ProductTableRow({
             title={`In stock (${product.stock})`}
             className="inline-flex items-center gap-1.5 text-foreground"
           >
-            <Package className={cn("shrink-0 text-muted-foreground/70", isCompact ? "size-3" : "size-3.5")} />
             <span>{product.stock}</span>
           </span>
         )}
       </TableCell>
-      <TableCell className={cn("whitespace-nowrap", isCompact ? "py-1.5" : "py-3")}>
+      <TableCell
+        className={cn("whitespace-nowrap", isCompact ? "py-1.5" : "py-3")}
+      >
         <Badge
           variant="outline"
           className={cn(
@@ -216,7 +240,12 @@ export const ProductTableRow = memo(function ProductTableRow({
           {getStatusLabel(product.status)}
         </Badge>
       </TableCell>
-      <TableCell className={cn("hidden text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis tabular-nums", isCompact ? "py-1.5 text-[11px]" : "py-3 text-xs")}>
+      <TableCell
+        className={cn(
+          "hidden text-muted-foreground md:table-cell whitespace-nowrap overflow-hidden text-ellipsis tabular-nums",
+          isCompact ? "py-1.5 text-[11px]" : "py-3 text-xs",
+        )}
+      >
         <Tooltip>
           <TooltipTrigger asChild>
             <span className="cursor-default border-b border-dotted border-muted-foreground/40 hover:text-foreground transition-colors">
@@ -228,12 +257,18 @@ export const ProductTableRow = memo(function ProductTableRow({
           </TooltipContent>
         </Tooltip>
       </TableCell>
-      <TableCell className={cn(isCompact ? "py-1.5" : "py-3")} onClick={(event) => event.stopPropagation()}>
+      <TableCell
+        className={cn(isCompact ? "py-1.5" : "py-3")}
+        onClick={(event) => event.stopPropagation()}
+      >
         <div className="flex items-center justify-end flex-row-reverse gap-1.5">
           <Button
             variant="outline"
             size="icon"
-            className={cn("border-none! shadow-none!", isCompact ? "size-7" : "size-8")}
+            className={cn(
+              "border-none! shadow-none! hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
+              isCompact ? "size-7" : "size-8",
+            )}
             onClick={(event) => {
               event.stopPropagation();
               onView();

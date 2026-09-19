@@ -97,9 +97,14 @@ export function ProductFormFields({
   const finalCategoryOptions = useMemo(() => {
     if (
       form.category &&
-      !categoryOptions.some((c) => c.value.toLowerCase() === form.category.toLowerCase())
+      !categoryOptions.some(
+        (c) => c.value.toLowerCase() === form.category.toLowerCase(),
+      )
     ) {
-      return [{ value: form.category, label: form.category }, ...categoryOptions];
+      return [
+        { value: form.category, label: form.category },
+        ...categoryOptions,
+      ];
     }
     return categoryOptions;
   }, [categoryOptions, form.category]);
@@ -250,7 +255,10 @@ export function ProductFormFields({
               onFieldChange("status", value as ProductStatus)
             }
           >
-            <SelectTrigger id={`${idPrefix}-status`} className="h-9 w-full  hover:border-primary hover:bg-primary-hover focus-visible:ring-primary/20">
+            <SelectTrigger
+              id={`${idPrefix}-status`}
+              className="h-9 w-full hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
+            >
               <SelectValue placeholder="Select..." />
             </SelectTrigger>
             <SelectContent
@@ -528,9 +536,7 @@ export function ProductImageDropzone({
           isSubmitting && "pointer-events-none opacity-60",
         )}
       >
-        <span className="text-lg font-light leading-none">
-          +
-        </span>
+        <span className="text-lg font-light leading-none">+</span>
         <span className="mt-1 px-1 text-center text-[11px] font-medium">
           {isDragging ? "Drop images here" : "Add images"}
         </span>

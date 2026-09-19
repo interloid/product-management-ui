@@ -29,7 +29,9 @@ export function NavMain({ items }: NavMainProps) {
                   onClick={() => {
                     setOpenMobile(false);
                     if (item.url === "/categories") {
-                      window.dispatchEvent(new CustomEvent("refresh-categories"));
+                      window.dispatchEvent(
+                        new CustomEvent("refresh-categories"),
+                      );
                     }
                   }}
                   className="block w-full group-data-[collapsible=icon]:w-10"

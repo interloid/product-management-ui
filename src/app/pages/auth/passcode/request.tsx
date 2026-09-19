@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { notifyToast } from "@/lib/toast";
 import { requestPasscode } from "@/services/auth-service";
+import { cn } from "@/lib/utils";
+import { validateEmail } from "@/lib/validation";
 import {
   Card,
   CardDescription,
@@ -21,19 +23,34 @@ export default function PasscodeRequestPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const val = event.target.value;
+    setEmail(val);
+    if (emailError) {
+      const err = validateEmail(val);
+      setEmailError(err ?? "");
+    }
+  };
+
+  const handleEmailBlur = () => {
+    const err = validateEmail(email);
+    setEmailError(err ?? "");
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const trimmedEmail = email.trim();
-
-    if (!trimmedEmail) {
-      notifyToast("error", "Please enter your email address.", {
-        id: "passcode-email",
-      });
+    const err = validateEmail(email);
+    if (err) {
+      setEmailError(err);
       return;
     }
+    setEmailError("");
+
+    const trimmedEmail = email.trim();
 
     try {
       setIsLoading(true);
@@ -111,16 +128,36 @@ export default function PasscodeRequestPage() {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                className="h-10 focus-visible:border-primary focus-visible:ring-primary/20"
+                maxLength={254}
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={handleEmailChange}
+                onBlur={handleEmailBlur}
                 disabled={isLoading}
                 autoComplete="email"
+                required
+                aria-invalid={Boolean(emailError)}
+                aria-describedby={emailError ? "email-error" : undefined}
+                className={cn(
+                  "h-10 text-[13px]! focus-visible:ring-primary/20",
+                  emailError
+                    ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
+                    : "focus-visible:border-primary",
+                )}
               />
 
-              <FieldDescription>
-                We'll send a six-digit passcode to this email address.
-              </FieldDescription>
+              {emailError ? (
+                <p
+                  id="email-error"
+                  className="text-xs font-medium text-destructive mt-0.5"
+                  role="alert"
+                >
+                  {emailError}
+                </p>
+              ) : (
+                <FieldDescription>
+                  We'll send a six-digit passcode to this email address.
+                </FieldDescription>
+              )}
             </Field>
 
             <CardFooter className="flex w-full flex-col gap-2 px-2">

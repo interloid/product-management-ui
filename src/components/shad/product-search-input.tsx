@@ -47,7 +47,6 @@ export function ProductSearchInput({
   return (
     <div className={`relative ${className}`}>
       <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-
       <Input
         ref={inputRef}
         type="search"
@@ -56,7 +55,6 @@ export function ProductSearchInput({
         onChange={(e) => setSearchQuery(e.target.value)}
         className="h-9 w-full pl-9 pr-11 text-xs focus-visible:border-primary focus-visible:ring-primary/20 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
       />
-
       {searchQuery ? (
         <button
           type="button"

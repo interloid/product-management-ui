@@ -21,7 +21,10 @@ export default function EmptyProductPage({
       <Empty className="max-w-lg border border-border/70 bg-card p-6 sm:p-8 rounded-xl shadow-xs">
         <EmptyHeader>
           <div className="flex justify-center mb-1">
-            <Badge variant="secondary" className="px-2.5 py-0.5 font-medium text-xs">
+            <Badge
+              variant="secondary"
+              className="px-2.5 py-0.5 font-medium text-xs"
+            >
               {badge}
             </Badge>
           </div>
@@ -36,7 +39,10 @@ export default function EmptyProductPage({
             </EmptyMedia>
           ) : (
             Icon && (
-              <EmptyMedia variant="icon" className="size-14 rounded-2xl bg-primary/10 text-primary mb-2">
+              <EmptyMedia
+                variant="icon"
+                className="size-14 rounded-2xl bg-primary/10 text-primary mb-2"
+              >
                 <Icon className="size-7" />
               </EmptyMedia>
             )

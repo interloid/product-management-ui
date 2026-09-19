@@ -29,7 +29,10 @@ export default function Customers() {
       <Button
         variant="outline"
         onClick={() =>
-          notifyToast("info", "You've been added to the early access list for Customers!")
+          notifyToast(
+            "info",
+            "You've been added to the early access list for Customers!",
+          )
         }
         className="cursor-pointer"
       >

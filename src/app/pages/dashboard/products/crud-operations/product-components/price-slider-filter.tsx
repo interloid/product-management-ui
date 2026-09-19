@@ -82,8 +82,12 @@ export function PriceSliderFilter({
   const [localRange, setLocalRange] = useState<[number, number]>(() =>
     parseRange(value, max),
   );
-  const [minInput, setMinInput] = useState(() => String(parseRange(value, max)[0]));
-  const [maxInput, setMaxInput] = useState(() => String(parseRange(value, max)[1]));
+  const [minInput, setMinInput] = useState(() =>
+    String(parseRange(value, max)[0]),
+  );
+  const [maxInput, setMaxInput] = useState(() =>
+    String(parseRange(value, max)[1]),
+  );
 
   if (value !== prevValue) {
     setPrevValue(value);
@@ -171,7 +175,7 @@ export function PriceSliderFilter({
           type="button"
           variant="outline"
           className={cn(
-            "h-9 text-xs font-medium cursor-pointer justify-between gap-1.5 px-3",
+            "h-9 text-xs font-medium cursor-pointer justify-between gap-1.5 px-3 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
             isFiltered &&
               "border-primary/50 bg-primary/5 text-primary dark:text-primary-foreground font-semibold shadow-2xs",
             className,

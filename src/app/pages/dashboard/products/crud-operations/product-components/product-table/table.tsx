@@ -41,7 +41,9 @@ export function ProductTable({
     if (!el) return;
     const hasOverflow = el.scrollWidth > el.clientWidth;
     setCanScrollLeft(el.scrollLeft > 4);
-    setCanScrollRight(hasOverflow && el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    setCanScrollRight(
+      hasOverflow && el.scrollLeft < el.scrollWidth - el.clientWidth - 4,
+    );
   }, []);
 
   useEffect(() => {
@@ -57,7 +59,7 @@ export function ProductTable({
       <Table
         containerRef={containerRef}
         onContainerScroll={checkScroll}
-        className="table-fixed min-w-[640px] md:min-w-240"
+        className="table-fixed min-w-160 md:min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
         <TableHeader className="sticky top-0 z-20 bg-muted/90 backdrop-blur-md [&_th]:bg-muted/90">

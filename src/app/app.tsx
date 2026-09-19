@@ -14,7 +14,9 @@ const Callback = lazy(() => import("@/app/pages/auth/callback"));
 const DashboardLayout = lazy(() => import("@/layouts/dashboard"));
 const Orders = lazy(() => import("@/app/pages/dashboard/orders"));
 const Products = lazy(() => import("@/app/pages/dashboard/products"));
-const Categories = lazy(() => import("@/app/pages/dashboard/categories/categories"));
+const Categories = lazy(
+  () => import("@/app/pages/dashboard/categories/categories"),
+);
 const Customers = lazy(() => import("@/app/pages/dashboard/customers"));
 const Reports = lazy(() => import("@/app/pages/dashboard/reports"));
 const Settings = lazy(() => import("@/app/pages/dashboard/settings"));

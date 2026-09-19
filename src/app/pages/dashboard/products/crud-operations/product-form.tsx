@@ -1,6 +1,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { Archive, RotateCcw, Trash2, X } from "lucide-react";
 import { notifyToast } from "@/lib/toast";
+import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -673,9 +674,11 @@ export function ProductForm(props: ProductFormProps) {
       >
         <SheetContent
           showCloseButton={false}
-          className={
-            mode === "view" ? "gap-0 sm:max-w-xl!" : "gap-0 p-0 sm:max-w-xl!"
-          }
+          className={cn(
+            "gap-0 p-0 overflow-hidden rounded-2xl border border-border/80 shadow-2xl transition-all duration-200",
+            "data-[side=right]:border data-[side=right]:inset-y-2.5 data-[side=right]:right-2.5 data-[side=right]:h-[calc(100vh-1.25rem)] data-[side=right]:w-[calc(100vw-1.25rem)]",
+            "sm:data-[side=right]:inset-y-3 sm:data-[side=right]:right-3 sm:data-[side=right]:h-[calc(100vh-1.5rem)] sm:data-[side=right]:w-full sm:max-w-xl!",
+          )}
         >
           {mode === "view" ? renderView() : renderForm()}
         </SheetContent>

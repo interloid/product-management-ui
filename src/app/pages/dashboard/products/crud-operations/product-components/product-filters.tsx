@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -14,7 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ListRestart, Rows3, Rows4 } from "lucide-react";
+import { FunnelX, Rows3, Rows4 } from "lucide-react";
 import { PriceSliderFilter } from "./price-slider-filter";
 
 export function ProductFilters({
@@ -52,9 +53,10 @@ export function ProductFilters({
       }
     >
       <SelectTrigger
-        className={`h-9 text-xs font-medium cursor-pointer ${
-          className ?? "w-auto min-w-31.25"
-        }`}
+        className={cn(
+          "h-9 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
+          className ?? "w-auto min-w-31.25",
+        )}
       >
         <span className="text-muted-foreground mr-1">Category:</span>
         <SelectValue />
@@ -97,15 +99,27 @@ export function ProductFilters({
             type="button"
             variant="outline"
             size="icon"
-            className="size-9 shrink-0 cursor-pointer"
+            className="size-9 shrink-0 cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
             onClick={onToggleDensity}
-            aria-label={isCompact ? "Switch to comfortable view" : "Switch to compact view"}
+            aria-label={
+              isCompact
+                ? "Switch to comfortable view"
+                : "Switch to compact view"
+            }
           >
-            {isCompact ? <Rows3 className="size-4" /> : <Rows4 className="size-4" />}
+            {isCompact ? (
+              <Rows3 className="size-4" />
+            ) : (
+              <Rows4 className="size-4" />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
-          <p>{isCompact ? "Switch to comfortable view" : "Switch to compact view"}</p>
+          <p>
+            {isCompact
+              ? "Switch to comfortable view"
+              : "Switch to compact view"}
+          </p>
         </TooltipContent>
       </Tooltip>
     );
@@ -118,16 +132,16 @@ export function ProductFilters({
           type="button"
           variant="outline"
           size="icon"
-          className="size-9 shrink-0 cursor-pointer"
+          className="size-9 shrink-0 cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
           onClick={onReset}
           aria-label="Reset filters"
           disabled={isDefaultFilters}
         >
-          <ListRestart className="size-4" />
+          <FunnelX className="size-3.5"/>
         </Button>
       </TooltipTrigger>
       <TooltipContent side="right">
-        <p>Reset filters</p>
+        <p>Clear filters</p>
       </TooltipContent>
     </Tooltip>
   );

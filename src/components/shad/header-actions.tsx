@@ -26,12 +26,14 @@ export function HeaderActions({ user }: HeaderActionsProps) {
         <DropdownMenuTrigger asChild>
           <button
             type="button"
-            className="flex items-center gap-2 rounded-full p-0.5 outline-none transition-transform hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            className="flex items-center gap-2 rounded-full p-0.5 outline-none transition-transform hover:opacity-90 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20 cursor-pointer"
             aria-label="User menu"
           >
             <Avatar className="size-8.5 border border-border/80 shadow-xs">
               <AvatarImage src={avatarSrc} alt={user?.name ?? "User"} />
-              <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
+              <AvatarFallback className="text-xs font-medium">
+                {initials}
+              </AvatarFallback>
             </Avatar>
           </button>
         </DropdownMenuTrigger>

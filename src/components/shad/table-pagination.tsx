@@ -43,7 +43,7 @@ export function TablePagination({
             setPage(1);
           }}
         >
-          <SelectTrigger className="h-8 w-[65px] hover:border-primary hover:bg-primary-hover focus-visible:border-primary! focus-visible:ring-primary/20!">
+          <SelectTrigger className="h-8 w-[65px] hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20">
             <SelectValue />
           </SelectTrigger>
 
@@ -84,7 +84,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover!"
+            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
             disabled={isFirstPage || isEmpty}
             onClick={() => setPage(1)}
             aria-label="Go to first page"
@@ -94,7 +94,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover!"
+            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
             disabled={isFirstPage || isEmpty}
             onClick={() => setPage((current) => current - 1)}
             aria-label="Go to previous page"
@@ -104,7 +104,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover!"
+            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
             disabled={isLastPage || isEmpty}
             onClick={() =>
               setPage((current) => Math.min(current + 1, lastPage))
@@ -116,7 +116,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover!"
+            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
             disabled={isLastPage || isEmpty}
             onClick={() => setPage(lastPage)}
             aria-label="Go to last page"

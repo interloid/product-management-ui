@@ -1,5 +1,6 @@
-import { MoveDown, MoveUp } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { TableHead } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import type { SortableTableHeadProps } from "@/types/props";
 
 export function SortableHeader({
@@ -11,31 +12,34 @@ export function SortableHeader({
 }: SortableTableHeadProps) {
   const isActive = sort.field === field;
 
+  const renderSortIcon = () => {
+    if (!isActive) {
+      return (
+        <ArrowUpDown className="size-3.5 text-muted-foreground group-hover/sort:text-muted-foreground transition-colors shrink-0" />
+      );
+    }
+    if (sort.order === "asc") {
+      return (
+        <ArrowUp className="size-3.5 text-primary shrink-0 transition-colors" />
+      );
+    }
+    return (
+      <ArrowDown className="size-3.5 text-primary shrink-0 transition-colors" />
+    );
+  };
+
   return (
     <TableHead className={className}>
       <button
         type="button"
         onClick={() => onSort(field)}
-        className="flex w-full items-center justify-start gap-1 text-[11px] font-semibold tracking-wider uppercase hover:text-foreground select-none cursor-pointer"
+        className={cn(
+          "group/sort flex w-full items-center justify-start gap-1 text-[11px] font-semibold tracking-wider uppercase select-none cursor-pointer outline-none focus-visible:text-foreground focus-visible:ring-1 focus-visible:ring-primary/20 rounded-xs transition-colors",
+        )}
+        title={`Sort by ${label}`}
       >
         <span className="whitespace-nowrap">{label}</span>
-
-        <span className="flex items-center shrink-0">
-          <MoveUp
-            className={`size-3 transition-colors ${
-              isActive && sort.order === "asc"
-                ? "text-primary"
-                : "text-muted-foreground/40 hover:text-muted-foreground"
-            }`}
-          />
-          <MoveDown
-            className={`size-3 transition-colors ${
-              isActive && sort.order === "desc"
-                ? "text-primary"
-                : "text-muted-foreground/40 hover:text-muted-foreground"
-            }`}
-          />
-        </span>
+        {renderSortIcon()}
       </button>
     </TableHead>
   );

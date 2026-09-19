@@ -20,4 +20,3 @@ export interface CategoriesResult {
   total: number;
   totalPages: number;
 }
-

@@ -65,7 +65,7 @@ export function ProductActionConfirmDialog({
             variant="outline"
             onClick={onCancel}
             disabled={isPending}
-            className="h-9 px-3.5 text-sm hover:border-primary hover:bg-primary-hover cursor-pointer"
+            className="h-9 px-3.5 text-sm hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20 cursor-pointer"
           >
             Cancel
           </Button>

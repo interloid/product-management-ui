@@ -1,8 +1,5 @@
 import { apiRequest } from "@/lib/api";
-import type {
-  CategoriesResult,
-  GetCategoriesResponse,
-} from "@/types/category";
+import type { CategoriesResult, GetCategoriesResponse } from "@/types/category";
 
 export async function getCategories(
   params: {

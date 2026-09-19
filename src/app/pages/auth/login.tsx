@@ -28,6 +28,7 @@ import MicrosoftLogo from "@/components/icons/microsoft-logo";
 import { AlertTriangle, Eye, EyeOff } from "lucide-react";
 import { type OAuthProvider } from "@/types/auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
+import { validateEmail } from "@/lib/validation";
 import interloidLogo from "@/assets/icons/favicon.ico";
 
 export default function LoginPage({
@@ -68,29 +69,6 @@ export default function LoginPage({
     if (typeof event.getModifierState === "function") {
       setIsCapsLockOn(event.getModifierState("CapsLock"));
     }
-  };
-
-  const validateEmail = (value: string): string | null => {
-    const trimmed = value.trim();
-    if (!trimmed) {
-      return "Please enter your email address.";
-    }
-    if (trimmed.length > 254) {
-      return "Email must be 254 characters or fewer.";
-    }
-    if (/\s/.test(trimmed)) {
-      return "Email address cannot contain spaces.";
-    }
-    if (!trimmed.includes("@")) {
-      return "Email address must contain an @ symbol.";
-    }
-    const emailRegex =
-      /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
-
-    if (!emailRegex.test(trimmed)) {
-      return "Please enter a valid email address.";
-    }
-    return null;
   };
 
   const validatePassword = (value: string): string | null => {
@@ -208,14 +186,14 @@ export default function LoginPage({
           Powered by{" "}
         </span>
         <div className="flex">
-        <img
-          src={interloidLogo}
-          alt="Interloid"
-          width={20}
-          height={20}
-          className="h-5 w-5 object-contain"
-        />
-        <span className="text-sm font-semibold">Interloid</span>
+          <img
+            src={interloidLogo}
+            alt="Interloid"
+            width={20}
+            height={20}
+            className="h-5 w-5 object-contain"
+          />
+          <span className="text-sm font-semibold">Interloid</span>
         </div>
       </div>
       <div className="w-full border rounded-[10px] max-w-lg">
@@ -369,7 +347,7 @@ export default function LoginPage({
                       <button
                         type="button"
                         onClick={() => setShowPassword((prev) => !prev)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-text hover:text-foreground"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-text hover:text-foreground outline-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
                         aria-label={
                           showPassword ? "Hide password" : "Show password"
                         }
@@ -435,12 +413,12 @@ export default function LoginPage({
                     </Button>
 
                     <FieldDescription className="text-center text-xs">
-                      Have a passcode instead?{" "}
+                      Have a Passcode instead?{" "}
                       <Link
                         to="/passcode"
                         className="text-primary font-semibold no-underline! hover:underline!"
                       >
-                        Use passcode
+                        Use Passcode
                       </Link>
                     </FieldDescription>
                   </Field>
