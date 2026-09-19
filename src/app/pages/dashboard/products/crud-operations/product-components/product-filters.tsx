@@ -315,7 +315,6 @@ export function ProductFilters({
 
           {renderPriceSelect()}
           {renderDensityDropdown()}
-          {renderResetColumnsButton()}
           {renderResetButton()}
         </div>
 
