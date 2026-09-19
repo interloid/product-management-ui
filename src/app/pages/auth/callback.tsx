@@ -21,6 +21,9 @@ export default function Callback() {
 
   useEffect(() => {
     if (status === "authenticated") {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("product-table-density", "normal");
+      }
       navigate("/products", { replace: true });
     }
   }, [status, navigate]);

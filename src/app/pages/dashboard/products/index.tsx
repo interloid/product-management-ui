@@ -70,11 +70,11 @@ export default function ProductsPage() {
       if (
         saved === "compact" ||
         saved === "normal" ||
-        saved === "comfort" ||
-        saved === "comfortable"
+        saved === "comfort"
       ) {
         return saved as TableDensity;
       }
+      localStorage.setItem("product-table-density", "normal");
     }
     return "normal";
   });

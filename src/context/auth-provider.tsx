@@ -26,6 +26,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
     setStatus("unauthenticated");
     setSessionError(null);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("product-table-density", "normal");
+    }
   }, []);
 
   const checkAuth = useCallback(
@@ -118,6 +121,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
           "Unable to verify your session after sign-in. Please try again.",
         );
       }
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("product-table-density", "normal");
+      }
     },
     [checkAuth],
   );
@@ -132,6 +139,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error(
           "Passcode accepted, but we couldn't verify your session. Please try again.",
         );
+      }
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("product-table-density", "normal");
       }
     },
     [checkAuth],

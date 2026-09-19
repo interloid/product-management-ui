@@ -26,7 +26,7 @@ export function ProductTable({
   deleteId,
   isActionPending = false,
   showNoResults = false,
-  density = "comfortable",
+  density = "normal",
   sort,
   onSort,
   onView,

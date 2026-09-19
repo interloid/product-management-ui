@@ -41,11 +41,20 @@ export function NavMain({ items }: NavMainProps) {
                       isActive={isActive}
                       tooltip={item.title}
                       className={cn(
-                        "w-full gap-2 hover:bg-primary-hover hover:text-hover-text",
+                        "relative w-full gap-2 hover:bg-primary-hover hover:text-hover-text",
                         "data-[active=true]:bg-primary",
                         "data-[active=true]:text-primary-foreground",
                         "data-[active=true]:hover:bg-primary",
                         "data-[active=true]:hover:text-primary-foreground",
+                        "data-[active=true]:before:absolute",
+                        "data-[active=true]:before:left-0",
+                        "data-[active=true]:before:top-1",
+                        "data-[active=true]:before:bottom-1",
+                        "data-[active=true]:before:w-1",
+                        "data-[active=true]:before:rounded-r-full",
+                        "data-[active=true]:before:bg-primary-foreground",
+                        "data-[active=true]:before:shadow-[0_0_6px_1px_var(--primary-foreground)]",
+                        "group-data-[collapsible=icon]:data-[active=true]:before:hidden",
                         "group-data-[collapsible=icon]:mx-auto",
                         "group-data-[collapsible=icon]:size-10",
                         "group-data-[collapsible=icon]:justify-center",
