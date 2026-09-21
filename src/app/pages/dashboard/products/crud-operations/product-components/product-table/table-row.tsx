@@ -38,6 +38,7 @@ export const ProductTableRow = memo(function ProductTableRow({
   isDeleting,
   isActionPending = false,
   density = "normal",
+  isAdmin = true,
   onView,
   onEdit,
   onArchive,
@@ -90,12 +91,17 @@ export const ProductTableRow = memo(function ProductTableRow({
   }
   return (
     <TableRow
-      className="group/row w-full cursor-pointer hover:bg-primary-hover transition-colors"
-      onClick={onView}
+      className={cn(
+        "group/row w-full transition-colors",
+        isAdmin ? "cursor-pointer hover:bg-primary-hover" : "hover:bg-muted/40",
+      )}
+      onClick={isAdmin ? onView : undefined}
     >
       <TableCell
         className={cn(
-          "relative overflow-hidden pl-5! group-hover/row:shadow-[inset_3px_0_0_0_var(--primary)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.75 before:bg-primary before:opacity-0 group-hover/row:before:opacity-100 before:transition-opacity",
+          "relative overflow-hidden pl-5!",
+          isAdmin &&
+            "group-hover/row:shadow-[inset_3px_0_0_0_var(--primary)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.75 before:bg-primary before:opacity-0 group-hover/row:before:opacity-100 before:transition-opacity",
           rowPadding,
         )}
       >
@@ -109,11 +115,15 @@ export const ProductTableRow = memo(function ProductTableRow({
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
-                  className="cursor-pointer shrink-0"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onView();
-                  }}
+                  className={cn("shrink-0", isAdmin && "cursor-pointer")}
+                  onClick={
+                    isAdmin
+                      ? (e) => {
+                          e.stopPropagation();
+                          onView();
+                        }
+                      : undefined
+                  }
                 >
                   <ProductImage
                     src={primaryImage.url}
@@ -154,24 +164,40 @@ export const ProductTableRow = memo(function ProductTableRow({
         </div>
       </TableCell>
       <TableCell className={cn("overflow-hidden", rowPadding)}>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onView();
-          }}
-          title={product.name}
-          className={cn(
-            "block w-full truncate text-left font-semibold text-foreground hover:text-primary transition-colors cursor-pointer",
-            isCompact
-              ? "text-xs"
-              : isComfort
-                ? "text-sm font-medium"
-                : "text-[13px]",
-          )}
-        >
-          {product.name}
-        </button>
+        {isAdmin ? (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onView();
+            }}
+            title={product.name}
+            className={cn(
+              "block w-full truncate text-left font-semibold text-foreground hover:text-primary transition-colors cursor-pointer",
+              isCompact
+                ? "text-xs"
+                : isComfort
+                  ? "text-sm font-medium"
+                  : "text-[13px]",
+            )}
+          >
+            {product.name}
+          </button>
+        ) : (
+          <span
+            title={product.name}
+            className={cn(
+              "block w-full truncate text-left font-semibold text-foreground select-text",
+              isCompact
+                ? "text-xs"
+                : isComfort
+                  ? "text-sm font-medium"
+                  : "text-[13px]",
+            )}
+          >
+            {product.name}
+          </span>
+        )}
       </TableCell>
       <TableCell className={cn("hidden truncate md:table-cell", rowPadding)}>
         <CategoryBadge
@@ -200,7 +226,9 @@ export const ProductTableRow = memo(function ProductTableRow({
             title="Out of stock"
             className="inline-flex items-center gap-1 font-semibold text-destructive"
           >
-            <TriangleAlert className={cn(isCompact ? "size-3" : "size-3.5", "shrink-0")} />
+            <TriangleAlert
+              className={cn(isCompact ? "size-3" : "size-3.5", "shrink-0")}
+            />
             <span>0</span>
           </span>
         ) : product.stock <= 10 ? (
@@ -252,87 +280,95 @@ export const ProductTableRow = memo(function ProductTableRow({
         className={cn(rowPadding)}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-center justify-end flex-row-reverse gap-1.5">
-          <Button
-            variant="outline"
-            size="icon"
-            className={cn(
-              "border-none! shadow-none! hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
-              actionButtonSize,
-            )}
-            onClick={(event) => {
-              event.stopPropagation();
-              onView();
-            }}
-            title="View"
-          >
-            <SquareArrowOutUpRight
-              className={isCompact ? "size-3.5" : "size-4"}
-            />
-          </Button>
-          <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className={cn(
-                  "hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
-                  actionButtonSize,
-                )}
-                onClick={(event) => {
-                  event.stopPropagation();
-                }}
-              >
-                <MoreHorizontal className={isCompact ? "size-3.5" : "size-4"} />
-                <span className="sr-only">Product actions</span>
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent
-              align="end"
-              onPointerDown={(event) => event.stopPropagation()}
-              onClick={(event) => event.stopPropagation()}
+        {isAdmin ? (
+          <div className="flex items-center justify-end flex-row-reverse gap-1.5">
+            <Button
+              variant="outline"
+              size="icon"
+              className={cn(
+                "border-none! shadow-none! hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
+                actionButtonSize,
+              )}
+              onClick={(event) => {
+                event.stopPropagation();
+                onView();
+              }}
+              title="View"
             >
-              {product.status !== "archived" && (
+              <SquareArrowOutUpRight
+                className={isCompact ? "size-3.5" : "size-4"}
+              />
+            </Button>
+            <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className={cn(
+                    "hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
+                    actionButtonSize,
+                  )}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                  }}
+                >
+                  <MoreHorizontal
+                    className={isCompact ? "size-3.5" : "size-4"}
+                  />
+                  <span className="sr-only">Product actions</span>
+                </Button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                align="end"
+                onPointerDown={(event) => event.stopPropagation()}
+                onClick={(event) => event.stopPropagation()}
+              >
+                {product.status !== "archived" && (
+                  <DropdownMenuItem
+                    onSelect={(event) => {
+                      event.preventDefault();
+
+                      setActionsOpen(false);
+                      onArchive();
+                    }}
+                    className="cursor-pointer hover:bg-primary-hover!"
+                  >
+                    Archive
+                  </DropdownMenuItem>
+                )}
+
                 <DropdownMenuItem
                   onSelect={(event) => {
                     event.preventDefault();
 
                     setActionsOpen(false);
-                    onArchive();
+                    onEdit();
                   }}
                   className="cursor-pointer hover:bg-primary-hover!"
                 >
-                  Archive
+                  Edit
                 </DropdownMenuItem>
-              )}
 
-              <DropdownMenuItem
-                onSelect={(event) => {
-                  event.preventDefault();
+                <DropdownMenuItem
+                  className="text-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
+                  onSelect={(event) => {
+                    event.preventDefault();
 
-                  setActionsOpen(false);
-                  onEdit();
-                }}
-                className="cursor-pointer hover:bg-primary-hover!"
-              >
-                Edit
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                className="text-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
-                onSelect={(event) => {
-                  event.preventDefault();
-
-                  setActionsOpen(false);
-                  onDelete();
-                }}
-              >
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                    setActionsOpen(false);
+                    onDelete();
+                  }}
+                >
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <div className="flex items-center justify-end pr-2 text-muted-foreground/40 text-xs select-none">
+            —
+          </div>
+        )}
       </TableCell>
     </TableRow>
   );

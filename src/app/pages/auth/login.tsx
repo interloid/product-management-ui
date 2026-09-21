@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import { notifyToast } from "@/lib/toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
@@ -25,7 +24,7 @@ import { useAuth } from "@/hooks/use-auth";
 import GoogleLogo from "@/components/icons/google-logo";
 import GithubLogo from "@/components/icons/github-logo";
 import MicrosoftLogo from "@/components/icons/microsoft-logo";
-import { AlertTriangle, Eye, EyeOff } from "lucide-react";
+import { AlertTriangle, CircleAlert, Eye, EyeOff } from "lucide-react";
 import { type OAuthProvider } from "@/types/auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import { validateEmail } from "@/lib/validation";
@@ -47,6 +46,7 @@ export default function LoginPage({
   const [providerLoading, setProviderLoading] = useState<string | null>(null);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handlePasswordKeyEvent = (
     event: React.KeyboardEvent<HTMLInputElement>,
@@ -87,6 +87,9 @@ export default function LoginPage({
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     setEmail(val);
+    if (formError) {
+      setFormError(null);
+    }
     if (emailError) {
       const err = validateEmail(val);
       setEmailError(err ?? "");
@@ -101,6 +104,9 @@ export default function LoginPage({
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const val = event.target.value;
     setPassword(val);
+    if (formError) {
+      setFormError(null);
+    }
     if (passwordError) {
       const err = validatePassword(val);
       setPasswordError(err ?? "");
@@ -114,6 +120,8 @@ export default function LoginPage({
 
   const handleSubmit = async (event: React.SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    setFormError(null);
 
     const eErr = validateEmail(email);
     const pErr = validatePassword(password);
@@ -133,23 +141,25 @@ export default function LoginPage({
         remember_me: rememberMe,
       });
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("login_success", "true");
+      }
+
       const from =
         (location.state as { from?: { pathname?: string } } | null)?.from
           ?.pathname ?? "/products";
 
       navigate(from, {
         replace: true,
+        state: { loginSuccess: true },
       });
     } catch (error) {
-      notifyToast(
-        "error",
-        getUserFriendlyErrorMessage(
-          error,
-          "Unable to sign in. Please try again.",
-          { context: "login" },
-        ),
-        { id: "login-failed" },
+      const message = getUserFriendlyErrorMessage(
+        error,
+        "Unable to sign in. Please try again.",
+        { context: "login" },
       );
+      setFormError(message);
     } finally {
       setLoading(false);
     }
@@ -188,7 +198,7 @@ export default function LoginPage({
         <div className="flex">
           <img
             src={interloidLogo}
-            alt="Interloid"
+            alt="interloid"
             width={20}
             height={20}
             className="h-5 w-5 object-contain"
@@ -272,6 +282,18 @@ export default function LoginPage({
                   <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card text-[11px] py-1">
                     <span className="px-1"> OR </span>
                   </FieldSeparator>
+                  {formError && (
+                    <div
+                      role="alert"
+                      className="flex items-start gap-2.5 rounded-lg border border-slate-200 bg-white p-3.5 text-left dark:border-zinc-800 dark:bg-zinc-950 animate-in fade-in-50 duration-200"
+                    >
+                      <CircleAlert className="size-4 shrink-0 text-[#e63f3b] dark:text-red-400 mt-0.5" />
+                      <p className="text-[13px] font-semibold text-[#e63f3b] dark:text-red-400 leading-snug">
+                        {formError}
+                      </p>
+                    </div>
+                  )}
+
                   <Field className="gap-1.5">
                     <FieldLabel
                       htmlFor="email"

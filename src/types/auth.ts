@@ -63,6 +63,8 @@ export type AuthUser = {
   email: string;
   name: string;
   avatar?: string;
+  role?: string;
+  isAdmin?: boolean;
 };
 
 export interface AuthContextValue {

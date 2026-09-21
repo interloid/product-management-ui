@@ -5,4 +5,3 @@ export { ProductActionConfirmationRow } from "./action-confirmation-row";
 export { ProductImage } from "./image";
 export { ColumnResizeHandle } from "./column-resize-handle";
 export { useTableColumnResize } from "./use-table-column-resize";
-

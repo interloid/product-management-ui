@@ -23,8 +23,12 @@ export default function Callback() {
     if (status === "authenticated") {
       if (typeof window !== "undefined") {
         localStorage.setItem("product-table-density", "normal");
+        sessionStorage.setItem("login_success", "true");
       }
-      navigate("/products", { replace: true });
+      navigate("/products", {
+        replace: true,
+        state: { loginSuccess: true },
+      });
     }
   }, [status, navigate]);
 
@@ -34,7 +38,14 @@ export default function Callback() {
       const isAuthenticated = await checkAuth();
 
       if (isAuthenticated) {
-        navigate("/products", { replace: true });
+        if (typeof window !== "undefined") {
+          localStorage.setItem("product-table-density", "normal");
+          sessionStorage.setItem("login_success", "true");
+        }
+        navigate("/products", {
+          replace: true,
+          state: { loginSuccess: true },
+        });
       }
     } finally {
       setIsRetrying(false);

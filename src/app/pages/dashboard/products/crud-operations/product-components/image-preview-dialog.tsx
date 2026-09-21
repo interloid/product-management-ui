@@ -285,7 +285,7 @@ function ImagePreviewSlider({
         )}
 
         <div
-          className="relative flex-1 min-w-0 overflow-hidden rounded-lg sm:rounded-xl lg:rounded-2xl bg-muted/30 border border-border/40 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-120 xl:h-135 max-h-[50vh] sm:max-h-[58vh] lg:max-h-[68vh] xl:max-h-[72vh] min-h-52.5 flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
+          className="relative flex-1 min-w-0 overflow-hidden bg-transparent rounded-lg sm:rounded-xl lg:rounded-2xl bg-muted/30 h-56 xs:h-64 sm:h-76 md:h-88 lg:h-120 xl:h-135 max-h-[50vh] sm:max-h-[58vh] lg:max-h-[68vh] xl:max-h-[72vh] min-h-52.5 flex items-center justify-center select-none cursor-grab active:cursor-grabbing touch-none"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -359,7 +359,7 @@ function ImagePreviewSlider({
 
       {hasMultiple && (
         <div className="w-full overflow-hidden">
-          <div className="mx-auto flex w-fit max-w-full gap-1.5 sm:gap-2 overflow-x-auto py-0.5 sm:py-1 px-0.5 scrollbar-none">
+          <div className="mx-auto flex w-fit bg-muted-foreground/40 rounded-md bg-max-w-full sm:px-2 gap-1.5 sm:gap-2 overflow-x-auto py-0.5 sm:py-1 px-0.5 scrollbar-none">
             {images.map((img, idx) => (
               <button
                 key={`${img.src}-${idx}`}
@@ -369,7 +369,7 @@ function ImagePreviewSlider({
                 type="button"
                 onClick={() => handleSelectImage(idx)}
                 aria-label={`View image ${idx + 1}`}
-                className={`relative size-10 sm:size-12 lg:size-14 shrink-0 overflow-hidden rounded-md lg:rounded-lg border transition-all cursor-pointer ${
+                className={`relative size-10 sm:size-12 bg-white lg:size-14 shrink-0 overflow-hidden rounded-md lg:rounded-lg border transition-all cursor-pointer ${
                   idx === realIndex
                     ? "border-primary ring-2 ring-primary/40 opacity-100 shadow-xs"
                     : "border-border/60 opacity-60 hover:opacity-100 hover:border-border"

@@ -286,7 +286,7 @@ export function PriceSliderFilter({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleApply();
                 }}
-                className="h-9 pl-7 pr-3 text-sm font-mono font-medium"
+                className="h-9 pl-7 pr-3 text-sm font-mono font-medium focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
               />
             </div>
           </div>
@@ -313,7 +313,7 @@ export function PriceSliderFilter({
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleApply();
                 }}
-                className="h-9 pl-7 pr-3 text-sm font-mono font-medium"
+                className="h-9 pl-7 pr-3 text-sm font-mono font-medium focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"
               />
             </div>
           </div>

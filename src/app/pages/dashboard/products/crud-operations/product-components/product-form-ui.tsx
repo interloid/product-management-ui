@@ -46,7 +46,7 @@ function fieldInputClass({
   mono?: boolean;
 }) {
   return cn(
-    "h-10 placeholder:text-xs focus-visible:ring-primary/20",
+    "h-10 rounded-xl placeholder:text-xs focus-visible:ring-primary/20",
     mono && "font-mono",
     error
       ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
@@ -69,9 +69,9 @@ function ProductField({
 }) {
   return (
     <div className="grid gap-1.5">
-      <Label htmlFor={id} className="text-[12px] font-medium">
+      <Label htmlFor={id} className="text-[12px] font-medium text-foreground">
         {label}
-        {required && <span className="text-destructive">*</span>}
+        {required && <span className="text-destructive ml-0.5">*</span>}
       </Label>
       {children}
       <FieldError message={error} />
@@ -111,7 +111,7 @@ export function ProductFormFields({
   }, [categoryOptions, form.category]);
 
   return (
-    <>
+    <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
       <ProductField
         id={`${idPrefix}-name`}
         label="Product Name"
@@ -128,162 +128,161 @@ export function ProductFormFields({
         />
       </ProductField>
 
-      <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
-        <ProductField
+      <ProductField
+        id={`${idPrefix}-sku`}
+        label="SKU"
+        required
+        error={errors.sku}
+      >
+        <Input
           id={`${idPrefix}-sku`}
-          label="SKU"
-          required
-          error={errors.sku}
-        >
-          <Input
-            id={`${idPrefix}-sku`}
-            value={form.sku}
-            onChange={(event) => onFieldChange("sku", event.target.value)}
-            aria-invalid={Boolean(errors.sku)}
-            className={fieldInputClass({ error: errors.sku, mono: true })}
-          />
-        </ProductField>
+          placeholder="e.g. FURN-LMP-001"
+          value={form.sku}
+          onChange={(event) => onFieldChange("sku", event.target.value)}
+          aria-invalid={Boolean(errors.sku)}
+          className={fieldInputClass({ error: errors.sku, mono: true })}
+        />
+      </ProductField>
 
-        <ProductField
-          id={`${idPrefix}-category`}
-          label="Category"
-          required
-          error={errors.category}
+      <ProductField
+        id={`${idPrefix}-category`}
+        label="Category"
+        required
+        error={errors.category}
+      >
+        <Select
+          value={form.category}
+          onValueChange={(value) =>
+            onFieldChange("category", value as ProductCategory)
+          }
         >
-          <Select
-            value={form.category}
-            onValueChange={(value) =>
-              onFieldChange("category", value as ProductCategory)
-            }
+          <SelectTrigger
+            id={`${idPrefix}-category`}
+            aria-invalid={Boolean(errors.category)}
+            className={cn(
+              "h-10 rounded-xl w-full hover:border-primary hover:bg-primary-hover focus-visible:ring-primary/20",
+              errors.category
+                ? "border-destructive hover:border-destructive hover:bg-destructive/5 focus-visible:border-destructive focus-visible:ring-destructive/20"
+                : "focus-visible:border-primary",
+            )}
           >
-            <SelectTrigger
-              id={`${idPrefix}-category`}
-              aria-invalid={Boolean(errors.category)}
-              className={cn(
-                "h-9 w-full hover:border-primary hover:bg-primary-hover focus-visible:ring-primary/20",
-                errors.category
-                  ? "border-destructive hover:border-destructive hover:bg-destructive/5 focus-visible:border-destructive focus-visible:ring-destructive/20"
-                  : "focus-visible:border-primary",
-              )}
-            >
-              <SelectValue placeholder="Select..." />
-            </SelectTrigger>
-            <SelectContent
-              position="popper"
-              side="bottom"
-              align="start"
-              sideOffset={4}
-              avoidCollisions={false}
-              className="p-1"
-            >
-              {finalCategoryOptions.map((category) => (
-                <SelectItem
-                  key={category.value}
-                  value={category.value}
-                  className="hover:bg-primary-hover!"
-                >
-                  {category.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </ProductField>
-      </div>
+            <SelectValue placeholder="Select category..." />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            side="bottom"
+            align="start"
+            sideOffset={4}
+            avoidCollisions={false}
+            className="p-1 rounded-xl"
+          >
+            {finalCategoryOptions.map((category) => (
+              <SelectItem
+                key={category.value}
+                value={category.value}
+                className="hover:bg-primary-hover! rounded-lg"
+              >
+                {category.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </ProductField>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <ProductField
-          id={`${idPrefix}-price`}
-          label="Price"
-          required
-          error={errors.price}
+      <ProductField id={`${idPrefix}-status`} label="Status">
+        <Select
+          value={form.status}
+          onValueChange={(value) =>
+            onFieldChange("status", value as ProductStatus)
+          }
         >
-          <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
-              $
-            </span>
-            <Input
-              id={`${idPrefix}-price`}
-              type="number"
-              min={0}
-              max={MAX_PRODUCT_PRICE}
-              step="0.01"
-              value={form.price}
-              onChange={(event) => {
-                const value = event.target.value;
+          <SelectTrigger
+            id={`${idPrefix}-status`}
+            className="h-10 rounded-xl w-full hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
+          >
+            <SelectValue placeholder="Select status..." />
+          </SelectTrigger>
+          <SelectContent
+            position="popper"
+            side="bottom"
+            align="start"
+            sideOffset={4}
+            avoidCollisions={false}
+            className="p-1 rounded-xl"
+          >
+            {statuses.map((status) => (
+              <SelectItem
+                key={status.value}
+                value={status.value}
+                className="hover:bg-primary-hover! rounded-lg"
+              >
+                {status.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </ProductField>
 
-                if (value === "" || Number(value) <= MAX_PRODUCT_PRICE) {
-                  onFieldChange("price", value);
-                }
-              }}
-              aria-invalid={Boolean(errors.price)}
-              className={cn(
-                fieldInputClass({ error: errors.price, mono: true }),
-                "pl-7",
-              )}
-            />
-          </div>
-        </ProductField>
-
-        <ProductField
-          id={`${idPrefix}-stock`}
-          label="Stock"
-          required
-          error={errors.stock}
-        >
+      <ProductField
+        id={`${idPrefix}-price`}
+        label="Price"
+        required
+        error={errors.price}
+      >
+        <div className="relative">
+          <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+            $
+          </span>
           <Input
-            id={`${idPrefix}-stock`}
+            id={`${idPrefix}-price`}
             type="number"
             min={0}
-            max={MAX_PRODUCT_STOCK}
-            step="1"
-            value={form.stock}
+            max={MAX_PRODUCT_PRICE}
+            step="0.01"
+            placeholder="0.00"
+            value={form.price}
             onChange={(event) => {
               const value = event.target.value;
 
-              if (value === "" || Number(value) <= MAX_PRODUCT_STOCK) {
-                onFieldChange("stock", value);
+              if (value === "" || Number(value) <= MAX_PRODUCT_PRICE) {
+                onFieldChange("price", value);
               }
             }}
-            aria-invalid={Boolean(errors.stock)}
-            className={fieldInputClass({ error: errors.stock, mono: true })}
+            aria-invalid={Boolean(errors.price)}
+            className={cn(
+              fieldInputClass({ error: errors.price, mono: true }),
+              "pl-8",
+            )}
           />
-        </ProductField>
+        </div>
+      </ProductField>
 
-        <ProductField id={`${idPrefix}-status`} label="Status">
-          <Select
-            value={form.status}
-            onValueChange={(value) =>
-              onFieldChange("status", value as ProductStatus)
+      <ProductField
+        id={`${idPrefix}-stock`}
+        label="Stock Quantity"
+        required
+        error={errors.stock}
+      >
+        <Input
+          id={`${idPrefix}-stock`}
+          type="number"
+          min={0}
+          max={MAX_PRODUCT_STOCK}
+          step="1"
+          placeholder="0"
+          value={form.stock}
+          onChange={(event) => {
+            const value = event.target.value;
+
+            if (value === "" || Number(value) <= MAX_PRODUCT_STOCK) {
+              onFieldChange("stock", value);
             }
-          >
-            <SelectTrigger
-              id={`${idPrefix}-status`}
-              className="h-9 w-full hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
-            >
-              <SelectValue placeholder="Select..." />
-            </SelectTrigger>
-            <SelectContent
-              position="popper"
-              side="bottom"
-              align="start"
-              sideOffset={4}
-              avoidCollisions={false}
-              className="p-1"
-            >
-              {statuses.map((status) => (
-                <SelectItem
-                  key={status.value}
-                  value={status.value}
-                  className="hover:bg-primary-hover!"
-                >
-                  {status.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </ProductField>
-      </div>
-    </>
+          }}
+          aria-invalid={Boolean(errors.stock)}
+          className={fieldInputClass({ error: errors.stock, mono: true })}
+        />
+      </ProductField>
+    </div>
   );
 }
 
@@ -303,7 +302,7 @@ export function ProductDescriptionField({
   return (
     <div className="grid gap-1.5">
       <div className="flex items-center justify-between">
-        <Label htmlFor={id} className="text-[12px] font-medium">
+        <Label htmlFor={id} className="text-[12px] font-medium text-foreground">
           Description
         </Label>
         <span className="text-[11px] text-muted-foreground font-mono">
@@ -314,8 +313,9 @@ export function ProductDescriptionField({
         id={id}
         value={value}
         maxLength={maxLength}
+        placeholder="Provide a detailed description of the product features, materials, and warranty..."
         onChange={(event) => onChange(event.target.value)}
-        className="h-25 resize-none leading-relaxed focus-visible:border-primary focus-visible:ring-primary/20"
+        className="h-24 rounded-xl resize-none leading-relaxed focus-visible:border-primary focus-visible:ring-primary/20"
       />
     </div>
   );
@@ -333,12 +333,11 @@ export function ProductFormActions({
   readonly disabled?: boolean;
 }) {
   return (
-    <div className="sticky bottom-0 z-10 flex h-16 shrink-0 items-center gap-2 border-t border-border/80 bg-background/85 backdrop-blur-md px-5">
-      <div className="flex-1" />
+    <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-end gap-2 sm:gap-2.5 border-t border-border/80 bg-background/90 backdrop-blur-md px-4 sm:px-6">
       <Button
         type="button"
-        variant="secondary"
-        className="h-9 px-3.5 text-[13px] font-medium"
+        variant="outline"
+        className="h-9 sm:h-10 rounded-full px-4 sm:px-5 text-xs font-medium cursor-pointer"
         onClick={onCancel}
         disabled={isSubmitting}
       >
@@ -347,12 +346,12 @@ export function ProductFormActions({
       <Button
         type="submit"
         disabled={isSubmitting || disabled}
-        className="h-9 px-4 text-[13px] font-medium"
+        className="h-9 sm:h-10 rounded-full px-4 sm:px-6 text-xs font-semibold shadow-md bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
       >
         {isSubmitting ? (
           <>
             <Spinner className="size-3.5" />
-            Saving…
+            <span>Saving…</span>
           </>
         ) : (
           submitLabel
@@ -570,7 +569,7 @@ export function ProductDetailGrid({
   const [copiedSku, setCopiedSku] = useState(false);
 
   return (
-    <div className="grid grid-cols-[120px_1fr] sm:gap-x-4 gap-y-3 text-[13px]">
+    <div className="grid grid-cols-[85px_1fr] sm:grid-cols-[120px_1fr] gap-x-3 sm:gap-x-4 gap-y-2.5 sm:gap-y-3 text-xs sm:text-[13px]">
       <DetailLabel>SKU</DetailLabel>
       <DetailValue className="font-mono text-xs flex items-center gap-1.5">
         <span>{product.sku}</span>

@@ -51,7 +51,10 @@ export function HeaderActions({ user }: HeaderActionsProps) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild className="cursor-pointer">
-            <Link to="/settings" className="flex items-center gap-2 hover:bg-primary-hover!">
+            <Link
+              to="/settings"
+              className="flex items-center gap-2 hover:bg-primary-hover!"
+            >
               <Settings className="size-4 text-muted-foreground" />
               <span>Settings</span>
             </Link>

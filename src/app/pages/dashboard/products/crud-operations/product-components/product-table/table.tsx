@@ -27,6 +27,7 @@ export function ProductTable({
   isActionPending = false,
   showNoResults = false,
   density = "normal",
+  isAdmin = true,
   sort,
   onSort,
   onView,
@@ -227,7 +228,6 @@ export function ProductTable({
                           ? "text-primary hover:bg-primary-hover hover:text-primary"
                           : "text-muted-foreground/50 opacity-0 group-hover/actions:opacity-100 hover:text-foreground hover:bg-muted/80",
                       )}
-                      title="Reset all column widths to default"
                       aria-label="Reset column widths"
                     >
                       <RotateCcw className="size-3.5" />
@@ -248,6 +248,7 @@ export function ProductTable({
                 key={product.id}
                 product={product}
                 density={density}
+                isAdmin={isAdmin}
                 isArchiving={archiveId === product.id}
                 isDeleting={deleteId === product.id}
                 isActionPending={isActionPending}

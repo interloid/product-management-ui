@@ -9,6 +9,7 @@ import { ProductActionConfirmDialog } from "@/app/pages/dashboard/products/crud-
 import { getPrimaryImage } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useSearch } from "@/hooks/use-search";
+import { useAuth } from "@/hooks/use-auth";
 import { useCategories } from "@/hooks/use-categories";
 import {
   archiveProduct as archiveProductApi,
@@ -53,6 +54,10 @@ export default function ProductsPage() {
     setProductCount,
     addTrigger,
   } = useSearch();
+  const { user } = useAuth();
+  const isAdmin = Boolean(
+    user?.isAdmin || user?.role?.toLowerCase() === "admin",
+  );
   const { filterCategoryOptions, formCategoryOptions } = useCategories({
     autoFetch: false,
   });
@@ -67,11 +72,7 @@ export default function ProductsPage() {
   const [density, setDensity] = useState<TableDensity>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("product-table-density");
-      if (
-        saved === "compact" ||
-        saved === "normal" ||
-        saved === "comfort"
-      ) {
+      if (saved === "compact" || saved === "normal" || saved === "comfort") {
         return saved as TableDensity;
       }
       localStorage.setItem("product-table-density", "normal");
@@ -419,19 +420,22 @@ export default function ProductsPage() {
 
   const openView = useCallback(
     (product: ApiProduct) => {
+      if (!isAdmin) return;
       openProductForm(product, "view");
     },
-    [openProductForm],
+    [isAdmin, openProductForm],
   );
 
   const openEdit = useCallback(
     (product: ApiProduct) => {
+      if (!isAdmin) return;
       openProductForm(product, "edit");
     },
-    [openProductForm],
+    [isAdmin, openProductForm],
   );
 
   const openAdd = useCallback(() => {
+    if (!isAdmin) return;
     setProductForm({
       mode: "add",
       product: null,
@@ -439,16 +443,21 @@ export default function ProductsPage() {
       open: true,
       loading: false,
     });
-  }, []);
+  }, [isAdmin]);
 
   const lastAddTriggerRef = useRef(addTrigger);
 
   useEffect(() => {
     if (addTrigger > 0 && addTrigger !== lastAddTriggerRef.current) {
       lastAddTriggerRef.current = addTrigger;
-      openAdd();
+      if (isAdmin) {
+        const timer = setTimeout(() => {
+          openAdd();
+        }, 0);
+        return () => clearTimeout(timer);
+      }
     }
-  }, [addTrigger, openAdd]);
+  }, [addTrigger, openAdd, isAdmin]);
 
   useEffect(() => {
     if (!productForm.open || !productForm.productId || !productForm.loading) {
@@ -561,113 +570,119 @@ export default function ProductsPage() {
 
   return (
     <>
-      <div ref={tableTopRef} className="w-full min-w-0 max-w-full space-y-4">
-        {isInitialLoad ? (
-          <ProductFiltersSkeleton />
-        ) : (
-          <ProductFilters
-            category={category}
-            status={status}
-            priceRange={priceRange}
-            sort={sort}
-            searchQuery={searchQuery}
-            page={page}
-            pageSize={pageSize}
-            density={density}
-            onToggleDensity={toggleDensity}
-            onDensityChange={handleDensityChange}
-            onCategoryChange={updateCategory}
-            onStatusChange={updateStatus}
-            onPriceChange={updatePrice}
-            onReset={resetFilters}
-            categoryOptions={filterCategoryOptions}
-            searchSlot={
-              <ProductSearchInput className="flex-1 min-[1100px]:w-175 min-[1100px]:flex-none min-[1382px]:w-64" />
-            }
-            actionsSlot={
-              <Button
-                type="button"
-                className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4 gap-1.5"
-                onClick={openAdd}
-              >
-                <Plus className="size-4 shrink-0" />
-                <span>Add Product</span>
-              </Button>
-            }
-          />
-        )}
-        <div className="relative min-w-0 max-w-full">
+      <div className="flex w-full min-w-0 max-w-full flex-1 flex-col gap-4">
+        <div ref={tableTopRef} className="w-full min-w-0 max-w-full space-y-4">
           {isInitialLoad ? (
-            <ProductTableSkeleton />
+            <ProductFiltersSkeleton />
           ) : (
-            <>
-              <div
-                className={
-                  isLoading
-                    ? "pointer-events-none opacity-50 transition-opacity"
-                    : "opacity-100 transition-opacity"
-                }
-              >
-                <ProductTable
-                  products={products}
-                  density={density}
-                  onView={openView}
-                  onEdit={openEdit}
-                  archiveId={archiveId}
-                  deleteId={deleteId}
-                  isActionPending={isActionPending}
-                  showNoResults={showNoResults}
-                  sort={sort}
-                  onSort={handleSort}
-                  onArchive={handleArchiveClick}
-                  onCancelArchive={() => setArchiveId(null)}
-                  onConfirmArchive={handleArchiveProduct}
-                  onDelete={handleDeleteClick}
-                  onCancelDelete={() => setDeleteId(null)}
-                  onConfirmDelete={handleDeleteProduct}
-                  onResetFilters={resetFilters}
-                />
-              </div>
-
-              {isLoading && <ProductListSkeleton />}
-            </>
+            <ProductFilters
+              category={category}
+              status={status}
+              priceRange={priceRange}
+              sort={sort}
+              searchQuery={searchQuery}
+              page={page}
+              pageSize={pageSize}
+              density={density}
+              onToggleDensity={toggleDensity}
+              onDensityChange={handleDensityChange}
+              onCategoryChange={updateCategory}
+              onStatusChange={updateStatus}
+              onPriceChange={updatePrice}
+              onReset={resetFilters}
+              categoryOptions={filterCategoryOptions}
+              searchSlot={
+                <ProductSearchInput className="flex-1 min-[1100px]:w-175 min-[1100px]:flex-none min-[1382px]:w-64" />
+              }
+              actionsSlot={
+                isAdmin ? (
+                  <Button
+                    type="button"
+                    className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4 gap-1.5"
+                    onClick={openAdd}
+                  >
+                    <Plus className="size-4 shrink-0" />
+                    <span>Add Product</span>
+                  </Button>
+                ) : null
+              }
+            />
           )}
+          <div className="relative min-w-0 max-w-full">
+            {isInitialLoad ? (
+              <ProductTableSkeleton />
+            ) : (
+              <>
+                <div
+                  className={
+                    isLoading
+                      ? "pointer-events-none opacity-50 transition-opacity"
+                      : "opacity-100 transition-opacity"
+                  }
+                >
+                  <ProductTable
+                    products={products}
+                    density={density}
+                    isAdmin={isAdmin}
+                    onView={openView}
+                    onEdit={openEdit}
+                    archiveId={archiveId}
+                    deleteId={deleteId}
+                    isActionPending={isActionPending}
+                    showNoResults={showNoResults}
+                    sort={sort}
+                    onSort={handleSort}
+                    onArchive={handleArchiveClick}
+                    onCancelArchive={() => setArchiveId(null)}
+                    onConfirmArchive={handleArchiveProduct}
+                    onDelete={handleDeleteClick}
+                    onCancelDelete={() => setDeleteId(null)}
+                    onConfirmDelete={handleDeleteProduct}
+                    onResetFilters={resetFilters}
+                  />
+                </div>
+
+                {isLoading && <ProductListSkeleton />}
+              </>
+            )}
+          </div>
+          <ProductForm
+            key={`${productForm.mode}-${productForm.product?.id ?? productForm.productId ?? "new"}`}
+            mode={productForm.mode}
+            product={productForm.product}
+            open={productForm.open && isAdmin}
+            isAdmin={isAdmin}
+            loading={productForm.loading}
+            categoryOptions={formCategoryOptions}
+            onOpenChange={handleProductFormOpenChange}
+            onEdit={openEdit}
+            onArchive={(product) => {
+              openConfirm(product, "archive");
+            }}
+            onDelete={(product) => {
+              openConfirm(product, "delete");
+            }}
+            onCreated={handleProductCreated}
+            onUpdated={handleProductUpdated}
+          />
         </div>
-        <ProductForm
-          key={`${productForm.mode}-${productForm.product?.id ?? productForm.productId ?? "new"}`}
-          mode={productForm.mode}
-          product={productForm.product}
-          open={productForm.open}
-          loading={productForm.loading}
-          categoryOptions={formCategoryOptions}
-          onOpenChange={handleProductFormOpenChange}
-          onEdit={openEdit}
-          onArchive={(product) => {
-            openConfirm(product, "archive");
+        <TablePagination
+          page={page}
+          pageSize={pageSize}
+          productCount={productCount}
+          totalPages={totalPages}
+          setPage={(value) => {
+            setArchiveId(null);
+            setDeleteId(null);
+            setPage(value);
           }}
-          onDelete={(product) => {
-            openConfirm(product, "delete");
+          setPageSize={(value) => {
+            setArchiveId(null);
+            setDeleteId(null);
+            setPageSize(value);
           }}
-          onCreated={handleProductCreated}
-          onUpdated={handleProductUpdated}
         />
       </div>
-      <TablePagination
-        page={page}
-        pageSize={pageSize}
-        productCount={productCount}
-        totalPages={totalPages}
-        setPage={(value) => {
-          setArchiveId(null);
-          setDeleteId(null);
-          setPage(value);
-        }}
-        setPageSize={(value) => {
-          setArchiveId(null);
-          setDeleteId(null);
-          setPageSize(value);
-        }}
-      />
       <ProductActionConfirmDialog
         open={confirmTarget !== null}
         image={

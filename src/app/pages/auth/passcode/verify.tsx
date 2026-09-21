@@ -81,8 +81,13 @@ export default function PasscodeVerifyPage() {
 
       await loginWithPasscode(email, passcode);
 
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("login_success", "true");
+      }
+
       navigate("/products", {
         replace: true,
+        state: { loginSuccess: true },
       });
     } catch (error) {
       setPasscode("");
@@ -100,16 +105,22 @@ export default function PasscodeVerifyPage() {
 
   return (
     <div className="flex min-h-full w-full flex-col items-center justify-center p-4 sm:p-6 md:p-10">
-      <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:left-8 sm:top-8 sm:mb-0 sm:justify-start">
-        <img
-          src={interloidLogo}
-          alt="interloid"
-          className="h-5 w-5 object-contain"
-        />
-        <span className="text-sm font-semibold">Interloid</span>
-        <span className="text-sm text-muted-foreground">Workforce Suite</span>
-      </div>
       <div className="w-full max-w-lg">
+        <div className="mb-6 flex items-center justify-center gap-2 sm:absolute sm:right-8 sm:bottom-8 sm:mb-0 sm:justify-start">
+          <span className="text-sm font-light text-muted-foreground">
+            Powered by{" "}
+          </span>
+          <div className="flex">
+            <img
+              src={interloidLogo}
+              alt="PMS"
+              width={20}
+              height={20}
+              className="h-5 w-5 object-contain"
+            />
+            <span className="text-sm font-semibold">Interloid</span>
+          </div>
+        </div>
         <Card className="w-full p-8 border rounded-[10px] shadow-[rgba(0,0,0,0.04)_0px_1px_2px]">
           <Tabs defaultValue="Passcode" className="w-full">
             <TabsList className="h-10! w-full">

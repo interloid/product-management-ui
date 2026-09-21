@@ -108,9 +108,7 @@ function getStoredWidths(): Record<ProductTableColumnKey, number> | null {
   return null;
 }
 
-function setStoredWidths(
-  widths: Record<ProductTableColumnKey, number> | null,
-) {
+function setStoredWidths(widths: Record<ProductTableColumnKey, number> | null) {
   if (typeof window === "undefined") return;
   try {
     if (widths === null) {
@@ -186,20 +184,17 @@ export function useTableColumnResize(
     [],
   );
 
-  const handleResetColumn = useCallback(
-    (col: ProductTableColumnKey) => {
-      setColumnWidths((prev) => {
-        const next = {
-          ...prev,
-          [col]: DEFAULT_COLUMN_WIDTHS[col],
-        };
-        setStoredWidths(next);
-        return next;
-      });
-      notifyToast("info", `Reset ${col.toUpperCase()} column width`);
-    },
-    [],
-  );
+  const handleResetColumn = useCallback((col: ProductTableColumnKey) => {
+    setColumnWidths((prev) => {
+      const next = {
+        ...prev,
+        [col]: DEFAULT_COLUMN_WIDTHS[col],
+      };
+      setStoredWidths(next);
+      return next;
+    });
+    notifyToast("info", `Reset ${col.toUpperCase()} column width`);
+  }, []);
 
   const handleResetAll = useCallback(() => {
     setColumnWidths(DEFAULT_COLUMN_WIDTHS);

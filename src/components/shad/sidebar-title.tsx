@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "@/assets/icons/favicon.ico";
+import logo from "@/assets/icons/favicon.svg";
 import { CustomSidebarTrigger } from "./custom-sidebar-trigger";
 import { useSidebar } from "@/components/ui/sidebar";
 
@@ -20,8 +20,8 @@ export default function SidebarTitle() {
           className="h-8 w-auto shrink-0 object-contain group-data-[collapsible=icon]:size-8"
         />
 
-        <span className="font-bold group-data-[collapsible=icon]:hidden">
-          Interloid
+        <span className="font-bold text-sm group-data-[collapsible=icon]:hidden">
+          Product Management
         </span>
       </Link>
       <CustomSidebarTrigger className="shrink-0 transition-none group-data-[collapsible=icon]:ml-0" />

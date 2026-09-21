@@ -58,11 +58,42 @@ export function AuthProvider({ children }: AuthProviderProps) {
             return true;
           }
 
+          const rawUser = apiUser as UserResponse & {
+            is_admin?: boolean;
+            isAdmin?: boolean;
+            is_superuser?: boolean;
+            roles?: string[];
+            role?: string;
+          };
+
+          const userRole = (
+            rawUser.role ??
+            (Array.isArray(rawUser.roles) ? rawUser.roles[0] : "") ??
+            ""
+          ).trim();
+
+          const storageRole =
+            typeof window !== "undefined"
+              ? localStorage.getItem("user_role")
+              : null;
+          const effectiveRole = (storageRole ?? userRole).trim();
+
+          const isAdmin = Boolean(
+            effectiveRole.toLowerCase() === "admin" ||
+            rawUser.is_admin ||
+            rawUser.isAdmin ||
+            rawUser.is_superuser ||
+            (Array.isArray(rawUser.roles) &&
+              rawUser.roles.some((r) => String(r).toLowerCase() === "admin")),
+          );
+
           const userData: AuthUser = {
             id: apiUser.id,
             email: apiUser.email,
             name: `${apiUser.first_name ?? ""} ${apiUser.last_name ?? ""}`.trim(),
             avatar: apiUser.avatar_url,
+            role: effectiveRole || (isAdmin ? "admin" : "user"),
+            isAdmin,
           };
           setUser(userData);
           setStatus("authenticated");

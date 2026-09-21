@@ -226,17 +226,19 @@ export function ProductFilters({
   const renderResetButton = () => (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          className="size-9 shrink-0 cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
-          onClick={onReset}
-          aria-label="Reset filters"
-          disabled={isDefaultFilters}
-        >
-          <FunnelX className="size-3.5"/>
-        </Button>
+        <span className="inline-flex" tabIndex={0}>
+          <Button
+            type="button"
+            variant="outline"
+            size="icon"
+            className="size-9 shrink-0 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
+            onClick={onReset}
+            aria-label="Reset filters"
+            disabled={isDefaultFilters}
+          >
+            <FunnelX className="size-3.5" />
+          </Button>
+        </span>
       </TooltipTrigger>
       <TooltipContent side="right">
         <p>Clear filters</p>

@@ -52,6 +52,7 @@ export interface ProductTableRowProps {
   isDeleting: boolean;
   isActionPending?: boolean;
   density?: TableDensity;
+  isAdmin?: boolean;
   onView: () => void;
   onEdit: () => void;
   onArchive: () => void;
@@ -69,6 +70,7 @@ export type ProductTableProps = {
   isActionPending?: boolean;
   showNoResults?: boolean;
   density?: TableDensity;
+  isAdmin?: boolean;
   sort: ProductSort;
   onSort: (field: ProductSortField) => void;
   onView: (product: ApiProduct) => void;
@@ -206,6 +208,7 @@ export type ProductFormProps = {
   product?: ApiProduct | null;
   open: boolean;
   loading?: boolean;
+  isAdmin?: boolean;
   onOpenChange: (open: boolean) => void;
   categoryOptions?: Array<{ value: string; label: string }>;
   onCreated?: () => void;
