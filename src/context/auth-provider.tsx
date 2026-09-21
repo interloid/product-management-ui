@@ -28,6 +28,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setSessionError(null);
     if (typeof window !== "undefined") {
       localStorage.setItem("product-table-density", "normal");
+      localStorage.removeItem("user_role");
     }
   }, []);
 
@@ -78,14 +79,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
               : null;
           const effectiveRole = (storageRole ?? userRole).trim();
 
-          const isAdmin = Boolean(
-            effectiveRole.toLowerCase() === "admin" ||
-            rawUser.is_admin ||
-            rawUser.isAdmin ||
-            rawUser.is_superuser ||
-            (Array.isArray(rawUser.roles) &&
-              rawUser.roles.some((r) => String(r).toLowerCase() === "admin")),
-          );
+          const isAdmin =
+            storageRole !== null
+              ? storageRole.toLowerCase() === "admin"
+              : Boolean(
+                  effectiveRole.toLowerCase() === "admin" ||
+                  rawUser.is_admin ||
+                  rawUser.isAdmin ||
+                  rawUser.is_superuser ||
+                  (Array.isArray(rawUser.roles) &&
+                    rawUser.roles.some((r) => String(r).toLowerCase() === "admin")),
+                );
 
           const userData: AuthUser = {
             id: apiUser.id,

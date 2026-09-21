@@ -287,6 +287,7 @@ export default function ProductsPage() {
 
   const handleArchiveClick = useCallback(
     (id: string) => {
+      if (!isAdmin) return;
       if (typeof window !== "undefined" && window.innerWidth < 768) {
         const targetProduct = products.find((p) => p.id === id);
         if (targetProduct) {
@@ -296,11 +297,12 @@ export default function ProductsPage() {
       }
       setArchiveId(id);
     },
-    [products, openConfirm],
+    [isAdmin, products, openConfirm],
   );
 
   const handleDeleteClick = useCallback(
     (id: string) => {
+      if (!isAdmin) return;
       if (typeof window !== "undefined" && window.innerWidth < 768) {
         const targetProduct = products.find((p) => p.id === id);
         if (targetProduct) {
@@ -310,12 +312,12 @@ export default function ProductsPage() {
       }
       setDeleteId(id);
     },
-    [products, openConfirm],
+    [isAdmin, products, openConfirm],
   );
 
   const handleDeleteProduct = useCallback(
     async (id: string) => {
-      if (isActionPendingRef.current) {
+      if (!isAdmin || isActionPendingRef.current) {
         return;
       }
 
@@ -352,12 +354,12 @@ export default function ProductsPage() {
         setIsActionPending(false);
       }
     },
-    [refresh],
+    [isAdmin, refresh],
   );
 
   const handleArchiveProduct = useCallback(
     async (id: string) => {
-      if (isActionPendingRef.current) {
+      if (!isAdmin || isActionPendingRef.current) {
         return;
       }
 
@@ -394,7 +396,7 @@ export default function ProductsPage() {
         setIsActionPending(false);
       }
     },
-    [refresh],
+    [isAdmin, refresh],
   );
 
   const openProductForm = useCallback(

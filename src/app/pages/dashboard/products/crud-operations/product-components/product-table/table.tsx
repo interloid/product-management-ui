@@ -275,14 +275,14 @@ export function ProductTable({
       {canScrollLeft && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-0 top-0 bottom-0 z-20 w-6 bg-gradient-to-r from-black/10 dark:from-black/35 to-transparent transition-opacity"
+          className="pointer-events-none absolute left-0 top-0 bottom-0 z-20 w-6 bg-linear-to-r from-black/10 dark:from-black/35 to-transparent transition-opacity"
         />
       )}
 
       {canScrollRight && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-0 top-0 bottom-0 z-20 w-6 bg-gradient-to-l from-black/10 dark:from-black/35 to-transparent transition-opacity"
+          className="pointer-events-none absolute right-0 top-0 bottom-0 z-20 w-6 bg-linear-to-l from-black/10 dark:from-black/35 to-transparent transition-opacity"
         />
       )}
 

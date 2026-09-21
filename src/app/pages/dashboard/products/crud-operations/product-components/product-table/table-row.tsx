@@ -365,7 +365,7 @@ export const ProductTableRow = memo(function ProductTableRow({
             </DropdownMenu>
           </div>
         ) : (
-          <div className="flex items-center justify-end pr-2 text-muted-foreground/40 text-xs select-none">
+          <div className="flex items-center justify-start! pr-2 text-muted-foreground/40 text-xs select-none">
             —
           </div>
         )}

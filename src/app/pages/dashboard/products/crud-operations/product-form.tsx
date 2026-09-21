@@ -454,7 +454,7 @@ export function ProductForm(props: ProductFormProps) {
 
   function renderView() {
     if (loading || !product) {
-      return <ProductViewSkeleton />;
+      return <ProductViewSkeleton onClose={() => onOpenChange(false)} />;
     }
 
     return (
@@ -715,7 +715,10 @@ export function ProductForm(props: ProductFormProps) {
   function renderForm() {
     const isEdit = mode === "edit";
     if (isEdit && (loading || !product)) {
-      return <ProductEditSkeleton />;
+      return <ProductEditSkeleton mode="edit" onClose={() => handleSheetOpenChange(false)} />;
+    }
+    if (!isEdit && loading) {
+      return <ProductEditSkeleton mode="add" onClose={() => handleSheetOpenChange(false)} />;
     }
 
     const idPrefix = isEdit ? "edit-product" : "add-product";
