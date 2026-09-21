@@ -162,7 +162,6 @@ export function PriceSliderFilter({
     setMinInput("0");
     setMaxInput("0");
     onChange("all");
-    setOpen(false);
   };
 
   const handlePresetSelect = (presetMin: number, presetMax: number) => {
@@ -240,9 +239,9 @@ export function PriceSliderFilter({
                 variant="ghost"
                 size="icon-xs"
                 onClick={handleReset}
-                title="Reset to all prices"
+                title="Reset to all prices "
                 className="size-6 text-muted-foreground hover:text-foreground cursor-pointer"
-              >
+              > 
                 <RotateCcw className="size-3.5" />
               </Button>
             )}

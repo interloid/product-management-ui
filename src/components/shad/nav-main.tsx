@@ -43,7 +43,6 @@ export function NavMain({ items }: NavMainProps) {
                       className={cn(
                         "w-full gap-2 hover:bg-primary-hover hover:text-hover-text",
                         "data-[active=true]:bg-primary",
-                        "data-[active=true]:border-l-4",
                         "data-[active=true]:text-primary-foreground",
                         "data-[active=true]:hover:bg-primary",
                         "data-[active=true]:hover:text-primary-foreground",

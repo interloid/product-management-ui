@@ -18,7 +18,7 @@ import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import type { PasscodeLocationState } from "@/types/auth";
-import interloidLogo from "@/assets/icons/favicon.ico";
+import interloidLogo from "@/assets/icons/interloid.ico";
 import { cn } from "@/lib/utils";
 import { getPasscodeErrorMessage } from "@/lib/errors";
 

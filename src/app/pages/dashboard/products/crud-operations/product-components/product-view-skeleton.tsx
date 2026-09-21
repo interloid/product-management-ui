@@ -2,7 +2,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 
-export function ProductViewSkeleton({ onClose }: { onClose?: () => void } = {}) {
+export function ProductViewSkeleton({
+  onClose,
+  isAdmin = true,
+}: {
+  onClose?: () => void;
+  isAdmin?: boolean;
+} = {}) {
   return (
     <div
       className="flex h-full flex-col"
@@ -108,27 +114,29 @@ export function ProductViewSkeleton({ onClose }: { onClose?: () => void } = {}) 
         </div>
       </div>
 
-      <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-background/90 backdrop-blur-md px-3 sm:px-6">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 rounded-full" />
-          <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 rounded-full" />
-        </div>
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          {onClose ? (
-            <Button
-              type="button"
-              variant="outline"
-              className="h-8.5 sm:h-10 rounded-full px-3.5 sm:px-5 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
-              onClick={onClose}
-            >
-              Close
-            </Button>
-          ) : (
+      {isAdmin && (
+        <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-background/90 backdrop-blur-md px-3 sm:px-6">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 rounded-full" />
+            <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 rounded-full" />
+          </div>
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            {onClose ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8.5 sm:h-10 rounded-full px-3.5 sm:px-5 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                onClick={onClose}
+              >
+                Close
+              </Button>
+            ) : (
+              <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20 rounded-full" />
+            )}
             <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20 rounded-full" />
-          )}
-          <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20 rounded-full" />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

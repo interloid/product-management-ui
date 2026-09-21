@@ -422,10 +422,9 @@ export default function ProductsPage() {
 
   const openView = useCallback(
     (product: ApiProduct) => {
-      if (!isAdmin) return;
       openProductForm(product, "view");
     },
-    [isAdmin, openProductForm],
+    [openProductForm],
   );
 
   const openEdit = useCallback(
@@ -652,7 +651,7 @@ export default function ProductsPage() {
             key={`${productForm.mode}-${productForm.product?.id ?? productForm.productId ?? "new"}`}
             mode={productForm.mode}
             product={productForm.product}
-            open={productForm.open && isAdmin}
+            open={productForm.open && (productForm.mode === "view" || isAdmin)}
             isAdmin={isAdmin}
             loading={productForm.loading}
             categoryOptions={formCategoryOptions}

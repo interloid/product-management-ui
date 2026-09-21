@@ -91,17 +91,12 @@ export const ProductTableRow = memo(function ProductTableRow({
   }
   return (
     <TableRow
-      className={cn(
-        "group/row w-full transition-colors",
-        isAdmin ? "cursor-pointer hover:bg-primary-hover" : "hover:bg-muted/40",
-      )}
-      onClick={isAdmin ? onView : undefined}
+      className="group/row w-full transition-colors cursor-pointer hover:bg-primary-hover"
+      onClick={onView}
     >
       <TableCell
         className={cn(
-          "relative overflow-hidden pl-5!",
-          isAdmin &&
-            "group-hover/row:shadow-[inset_3px_0_0_0_var(--primary)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.75 before:bg-primary before:opacity-0 group-hover/row:before:opacity-100 before:transition-opacity",
+          "relative overflow-hidden pl-5! group-hover/row:shadow-[inset_3px_0_0_0_var(--primary)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.75 before:bg-primary before:opacity-0 group-hover/row:before:opacity-100 before:transition-opacity",
           rowPadding,
         )}
       >
@@ -115,15 +110,11 @@ export const ProductTableRow = memo(function ProductTableRow({
             <Tooltip>
               <TooltipTrigger asChild>
                 <div
-                  className={cn("shrink-0", isAdmin && "cursor-pointer")}
-                  onClick={
-                    isAdmin
-                      ? (e) => {
-                          e.stopPropagation();
-                          onView();
-                        }
-                      : undefined
-                  }
+                  className="shrink-0 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onView();
+                  }}
                 >
                   <ProductImage
                     src={primaryImage.url}
@@ -138,14 +129,15 @@ export const ProductTableRow = memo(function ProductTableRow({
                 sideOffset={8}
                 hideArrow
                 data-image-tooltip="true"
-                className=" flex flex-col items-center pointer-events-none z-50 p-0 bg-white! border-none! shadow-none!"
+                className="flex flex-col items-center gap-1.5 pointer-events-none z-50 p-1.5 bg-white text-foreground rounded-xl border border-border/80 shadow-2xl"
               >
-                <img
+                <ProductImage
                   src={primaryImage.url}
                   alt={product.name}
-                  className="size-36 rounded-lg object-cover shadow-2xl border border-border/80"
+                  size="size-36"
+                  className="rounded-lg object-cover border border-border/60"
                 />
-                <span className="max-w-36 truncate rounded-lg bg-background/95 px-3 py-0.5 text-center text-[11px] font-medium text-foreground shadow-xs border border-border/60">
+                <span className="max-w-36 truncate rounded-lg bg-white px-3 py-0.5 text-center text-[11px] font-medium text-foreground shadow-xs border border-border/60">
                   {product.name}
                 </span>
               </TooltipContent>
@@ -164,40 +156,24 @@ export const ProductTableRow = memo(function ProductTableRow({
         </div>
       </TableCell>
       <TableCell className={cn("overflow-hidden", rowPadding)}>
-        {isAdmin ? (
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              onView();
-            }}
-            title={product.name}
-            className={cn(
-              "block w-full truncate text-left font-semibold text-foreground hover:text-primary transition-colors cursor-pointer",
-              isCompact
-                ? "text-xs"
-                : isComfort
-                  ? "text-sm font-medium"
-                  : "text-[13px]",
-            )}
-          >
-            {product.name}
-          </button>
-        ) : (
-          <span
-            title={product.name}
-            className={cn(
-              "block w-full truncate text-left font-semibold text-foreground select-text",
-              isCompact
-                ? "text-xs"
-                : isComfort
-                  ? "text-sm font-medium"
-                  : "text-[13px]",
-            )}
-          >
-            {product.name}
-          </span>
-        )}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onView();
+          }}
+          title={product.name}
+          className={cn(
+            "block w-full truncate text-left font-semibold text-foreground hover:text-primary transition-colors cursor-pointer",
+            isCompact
+              ? "text-xs"
+              : isComfort
+                ? "text-sm font-medium"
+                : "text-[13px]",
+          )}
+        >
+          {product.name}
+        </button>
       </TableCell>
       <TableCell className={cn("hidden truncate md:table-cell", rowPadding)}>
         <CategoryBadge
@@ -280,25 +256,25 @@ export const ProductTableRow = memo(function ProductTableRow({
         className={cn(rowPadding)}
         onClick={(event) => event.stopPropagation()}
       >
-        {isAdmin ? (
-          <div className="flex items-center justify-end flex-row-reverse gap-1.5">
-            <Button
-              variant="outline"
-              size="icon"
-              className={cn(
-                "border-none! shadow-none! hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20",
-                actionButtonSize,
-              )}
-              onClick={(event) => {
-                event.stopPropagation();
-                onView();
-              }}
-              title="View"
-            >
-              <SquareArrowOutUpRight
-                className={isCompact ? "size-3.5" : "size-4"}
-              />
-            </Button>
+        <div className="flex items-center justify-end flex-row-reverse gap-1.5">
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn(
+              "border-none! shadow-none! hover:bg-primary-hover hover:border-primary focus-visible:border-primary focus-visible:ring-primary/20 cursor-pointer",
+              actionButtonSize,
+            )}
+            onClick={(event) => {
+              event.stopPropagation();
+              onView();
+            }}
+            title="View product"
+          >
+            <SquareArrowOutUpRight
+              className={isCompact ? "size-3.5" : "size-4"}
+            />
+          </Button>
+          {isAdmin && (
             <DropdownMenu open={actionsOpen} onOpenChange={setActionsOpen}>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -363,12 +339,8 @@ export const ProductTableRow = memo(function ProductTableRow({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
-        ) : (
-          <div className="flex items-center justify-start! pr-2 text-muted-foreground/40 text-xs select-none">
-            —
-          </div>
-        )}
+          )}
+        </div>
       </TableCell>
     </TableRow>
   );

@@ -140,7 +140,7 @@ export function ProductFilters({
             <span className="text-xs xl:text-sm font-medium">Density</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-36 p-1">
+        <DropdownMenuContent align="end" className="w-42 p-1">
           <DropdownMenuLabel className="text-[11px] font-semibold tracking-wider text-muted-foreground uppercase px-2 py-1">
             Table Density
           </DropdownMenuLabel>
@@ -190,7 +190,7 @@ export function ProductFilters({
             className="text-xs cursor-pointer hover:bg-primary-hover! flex items-center gap-2 py-1.5 text-muted-foreground hover:text-foreground"
           >
             <RotateCcw className="size-3.5 shrink-0" />
-            <span>Reset columns</span>
+            <span>Reset columns widths</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

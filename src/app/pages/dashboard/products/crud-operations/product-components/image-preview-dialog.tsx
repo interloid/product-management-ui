@@ -6,11 +6,19 @@ import { Spinner } from "@/components/ui/spinner";
 import { waitForImageReady } from "@/app/pages/dashboard/products/crud-operations/product-utils/helpers";
 import type { ImagePreviewDialogProps } from "@/types/props";
 import type { PreviewImageItem } from "@/types/product";
+import { PreviewThumbnailImage } from "./preview-image-with-loader";
 
 function PreviewImage({ src, alt }: { src: string; alt: string }) {
+  const [prevSrc, setPrevSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const cancelLoadRef = useRef<(() => void) | null>(null);
+
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setIsLoading(true);
+    setHasError(false);
+  }
 
   useEffect(() => {
     return () => cancelLoadRef.current?.();
@@ -375,7 +383,7 @@ function ImagePreviewSlider({
                     : "border-border/60 opacity-60 hover:opacity-100 hover:border-border"
                 }`}
               >
-                <img
+                <PreviewThumbnailImage
                   src={img.src}
                   alt={img.alt ?? ""}
                   className="size-full object-cover"

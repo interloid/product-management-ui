@@ -13,9 +13,16 @@ export function ProductImagePreview({
   initialIndex = 0,
 }: Readonly<ProductImagePreviewProps>) {
   const [open, setOpen] = useState(false);
+  const [prevSrc, setPrevSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const cancelLoadRef = useRef<(() => void) | null>(null);
+
+  if (src !== prevSrc) {
+    setPrevSrc(src);
+    setIsLoading(true);
+    setHasError(false);
+  }
 
   useEffect(() => {
     return () => cancelLoadRef.current?.();

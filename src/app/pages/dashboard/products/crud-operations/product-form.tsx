@@ -9,7 +9,6 @@ import {
   Pencil,
   Plus,
   RotateCcw,
-  Star,
   Trash2,
   UploadCloud,
   X,
@@ -65,6 +64,10 @@ import { ProductViewSkeleton } from "./product-components/product-view-skeleton"
 
 import { ProductImagePreview } from "./product-components/product-image-preview";
 import { ImagePreviewDialog } from "./product-components/image-preview-dialog";
+import {
+  FormProductPreviewImage,
+  PreviewThumbnailImage,
+} from "./product-components/preview-image-with-loader";
 
 import {
   ProductDescriptionField,
@@ -454,7 +457,12 @@ export function ProductForm(props: ProductFormProps) {
 
   function renderView() {
     if (loading || !product) {
-      return <ProductViewSkeleton onClose={() => onOpenChange(false)} />;
+      return (
+        <ProductViewSkeleton
+          onClose={() => onOpenChange(false)}
+          isAdmin={isAdmin}
+        />
+      );
     }
 
     return (
@@ -570,10 +578,9 @@ export function ProductForm(props: ProductFormProps) {
                               : "border-border/70 hover:border-primary/50 opacity-80 hover:opacity-100",
                           )}
                         >
-                          <img
+                          <PreviewThumbnailImage
                             src={image.url}
                             alt={`${product.name} image`}
-                            loading="lazy"
                             className="size-full object-cover"
                           />
                           {image.is_primary && (
@@ -609,93 +616,92 @@ export function ProductForm(props: ProductFormProps) {
           </div>
         </div>
 
-        <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-background/90 backdrop-blur-md px-3 sm:px-6">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="hidden items-center gap-1.5 sm:flex sm:gap-2">
-              {isAdmin && product.status !== "archived" && props.onArchive && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => props.onArchive?.(product)}
-                  className="h-8.5 sm:h-10 rounded-full px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text! cursor-pointer"
-                  title="Archive product"
-                >
-                  <Archive className="size-3 sm:size-3.5" />
-                  <span className="hidden sm:inline">Archive</span>
-                </Button>
-              )}
+        {isAdmin && (
+          <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-background/90 backdrop-blur-md px-3 sm:px-6">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="hidden items-center gap-1.5 sm:flex sm:gap-2">
+                {product.status !== "archived" && props.onArchive && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => props.onArchive?.(product)}
+                    className="h-8.5 sm:h-10 rounded-full px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text! cursor-pointer"
+                    title="Archive product"
+                  >
+                    <Archive className="size-3 sm:size-3.5" />
+                    <span className="hidden sm:inline">Archive</span>
+                  </Button>
+                )}
 
-              {isAdmin && props.onDelete && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => props.onDelete?.(product)}
-                  className="h-8.5 sm:h-10 rounded-full px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
-                  title="Delete product"
-                >
-                  <Trash2 className="size-3 sm:size-3.5" />
-                  <span className="hidden sm:inline">Delete</span>
-                </Button>
-              )}
-            </div>
+                {props.onDelete && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => props.onDelete?.(product)}
+                    className="h-8.5 sm:h-10 rounded-full px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
+                    title="Delete product"
+                  >
+                    <Trash2 className="size-3 sm:size-3.5" />
+                    <span className="hidden sm:inline">Delete</span>
+                  </Button>
+                )}
+              </div>
 
-            <div className="sm:hidden">
-              {isAdmin &&
-              ((product.status !== "archived" && props.onArchive) ||
-                props.onDelete) ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="h-8.5 rounded-full px-2.5 gap-1 text-xs text-muted-foreground hover:border-primary hover:bg-primary-hover hover:text-hover-text! cursor-pointer"
-                      title="Product actions"
-                    >
-                      <span>Actions</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start" className="w-44!">
-                    {product.status !== "archived" && props.onArchive && (
-                      <DropdownMenuItem
-                        onClick={() => props.onArchive?.(product)}
-                        className="gap-2 text-xs text-primary"
+              <div className="sm:hidden">
+                {(product.status !== "archived" && props.onArchive) ||
+                props.onDelete ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-8.5 rounded-full px-2.5 gap-1 text-xs text-muted-foreground hover:border-primary hover:bg-primary-hover hover:text-hover-text! cursor-pointer"
+                        title="Product actions"
                       >
-                        <Archive className="size-3.5" />
-                        <span>Archive</span>
-                      </DropdownMenuItem>
-                    )}
-                    {props.onDelete && (
-                      <>
-                        <DropdownMenuSeparator />
+                        <span>Actions</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" className="w-44!">
+                      {product.status !== "archived" && props.onArchive && (
                         <DropdownMenuItem
-                          onClick={() => props.onDelete?.(product)}
-                          className="gap-2 text-xs text-destructive focus:text-destructive!"
+                          onClick={() => props.onArchive?.(product)}
+                          className="gap-2 text-xs text-primary"
                         >
-                          <Trash2 className="size-3.5" />
-                          <span>Delete</span>
+                          <Archive className="size-3.5" />
+                          <span>Archive</span>
                         </DropdownMenuItem>
-                      </>
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ) : null}
+                      )}
+                      {props.onDelete && (
+                        <>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => props.onDelete?.(product)}
+                            className="gap-2 text-xs text-destructive focus:text-destructive!"
+                          >
+                            <Trash2 className="size-3.5" />
+                            <span>Delete</span>
+                          </DropdownMenuItem>
+                        </>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : null}
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2 sm:gap-2.5">
-            <Button
-              type="button"
-              variant="outline"
-              className="h-8.5 sm:h-10 rounded-full px-3.5 sm:px-5 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
-              onClick={() => onOpenChange(false)}
-            >
-              Close
-            </Button>
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-8.5 sm:h-10 rounded-full px-3.5 sm:px-5 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                onClick={() => onOpenChange(false)}
+              >
+                Close
+              </Button>
 
-            {isAdmin && (
               <Button
                 type="button"
                 variant="default"
@@ -705,9 +711,9 @@ export function ProductForm(props: ProductFormProps) {
                 <Pencil className="size-3.5 mr-1" />
                 Edit
               </Button>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </>
     );
   }
@@ -858,7 +864,7 @@ export function ProductForm(props: ProductFormProps) {
               </div>
 
               <div className="lg:col-span-5 flex flex-col">
-                <div className="rounded-2xl border border-border/70 bg-card p-3.5 sm:p-5 shadow-xs flex flex-col justify-between gap-3.5 sm:gap-4 lg:h-full">
+                <div className="rounded-2xl border border-border/70 bg-card p-3.5 sm:p-5 shadow-xs flex flex-col justify-between gap-3.5 sm:gap-4 lg:justify-start lg:gap-4 lg:h-full">
                   <div className="flex items-center justify-between border-b border-border/50 pb-3">
                     <div>
                       <h3 className="text-sm font-semibold text-foreground">
@@ -889,14 +895,10 @@ export function ProductForm(props: ProductFormProps) {
                   >
                     {activePreviewImage ? (
                       <>
-                        <img
+                        <FormProductPreviewImage
                           src={activePreviewImage.url}
                           alt={form.name || "Product preview"}
-                          className={cn(
-                            "size-full object-contain sm:object-cover rounded-2xl transition-all",
-                            activePreviewImage.isRemoved &&
-                              "opacity-35 grayscale",
-                          )}
+                          isRemoved={activePreviewImage.isRemoved}
                         />
                         {activePreviewImage.isRemoved ? (
                           <>
@@ -943,7 +945,6 @@ export function ProductForm(props: ProductFormProps) {
                           <>
                             {activePreviewImage.isPrimary ? (
                               <span className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-primary/95 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-primary-foreground shadow-sm select-none">
-                                <Star className="size-3 fill-current" />
                                 Primary
                               </span>
                             ) : (
@@ -962,9 +963,8 @@ export function ProductForm(props: ProductFormProps) {
                                     setPrimaryImage(activePreviewImage.id);
                                   }
                                 }}
-                                className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-background/95 hover:bg-background text-foreground hover:text-primary backdrop-blur-md px-3 py-1 text-xs font-medium shadow-md border border-border/70 transition-all cursor-pointer"
+                                className="absolute bottom-3 left-3 z-10 text-[11px] inline-flex items-center gap-1.5 rounded-full bg-background/95 hover:bg-background text-foreground hover:text-primary backdrop-blur-md px-2 py-1 font-medium shadow-md border border-border/70 transition-all cursor-pointer"
                               >
-                                <Star className="size-3 mr-0.5 text-muted-foreground group-hover:text-amber-500 transition-colors" />
                                 Set as Primary
                               </Button>
                             )}
@@ -1047,7 +1047,7 @@ export function ProductForm(props: ProductFormProps) {
                               "ring-2 ring-primary border-primary",
                           )}
                         >
-                          <img
+                          <PreviewThumbnailImage
                             src={image.url}
                             alt={`Thumbnail ${index + 1}`}
                             className="size-full object-cover"
@@ -1093,7 +1093,7 @@ export function ProductForm(props: ProductFormProps) {
                           )}
                           title="Removed image (will be deleted on save) - click to preview or restore"
                         >
-                          <img
+                          <PreviewThumbnailImage
                             src={image.url}
                             alt="Removed product image"
                             className="size-full object-cover opacity-25 grayscale"
@@ -1198,7 +1198,7 @@ export function ProductForm(props: ProductFormProps) {
     );
   }
 
-  if (!isAdmin) {
+  if (!isAdmin && mode !== "view") {
     return null;
   }
 

@@ -28,7 +28,7 @@ import { AlertTriangle, CircleAlert, Eye, EyeOff } from "lucide-react";
 import { type OAuthProvider } from "@/types/auth";
 import { getUserFriendlyErrorMessage } from "@/lib/errors";
 import { validateEmail } from "@/lib/validation";
-import interloidLogo from "@/assets/icons/favicon.ico";
+import interloidLogo from "@/assets/icons/interloid.ico";
 
 export default function LoginPage({
   className,
