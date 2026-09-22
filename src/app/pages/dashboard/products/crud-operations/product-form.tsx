@@ -3,7 +3,6 @@ import {
   Archive,
   Check,
   Copy,
-  Eye,
   ImageIcon,
   Package,
   Pencil,
@@ -467,8 +466,8 @@ export function ProductForm(props: ProductFormProps) {
 
     return (
       <>
-        <SheetHeader className="sticky top-0 z-20 flex flex-row items-center justify-between border-b border-border/70 bg-background/95 backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4">
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+        <SheetHeader className="sticky top-0 z-20 flex flex-row items-center justify-between border-b border-border/70 bg-muted/40! backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4">
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 ">
             <div className="flex size-9 sm:size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-xs">
               <Package className="size-4.5 sm:size-5" />
             </div>
@@ -516,8 +515,23 @@ export function ProductForm(props: ProductFormProps) {
           </div>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-muted/20">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-muted/90">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:items-stretch">
+            <div className="lg:col-span-7 flex flex-col">
+              <div className="rounded-2xl border border-border/70 bg-card p-3.5 sm:p-5 shadow-xs flex flex-col lg:h-full space-y-3 sm:space-y-4">
+                <div className="border-b border-border/50 pb-3">
+                <h3 className="text-sm font-semibold text-foreground">
+                    Product Specifications
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Detailed inventory and metadata attributes.
+                  </p>
+                </div>
+                <div className="flex-1">
+                  <ProductDetailGrid product={product} />
+                </div>
+              </div>
+            </div>
             <div className="lg:col-span-5 flex flex-col">
               <div className="rounded-2xl border border-border/70 bg-card p-3.5 sm:p-5 shadow-xs flex flex-col justify-between gap-3 sm:gap-4 lg:h-full">
                 <div className="space-y-3 sm:space-y-4">
@@ -572,7 +586,7 @@ export function ProductForm(props: ProductFormProps) {
                           onClick={() => setSelectedImageId(image.id)}
                           aria-label={`Select ${product.name} image`}
                           className={cn(
-                            "relative size-13 sm:size-18 shrink-0 rounded-xl overflow-hidden border-2 cursor-pointer transition-all select-none",
+                            "group relative size-13 sm:size-18 shrink-0 rounded-xl overflow-hidden border-2 cursor-pointer transition-all select-none",
                             isSelected
                               ? "border-primary ring-2 ring-primary/25 shadow-sm scale-102"
                               : "border-border/70 hover:border-primary/50 opacity-80 hover:opacity-100",
@@ -581,11 +595,11 @@ export function ProductForm(props: ProductFormProps) {
                           <PreviewThumbnailImage
                             src={image.url}
                             alt={`${product.name} image`}
-                            className="size-full object-cover"
+                            className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
                           />
                           {image.is_primary && (
                             <span
-                              className="absolute bottom-1 left-1 text-[8px] sm:text-xs bg-primary/90 p-0.5 rounded-sm sm:rounded-md text-white backdrop-blur-xs"
+                              className="absolute bottom-1 left-1 text-[8px] sm:text-[10px] bg-primary/90 p-0.5 rounded-sm sm:rounded-md text-white backdrop-blur-xs"
                               title="Primary image"
                             >
                               Primary
@@ -598,26 +612,11 @@ export function ProductForm(props: ProductFormProps) {
                 )}
               </div>
             </div>
-            <div className="lg:col-span-7 flex flex-col">
-              <div className="rounded-2xl border border-border/70 bg-card p-3.5 sm:p-5 shadow-xs flex flex-col lg:h-full space-y-3 sm:space-y-4">
-                <div className="border-b border-border/50 pb-3">
-                  <h3 className="text-sm font-semibold text-foreground">
-                    Product Specifications
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Detailed inventory and metadata attributes.
-                  </p>
-                </div>
-                <div className="flex-1">
-                  <ProductDetailGrid product={product} />
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
         {isAdmin && (
-          <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-background/90 backdrop-blur-md px-3 sm:px-6">
+          <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-muted/40! backdrop-blur-md px-3 sm:px-6">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <div className="hidden items-center gap-1.5 sm:flex sm:gap-2">
                 {product.status !== "archived" && props.onArchive && (
@@ -626,7 +625,7 @@ export function ProductForm(props: ProductFormProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => props.onArchive?.(product)}
-                    className="h-8.5 sm:h-10 rounded-full px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text! cursor-pointer"
+                    className="h-8.5 sm:h-10 px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-primary hover:border-primary hover:bg-primary-hover hover:text-hover-text! cursor-pointer"
                     title="Archive product"
                   >
                     <Archive className="size-3 sm:size-3.5" />
@@ -640,7 +639,7 @@ export function ProductForm(props: ProductFormProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => props.onDelete?.(product)}
-                    className="h-8.5 sm:h-10 rounded-full px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
+                    className="h-8.5 sm:h-10  px-2.5 sm:px-4 gap-1 sm:gap-1.5 text-xs text-destructive hover:border-destructive hover:bg-destructive/10! hover:text-destructive! cursor-pointer"
                     title="Delete product"
                   >
                     <Trash2 className="size-3 sm:size-3.5" />
@@ -696,7 +695,7 @@ export function ProductForm(props: ProductFormProps) {
               <Button
                 type="button"
                 variant="outline"
-                className="h-8.5 sm:h-10 rounded-full px-3.5 sm:px-5 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
+                className="h-8.5 sm:h-10 px-3.5 sm:px-5 text-xs font-medium cursor-pointer hover:border-primary hover:bg-primary-hover hover:text-hover-text!"
                 onClick={() => onOpenChange(false)}
               >
                 Close
@@ -705,7 +704,7 @@ export function ProductForm(props: ProductFormProps) {
               <Button
                 type="button"
                 variant="default"
-                className="h-8.5 sm:h-10 rounded-full px-4 sm:px-6 text-xs font-semibold shadow-md bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+                className="h-8.5 sm:h-10 px-4 sm:px-6 text-xs font-semibold shadow-md bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
                 onClick={() => props.onEdit?.(product)}
               >
                 <Pencil className="size-3.5 mr-1" />
@@ -721,17 +720,27 @@ export function ProductForm(props: ProductFormProps) {
   function renderForm() {
     const isEdit = mode === "edit";
     if (isEdit && (loading || !product)) {
-      return <ProductEditSkeleton mode="edit" onClose={() => handleSheetOpenChange(false)} />;
+      return (
+        <ProductEditSkeleton
+          mode="edit"
+          onClose={() => handleSheetOpenChange(false)}
+        />
+      );
     }
     if (!isEdit && loading) {
-      return <ProductEditSkeleton mode="add" onClose={() => handleSheetOpenChange(false)} />;
+      return (
+        <ProductEditSkeleton
+          mode="add"
+          onClose={() => handleSheetOpenChange(false)}
+        />
+      );
     }
 
     const idPrefix = isEdit ? "edit-product" : "add-product";
 
     return (
       <>
-        <SheetHeader className="sticky top-0 z-20 flex flex-row items-center justify-between border-b border-border/70 bg-background/95 backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4">
+        <SheetHeader className="sticky top-0 z-20 flex flex-row items-center justify-between border-b border-border/70 bg-muted/40! backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4">
           <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
             <div className="flex size-9 sm:size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shadow-xs">
               <Package className="size-4.5 sm:size-5" />
@@ -758,7 +767,7 @@ export function ProductForm(props: ProductFormProps) {
         </SheetHeader>
 
         <form onSubmit={handleSubmit} className="contents" noValidate>
-          <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-muted/20">
+          <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-muted/90">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:items-stretch">
               <div className="lg:col-span-7 flex flex-col">
                 <div className="rounded-2xl border border-border/70 bg-card p-3.5 sm:p-5 shadow-xs flex flex-col lg:h-full space-y-4 sm:space-y-5">
@@ -916,9 +925,8 @@ export function ProductForm(props: ProductFormProps) {
                                   }}
                                   title="View full image slider"
                                   aria-label="View full image slider"
-                                  className="flex size-9 items-center justify-center rounded-full bg-background/90 text-foreground hover:bg-background shadow-md border border-border/60 hover:text-primary transition-all cursor-pointer"
+                                  className="flex size-9 items-center justify-center rounded-full bg-background/90 text-foreground  shadow-md border border-border/60 hover:text-primary transition-all cursor-pointer"
                                 >
-                                  <Eye className="size-4" />
                                 </button>
                                 <Button
                                   type="button"
@@ -944,7 +952,7 @@ export function ProductForm(props: ProductFormProps) {
                         ) : (
                           <>
                             {activePreviewImage.isPrimary ? (
-                              <span className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-primary/95 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-primary-foreground shadow-sm select-none">
+                              <span className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-sm bg-primary/95 backdrop-blur-md px-3 py-1 text-[11px] font-semibold text-primary-foreground shadow-sm select-none">
                                 Primary
                               </span>
                             ) : (
@@ -963,7 +971,7 @@ export function ProductForm(props: ProductFormProps) {
                                     setPrimaryImage(activePreviewImage.id);
                                   }
                                 }}
-                                className="absolute bottom-3 left-3 z-10 text-[11px] inline-flex items-center gap-1.5 rounded-full bg-background/95 hover:bg-background text-foreground hover:text-primary backdrop-blur-md px-2 py-1 font-medium shadow-md border border-border/70 transition-all cursor-pointer"
+                                className="absolute bottom-3 left-3 z-10 text-[11px] inline-flex items-center gap-1.5 bg-background/95 hover:bg-background text-foreground hover:text-primary backdrop-blur-md px-2 py-1 font-medium shadow-md border border-border/70 transition-all cursor-pointer"
                               >
                                 Set as Primary
                               </Button>
@@ -983,25 +991,15 @@ export function ProductForm(props: ProductFormProps) {
                                   removeImage(activePreviewImage.id);
                                 }
                               }}
-                              className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 rounded-full bg-destructive/90 hover:bg-destructive text-white shadow-md px-2.5 py-1 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                              className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 border-none bg-destructive/90 hover:bg-destructive text-white shadow-md px-2.5 py-1 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                               title="Remove image"
                             >
                               <Trash2 className="size-3.5 mr-0.5" />
                               Remove
                             </Button>
-                            <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-xs pointer-events-none">
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setIsPreviewSliderOpen(true);
-                                }}
-                                title="Open image slider"
-                                aria-label="Open image slider"
-                                className="pointer-events-auto flex size-11 items-center justify-center rounded-full border border-white/30 bg-black/65 text-white hover:bg-black/85 hover:scale-110 active:scale-95 transition-all shadow-xl cursor-pointer"
-                              >
-                                <Eye className="size-5" />
-                              </button>
+                            <div className="absolute inset-0 bg-black/5 opacity-0 transition-opacity flex items-center justify-center backdrop-blur-xs pointer-events-none">
+                              <span className="flex items-center justify-center text-white shadow-xl backdrop-blur-xs scale-80 group-hover:scale-100 transition-all duration-200">
+                              </span>
                             </div>
                           </>
                         )}
@@ -1015,7 +1013,7 @@ export function ProductForm(props: ProductFormProps) {
                           No image uploaded
                         </span>
                         <span className="text-[11px] text-muted-foreground/80 max-w-45">
-                          Upload images via the dropzone or add button below.
+                          Upload images via the Dropzone or add button below.
                         </span>
                       </div>
                     )}
@@ -1050,11 +1048,11 @@ export function ProductForm(props: ProductFormProps) {
                           <PreviewThumbnailImage
                             src={image.url}
                             alt={`Thumbnail ${index + 1}`}
-                            className="size-full object-cover"
+                            className="size-full object-cover transition-transform duration-300 ease-out group-hover:scale-110"
                           />
                           {image.isPrimary && (
                             <span
-                              className="absolute bottom-1 left-1 text-[8px] sm:text-xs bg-primary/90 p-0.5 rounded-sm sm:rounded-md text-white backdrop-blur-xs"
+                              className="absolute bottom-1 left-1 text-[8px] sm:text-[10px] bg-primary/90 p-1 rounded-sm text-white backdrop-blur-xs"
                               title="Primary image"
                             >
                               Primary

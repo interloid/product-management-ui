@@ -1,4 +1,3 @@
-import { Eye } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ImagePreviewDialog } from "./image-preview-dialog";
 import type { ProductImagePreviewProps } from "@/types/props";
@@ -49,7 +48,8 @@ export function ProductImagePreview({
         onClick={() => setOpen(true)}
         disabled={isLoading || hasError}
         aria-label={`Preview ${alt}`}
-        className={`group relative block overflow-hidden rounded-[inherit] ${className}`}
+        title={`Click to preview ${alt}`}
+        className={`group relative block overflow-hidden rounded-[inherit] cursor-pointer ${className}`}
       >
         <img
           src={src}
@@ -58,7 +58,7 @@ export function ProductImagePreview({
           draggable={false}
           onLoad={handleLoad}
           onError={handleError}
-          className="h-full w-full rounded-[inherit] object-cover"
+          className="h-full w-full rounded-[inherit] object-cover transition-transform duration-300 ease-out group-hover:scale-105"
         />
         {isLoading && (
           <span className="absolute inset-0 flex items-center justify-center rounded-[inherit] bg-muted/50">
@@ -74,9 +74,8 @@ export function ProductImagePreview({
           </span>
         )}
         {!isLoading && !hasError && (
-          <span className="pointer-events-none absolute inset-0 m-auto flex size-9 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
-            <Eye className="size-4" />
-          </span>
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] bg-black/0 transition-colors duration-200">
+          </div>
         )}
       </button>
       <ImagePreviewDialog

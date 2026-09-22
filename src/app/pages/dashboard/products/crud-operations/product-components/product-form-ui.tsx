@@ -337,7 +337,7 @@ export function ProductFormActions({
       <Button
         type="button"
         variant="outline"
-        className="h-9 sm:h-10 rounded-full px-4 sm:px-5 text-xs font-medium cursor-pointer"
+        className="h-9 sm:h-10 px-4 sm:px-5 text-xs font-medium cursor-pointer"
         onClick={onCancel}
         disabled={isSubmitting}
       >
@@ -346,7 +346,7 @@ export function ProductFormActions({
       <Button
         type="submit"
         disabled={isSubmitting || disabled}
-        className="h-9 sm:h-10 rounded-full px-4 sm:px-6 text-xs font-semibold shadow-md bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+        className="h-9 sm:h-10 px-4 sm:px-6 text-xs font-semibold shadow-md bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
       >
         {isSubmitting ? (
           <>
@@ -435,7 +435,7 @@ export function ProductImageTile({
         onClick={onSelect}
         aria-label={`Select ${alt}`}
         className={cn(
-          "relative aspect-square overflow-hidden rounded-md border bg-muted/20 transition-all cursor-pointer select-none",
+          "group relative aspect-square overflow-hidden rounded-md border bg-muted/20 transition-all cursor-pointer select-none",
           isSelected
             ? "border-2 border-primary ring-2 ring-primary/30 shadow-sm opacity-100"
             : "border-border opacity-70 hover:opacity-100 hover:border-primary/50",
@@ -445,7 +445,7 @@ export function ProductImageTile({
           src={src}
           alt={alt}
           loading="lazy"
-          className="size-full object-cover rounded-[inherit]"
+          className="size-full object-cover rounded-[inherit] transition-transform duration-300 ease-out group-hover:scale-105"
         />
         {isPrimary && (
           <span className="absolute bottom-1 left-1 rounded bg-primary px-1 py-0.5 text-[10px] font-medium text-white backdrop-blur-xs">

@@ -270,8 +270,6 @@ export function ProductTable({
           )}
         </TableBody>
       </Table>
-
-      {/* Horizontal scroll indicators */}
       {canScrollLeft && (
         <div
           aria-hidden="true"

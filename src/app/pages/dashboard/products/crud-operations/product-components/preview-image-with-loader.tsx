@@ -53,7 +53,7 @@ export function FormProductPreviewImage({
           setHasError(true);
         }}
         className={cn(
-          "size-full object-contain sm:object-cover rounded-2xl transition-all",
+          "size-full object-contain sm:object-cover rounded-2xl transition-transform duration-300 ease-out group-hover:scale-105",
           isRemoved && "opacity-35 grayscale",
           className,
         )}

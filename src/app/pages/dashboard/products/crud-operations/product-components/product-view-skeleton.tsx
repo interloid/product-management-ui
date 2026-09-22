@@ -15,7 +15,6 @@ export function ProductViewSkeleton({
       aria-busy="true"
       aria-label="Loading product details"
     >
-      {/* Sticky Header */}
       <div className="sticky top-0 z-20 flex flex-row items-center justify-between border-b border-border/70 bg-background/95 backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4">
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <Skeleton className="size-9 sm:size-10 rounded-xl shrink-0" />
@@ -117,8 +116,8 @@ export function ProductViewSkeleton({
       {isAdmin && (
         <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-between border-t border-border/80 bg-background/90 backdrop-blur-md px-3 sm:px-6">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 rounded-full" />
-            <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 rounded-full" />
+            <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 " />
+            <Skeleton className="h-8.5 sm:h-10 w-20 sm:w-24 " />
           </div>
           <div className="flex items-center gap-2 sm:gap-2.5">
             {onClose ? (
@@ -131,9 +130,9 @@ export function ProductViewSkeleton({
                 Close
               </Button>
             ) : (
-              <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20 rounded-full" />
+              <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20" />
             )}
-            <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20 rounded-full" />
+            <Skeleton className="h-8.5 sm:h-10 w-18 sm:w-20" />
           </div>
         </div>
       )}

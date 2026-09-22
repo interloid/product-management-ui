@@ -260,8 +260,6 @@ export function useTableColumnResize(
       document.body.style.userSelect = "";
     };
   }, [resizingCol]);
-
-  // Calculate total width of all visible columns on desktop
   const totalTableWidth = isMd
     ? Object.values(columnWidths).reduce((sum, w) => sum + w, 0)
     : undefined;

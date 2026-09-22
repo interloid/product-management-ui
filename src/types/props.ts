@@ -26,6 +26,7 @@ export type ProductImageProps = {
   alt: string;
   className?: string;
   size?: string;
+  interactive?: boolean;
 };
 
 export type ImagePreviewDialogProps = {

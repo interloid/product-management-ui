@@ -25,7 +25,7 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
           aria-label="Breadcrumb"
           className="flex items-center gap-1.5 text-xs font-medium min-w-0"
         >
-          <span className="hidden sm:inline text-muted-foreground/80 hover:text-foreground transition-colors select-none">
+          <span className="hidden sm:inline text-sm  text-muted-foreground/80 hover:text-foreground transition-colors select-none">
             Dashboard
           </span>
           <ChevronRight className="hidden sm:inline size-3 text-muted-foreground/40 shrink-0" />

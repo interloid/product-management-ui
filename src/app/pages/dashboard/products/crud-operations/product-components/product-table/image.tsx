@@ -8,6 +8,7 @@ export function ProductImage({
   alt,
   className = "",
   size = "size-10",
+  interactive = false,
 }: Readonly<ProductImageProps>) {
   const [prevSrc, setPrevSrc] = useState(src);
   const [isLoading, setIsLoading] = useState(Boolean(src));
@@ -44,7 +45,7 @@ export function ProductImage({
   }
   return (
     <div
-      className={`relative ${size} shrink-0 overflow-hidden rounded-md border bg-muted/40 bg-clip-padding ${className}`}
+      className={`relative ${size} shrink-0 overflow-hidden rounded-md border bg-muted/40 bg-clip-padding ${interactive ? "group/img cursor-pointer" : ""} ${className}`}
     >
       {isLoading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[inherit] bg-muted/50">
@@ -56,7 +57,7 @@ export function ProductImage({
         alt={alt ?? "Product"}
         loading="lazy"
         decoding="async"
-        className="size-full object-cover rounded-[inherit]"
+        className={`size-full object-cover rounded-[inherit] ${interactive ? "transition-transform duration-300 ease-out group-hover/img:scale-110" : ""}`}
         onLoad={(e) => {
           cancelLoadRef.current?.();
           cancelLoadRef.current = waitForImageReady(e.currentTarget, () =>
@@ -70,6 +71,10 @@ export function ProductImage({
           setHasError(true);
         }}
       />
+      {!isLoading && !hasError && interactive && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-[inherit] transition-opacity duration-200 ">
+        </div>
+      )}
     </div>
   );
 }

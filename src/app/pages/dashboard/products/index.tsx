@@ -599,7 +599,7 @@ export default function ProductsPage() {
                 isAdmin ? (
                   <Button
                     type="button"
-                    className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-2.5 sm:px-3.5 gap-1 sm:gap-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-xs sm:text-sm shadow-xs shadow-primary/25 hover:shadow-sm hover:shadow-primary/30 active:scale-[0.98] transition-all duration-150 border border-primary-foreground/10"
+                    className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-2.5 sm:px-3.5 gap-1 sm:gap-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-xs sm:text-sm shadow-xs shadow-primary/25 active:scale-[0.98] transition-all duration-150 border border-primary-foreground/10"
                     onClick={openAdd}
                   >
                     <Plus className="size-4 shrink-0 stroke-[2.25]" />

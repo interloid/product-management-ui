@@ -120,6 +120,7 @@ export const ProductTableRow = memo(function ProductTableRow({
                     src={primaryImage.url}
                     alt={product.name}
                     size={imageSize}
+                    interactive
                   />
                 </div>
               </TooltipTrigger>

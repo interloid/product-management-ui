@@ -11,7 +11,6 @@ function parseRequiredNumber(
     return `${fieldLabel} is required.`;
   }
 
-  // Reject scientific notation or invalid characters
   if (options?.integer) {
     if (!/^\d+$/.test(trimmed)) {
       return `${fieldLabel} must be a whole positive number.`;

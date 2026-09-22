@@ -33,8 +33,8 @@ export function TablePagination({
   const isEmpty = productCount === 0;
 
   return (
-    <div className="flex flex-col gap-2.5 sm:gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center justify-between pl-1 sm:justify-start gap-2 w-full sm:w-auto">
+    <div className="flex flex-col gap-2.5 sm:gap-3 sm:flex-row sm:items-center sm:justify-between pl-2">
+      <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
         <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
           Rows per page
         </span>

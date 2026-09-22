@@ -19,7 +19,6 @@ export function ProductEditSkeleton({
       aria-busy="true"
       aria-label={isEdit ? "Loading edit product form" : "Loading add product form"}
     >
-      {/* Sticky Header */}
       <div className="sticky top-0 z-20 flex flex-row items-center justify-between border-b border-border/70 bg-background/95 backdrop-blur-md px-4 sm:px-6 py-3.5 sm:py-4">
         <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
           <Skeleton className="size-9 sm:size-10 rounded-xl shrink-0" />
@@ -126,14 +125,12 @@ export function ProductEditSkeleton({
               <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-border/70 bg-muted/20 flex items-center justify-center shadow-xs">
                 <Skeleton className="size-full rounded-2xl" />
               </div>
-
               <div className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto py-1 px-0.5">
                 <Skeleton className="size-13 sm:size-18 shrink-0 rounded-xl" />
                 <Skeleton className="size-13 sm:size-18 shrink-0 rounded-xl" />
                 <Skeleton className="size-13 sm:size-18 shrink-0 rounded-xl" />
                 <Skeleton className="size-13 sm:size-18 shrink-0 rounded-xl border-2 border-dashed" />
               </div>
-
               <div className="rounded-xl border border-border/60 bg-muted/20 p-3 sm:p-4 space-y-2.5 sm:space-y-3 mt-auto">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1.5 flex-1">
@@ -164,9 +161,7 @@ export function ProductEditSkeleton({
           </div>
         </div>
       </div>
-
-      {/* Sticky Bottom Footer */}
-      <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-end gap-2 sm:gap-2.5 border-t border-border/80 bg-background/90 backdrop-blur-md px-4 sm:px-6">
+      <div className="sticky bottom-0 z-20 flex h-14 sm:h-16 shrink-0 items-center justify-end gap-2 sm:gap-2.5 border-t border-border/80 bg-muted/40! backdrop-blur-md px-4 sm:px-6">
         {onClose ? (
           <Button
             type="button"

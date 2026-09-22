@@ -323,29 +323,6 @@ function ImagePreviewSlider({
               </div>
             ))}
           </div>
-          {hasMultiple && (
-            <div
-              onPointerDown={(e) => e.stopPropagation()}
-              className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-black/55 dark:bg-black/70 px-2.5 py-1 backdrop-blur-xs z-20"
-            >
-              {images.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelectImage(idx);
-                  }}
-                  aria-label={`Go to image ${idx + 1}`}
-                  className={`size-1.5 rounded-full ${
-                    idx === realIndex
-                      ? "bg-white"
-                      : "bg-white/50 hover:bg-white/80"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
         </div>
 
         {hasMultiple && (

@@ -17,12 +17,19 @@ export default function SidebarTitle() {
           src={logo}
           alt="Interloid"
           loading="lazy"
-          className="h-8 w-auto shrink-0 object-contain group-data-[collapsible=icon]:size-8"
+          className="h-15 w-auto shrink-0 object-contain group-data-[collapsible=icon]:size-8"
         />
-
-        <span className="font-bold text-sm group-data-[collapsible=icon]:hidden">
-          Product Management
-        </span>
+        <div className="flex flex-col pt-1 uppercase tracking-widest">
+          <span className="font-extrabold text-xs group-data-[collapsible=icon]:hidden">
+            Product
+          </span>
+          <span className="font-medium text-base/2.5 text-[12px] group-data-[collapsible=icon]:hidden">
+            Management
+          </span>
+          <span className="font-medium text-xs group-data-[collapsible=icon]:hidden">
+            System
+          </span>
+        </div>
       </Link>
       <CustomSidebarTrigger className="shrink-0 transition-none group-data-[collapsible=icon]:ml-0" />
     </div>
