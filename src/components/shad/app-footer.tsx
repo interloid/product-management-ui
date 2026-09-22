@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export function AppFooter() {
   return (
-    <footer className="mt-auto border-t border-l-none bg-background">
+    <footer className="mt-auto border-t border-l-none bg-background/50">
       <div className="flex min-h-14 flex-col-reverse items-center justify-between gap-2 px-4 py-6 text-center text-xs text-muted-foreground sm:flex-row sm:px-6 sm:text-left">
         <p>© {new Date().getFullYear()} Product Management System</p>
         <div className="flex items-center gap-4">

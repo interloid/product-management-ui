@@ -18,7 +18,7 @@ export default function Header({ user, productCount = 0 }: HeaderProps) {
   const title = TITLES[pathname] ?? "Dashboard";
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border/70 bg-background/80 backdrop-blur-md px-3 sm:px-4 transition-colors">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-border/70 bg-background/70 backdrop-blur-md px-3 sm:px-4 transition-colors">
       <div className="flex items-center gap-2.5 min-w-0">
         <MobileMenuButton />
         <nav

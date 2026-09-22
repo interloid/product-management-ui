@@ -12,13 +12,13 @@ const SKELETON_ROWS = 10;
 
 export function ProductTableSkeleton() {
   return (
-    <div className="overflow-hidden rounded-lg border">
+    <div className="relative w-full min-w-0 max-w-full overflow-hidden rounded-xl border border-border/80 bg-card shadow-xs ring-1 ring-black/4 dark:ring-white/6">
       <Table
         className="table-fixed min-w-[640px] md:min-w-240"
         containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
       >
-        <TableHeader className="sticky top-0 z-20 bg-muted/95 backdrop-blur-xs shadow-xs [&_th]:bg-muted">
-          <TableRow className="bg-muted text-xs">
+        <TableHeader className="sticky top-0 z-20 bg-slate-50/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-border/80 [&_th]:bg-slate-50/95 dark:[&_th]:bg-zinc-900/95">
+          <TableRow className="bg-slate-50/95 dark:bg-zinc-900/95 text-xs">
             <TableHead className="w-[22%] md:w-[17%] min-w-32 md:min-w-38.75">
               <Skeleton className="h-4 w-16" />
             </TableHead>

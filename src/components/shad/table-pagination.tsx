@@ -33,9 +33,11 @@ export function TablePagination({
   const isEmpty = productCount === 0;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row py-4 sm:items-center sm:justify-between lg:px-2 pb-0">
-      <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground">Rows per page</span>
+    <div className="flex flex-col gap-2.5 sm:gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center justify-between pl-1 sm:justify-start gap-2 w-full sm:w-auto">
+        <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+          Rows per page
+        </span>
         <Select
           value={String(pageSize)}
           onValueChange={(value) => {
@@ -43,7 +45,7 @@ export function TablePagination({
             setPage(1);
           }}
         >
-          <SelectTrigger className="h-8 w-16.25 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20">
+          <SelectTrigger className="h-8 w-16.25 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20">
             <SelectValue />
           </SelectTrigger>
           <SelectContent
@@ -66,8 +68,8 @@ export function TablePagination({
         </Select>
       </div>
 
-      <div className="flex items-center justify-between gap-4 sm:justify-end">
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
+      <div className="flex flex-col min-[340px]:flex-row items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
+        <span className="text-xs sm:text-sm text-muted-foreground whitespace-nowrap text-center sm:text-right">
           {productCount === 0 ? (
             "0 products"
           ) : (
@@ -85,11 +87,11 @@ export function TablePagination({
           )}
         </span>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center justify-center gap-1 shrink-0">
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
+            className="size-8 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20 cursor-pointer disabled:opacity-40"
             disabled={isFirstPage || isEmpty}
             onClick={() => setPage(1)}
             aria-label="Go to first page"
@@ -99,7 +101,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
+            className="size-8 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20 cursor-pointer disabled:opacity-40"
             disabled={isFirstPage || isEmpty}
             onClick={() => setPage((current) => current - 1)}
             aria-label="Go to previous page"
@@ -109,7 +111,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
+            className="size-8 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20 cursor-pointer disabled:opacity-40"
             disabled={isLastPage || isEmpty}
             onClick={() =>
               setPage((current) => Math.min(current + 1, lastPage))
@@ -121,7 +123,7 @@ export function TablePagination({
           <Button
             variant="outline"
             size="icon"
-            className="size-8 hover:border-primary hover:bg-primary-hover! focus-visible:border-primary focus-visible:ring-primary/20"
+            className="size-8 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20 cursor-pointer disabled:opacity-40"
             disabled={isLastPage || isEmpty}
             onClick={() => setPage(lastPage)}
             aria-label="Go to last page"

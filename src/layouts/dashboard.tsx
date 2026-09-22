@@ -111,7 +111,7 @@ export default function DashboardLayout() {
       <SidebarProvider>
         <AppSidebar user={user} />
 
-        <SidebarInset className="min-w-0 max-w-full overflow-x-hidden">
+        <SidebarInset className="min-w-0 max-w-full overflow-x-hidden bg-slate-50/70 dark:bg-zinc-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.06),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.12),rgba(255,255,255,0))]">
           <Header user={user} productCount={productCount} />
 
           <main className="flex h-full flex-1 flex-col justify-start p-3 sm:p-4 min-w-0 max-w-full overflow-x-hidden">

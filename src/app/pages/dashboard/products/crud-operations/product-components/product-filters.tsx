@@ -67,12 +67,12 @@ export function ProductFilters({
     >
       <SelectTrigger
         className={cn(
-          "h-9 text-xs xl:text-sm font-medium cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
+          "h-9 text-xs xl:text-sm font-medium cursor-pointer rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20",
           className ?? "w-auto min-w-31.25",
         )}
       >
-        <span className="mr-1 xl:text-sm">Category:</span>
-        <SelectValue className="text-xs xl:text-sm font-medium" />
+        <span className="hidden min-[340px]:inline mr-1 xl:text-sm">Category:</span>
+        <SelectValue className="truncate text-xs xl:text-sm font-medium" />
       </SelectTrigger>
       <SelectContent
         position="popper"
@@ -125,7 +125,7 @@ export function ProductFilters({
             type="button"
             variant="outline"
             className={cn(
-              "h-9 px-3 text-xs xl:text-sm font-medium cursor-pointer gap-1.5 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20 shrink-0",
+              "h-9 px-3 text-xs xl:text-sm font-medium cursor-pointer gap-1.5 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20 shrink-0",
               className,
             )}
             aria-label={`Table density: ${densityLabel}`}
@@ -204,7 +204,7 @@ export function ProductFilters({
           type="button"
           variant="outline"
           size="icon"
-          className="size-9 shrink-0 cursor-pointer hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
+          className="size-9 shrink-0 cursor-pointer rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20"
           onClick={() => {
             if (onResetColumns) {
               onResetColumns();
@@ -231,7 +231,7 @@ export function ProductFilters({
             type="button"
             variant="outline"
             size="icon"
-            className="size-9 shrink-0 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20"
+            className="size-9 shrink-0 cursor-pointer rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20"
             onClick={onReset}
             aria-label="Reset filters"
             disabled={isDefaultFilters}
@@ -248,7 +248,7 @@ export function ProductFilters({
 
   return (
     <div className="w-full min-w-0">
-      <div className="flex flex-col gap-2.5 w-full sm:hidden">
+      <div className="flex flex-col gap-2.5 pl-1! sm:gap-3 w-full rounded-xl border border-border/70 bg-card/95 backdrop-blur-sm p-2.5 sm:p-3 shadow-xs ring-1 ring-black/4 dark:ring-white/6 sm:hidden">
         {(searchSlot || actionsSlot) && (
           <div className="flex items-center gap-2 w-full min-w-0">
             {searchSlot}
@@ -256,7 +256,7 @@ export function ProductFilters({
           </div>
         )}
 
-        <div className="w-full border-b border-border/70" />
+        <div className="w-full border-b border-border/60" />
 
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 -mx-1 px-1">
           {statusFilters.map((item) => {
@@ -269,8 +269,8 @@ export function ProductFilters({
                 size="sm"
                 className={
                   active
-                    ? "h-8 shrink-0 rounded-full px-3.5 text-xs font-medium cursor-pointer shadow-2xs"
-                    : "h-8 shrink-0 rounded-full px-3.5 text-xs font-normal hover:bg-primary-hover hover:border-primary cursor-pointer"
+                    ? "h-8 shrink-0 rounded-lg px-3 text-xs font-medium cursor-pointer shadow-xs shadow-primary/25 bg-primary text-primary-foreground"
+                    : "h-8 shrink-0 rounded-lg px-3 text-xs font-normal border-border/70 bg-background hover:bg-muted/60 dark:hover:bg-muted/30 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                 }
                 onClick={() => onStatusChange(item.value)}
               >
@@ -280,16 +280,21 @@ export function ProductFilters({
           })}
         </div>
 
-        <div className="flex items-center gap-2 w-full">
-          {renderCategorySelect("flex-1 min-w-0")}
-          {renderPriceSelect("flex-1 min-w-0")}
-          {renderDensityDropdown()}
-          {renderResetColumnsButton()}
-          {renderResetButton()}
+        <div className="grid grid-cols-2 gap-2 w-full">
+          {renderCategorySelect("w-full min-w-0")}
+          {renderPriceSelect("w-full min-w-0")}
+        </div>
+
+        <div className="flex items-center justify-between gap-1.5 w-full">
+          {renderDensityDropdown("flex-1 min-w-0 justify-center")}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {renderResetColumnsButton()}
+            {renderResetButton()}
+          </div>
         </div>
       </div>
 
-      <div className="hidden sm:flex w-full flex-wrap items-center justify-between gap-3 min-w-0">
+      <div className="hidden w-full min-w-0 flex-wrap items-center justify-between gap-3 rounded-xl border border-border/70 bg-card/95 backdrop-blur-sm p-2.5 sm:p-3 shadow-xs ring-1 ring-black/4 dark:ring-white/6 sm:flex">
         <div className="flex flex-wrap items-center gap-2 min-w-0">
           {renderCategorySelect()}
 
@@ -304,8 +309,8 @@ export function ProductFilters({
                   size="sm"
                   className={
                     active
-                      ? "h-9 rounded-md px-3 sm:px-4 text-xs xl:text-sm cursor-pointer"
-                      : "h-9 rounded-md px-3 font-normal text-xs xl:text-sm hover:bg-primary-hover hover:border-primary sm:px-4 cursor-pointer"
+                      ? "h-9 rounded-lg px-3.5 sm:px-4 text-xs xl:text-sm font-medium cursor-pointer shadow-xs shadow-primary/25 bg-primary text-primary-foreground border-primary"
+                      : "h-9 rounded-lg px-3.5 sm:px-4 font-normal text-xs xl:text-sm border-border/70 bg-background hover:bg-muted/60 dark:hover:bg-muted/30 hover:text-foreground hover:border-border cursor-pointer transition-colors"
                   }
                   onClick={() => onStatusChange(item.value)}
                 >

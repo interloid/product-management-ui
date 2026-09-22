@@ -593,17 +593,18 @@ export default function ProductsPage() {
               onReset={resetFilters}
               categoryOptions={filterCategoryOptions}
               searchSlot={
-                <ProductSearchInput className="flex-1 min-[1100px]:w-175 min-[1100px]:flex-none min-[1382px]:w-64" />
+                <ProductSearchInput className="flex-1 min-w-0 w-full sm:w-80 md:w-96" />
               }
               actionsSlot={
                 isAdmin ? (
                   <Button
                     type="button"
-                    className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-3 sm:px-4 gap-1.5"
+                    className="h-9 shrink-0 cursor-pointer whitespace-nowrap px-2.5 sm:px-3.5 gap-1 sm:gap-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-medium text-xs sm:text-sm shadow-xs shadow-primary/25 hover:shadow-sm hover:shadow-primary/30 active:scale-[0.98] transition-all duration-150 border border-primary-foreground/10"
                     onClick={openAdd}
                   >
-                    <Plus className="size-4 shrink-0" />
-                    <span>Add Product</span>
+                    <Plus className="size-4 shrink-0 stroke-[2.25]" />
+                    <span className="hidden min-[360px]:inline">Add Product</span>
+                    <span className="min-[360px]:hidden">Add</span>
                   </Button>
                 ) : null
               }

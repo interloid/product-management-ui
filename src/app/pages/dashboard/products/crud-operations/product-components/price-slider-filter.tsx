@@ -192,7 +192,7 @@ export function PriceSliderFilter({
           type="button"
           variant="outline"
           className={cn(
-            "h-9 text-xs xl:text-sm font-medium cursor-pointer justify-between gap-2 px-3 hover:border-primary hover:bg-primary-hover focus-visible:border-primary focus-visible:ring-primary/20",
+            "h-9 text-xs xl:text-sm font-medium cursor-pointer justify-between gap-1.5 px-2.5 sm:px-3 rounded-lg border-border/70 bg-background hover:border-primary/50 hover:bg-muted/40 focus-visible:border-primary focus-visible:ring-primary/20",
             isFiltered &&
               "border-primary/50 bg-primary/5 text-primary dark:text-primary-foreground font-semibold shadow-2xs",
             className,
@@ -202,11 +202,11 @@ export function PriceSliderFilter({
           <div className="flex items-center gap-1.5 min-w-0 truncate">
             <SlidersHorizontal
               className={cn(
-                "size-4 shrink-0",
+                "size-3.5 sm:size-4 shrink-0",
                 isFiltered ? "text-primary" : "text-muted-foreground",
               )}
             />
-            <span className="mr-1 xl:text-sm">Price:</span>
+            <span className="hidden min-[340px]:inline mr-1 xl:text-sm">Price:</span>
             <span className="truncate text-xs xl:text-sm font-medium text-foreground">
               {displayLabel}
             </span>

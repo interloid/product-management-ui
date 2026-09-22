@@ -1,17 +1,30 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/use-search";
+import { cn } from "@/lib/utils";
 
 type ProductSearchInputProps = {
   className?: string;
+  placeholder?: string;
 };
 
 export function ProductSearchInput({
   className = "",
+  placeholder = "Search products by name, SKU...",
 }: ProductSearchInputProps) {
   const { searchQuery, setSearchQuery } = useSearch();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isMac] = useState(detectMacDevice);
+
+  function detectMacDevice(): boolean {
+    if (typeof navigator === "undefined") {
+      return false;
+    }
+
+    return /Mac|iPhone|iPod|iPad/i.test(
+      navigator.userAgent || navigator.platform || "",
+    );
+  }
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -45,31 +58,50 @@ export function ProductSearchInput({
   }, [searchQuery, setSearchQuery]);
 
   return (
-    <div className={`relative ${className}`}>
-      <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-      <Input
+    <div
+      onClick={() => inputRef.current?.focus()}
+      className={cn(
+        "group relative flex h-9 w-full items-center rounded-lg border border-border/70 bg-background px-3 shadow-2xs transition-all duration-200 cursor-text",
+        "hover:border-primary/40 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20",
+        className,
+      )}
+    >
+      <Search
+        className={cn(
+          "pointer-events-none mr-2.5 size-4 shrink-0 transition-colors duration-200",
+          searchQuery
+            ? "text-primary"
+            : "text-muted-foreground/60 group-hover:text-muted-foreground/80 group-focus-within:text-primary",
+        )}
+      />
+
+      <input
         ref={inputRef}
-        type="search"
-        placeholder="Search for products, SKU..."
+        type="text"
+        role="searchbox"
+        placeholder={placeholder}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="h-9 w-full pl-9 pr-11 text-xs focus-visible:border-primary focus-visible:ring-primary/20 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+        className="h-full flex-1 min-w-0 bg-transparent text-xs sm:text-sm font-normal text-foreground placeholder:text-muted-foreground/60 outline-none border-0 p-0 focus:outline-none focus:ring-0"
       />
+
       {searchQuery ? (
         <button
           type="button"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setSearchQuery("");
             inputRef.current?.focus();
           }}
           aria-label="Clear search"
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-full p-0.5 text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+          title="Clear search (Esc)"
+          className="flex flex-col size-5.5 shrink-0 items-center justify-center rounded-full bg-muted/80 text-muted-foreground/80 transition-all duration-150 hover:bg-muted hover:text-foreground active:scale-90 cursor-pointer"
         >
           <X className="size-3.5" />
         </button>
       ) : (
-        <kbd className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 hidden select-none items-center gap-0.5 rounded border border-border/80 bg-muted/70 px-1.5 py-0.5 font-mono text-[10px] font-medium text-muted-foreground shadow-2xs sm:inline-flex">
-          <span className="text-xs">⌘</span>K
+        <kbd className="pointer-events-none ml-2 hidden select-none items-center gap-0.5 rounded-md border border-border/70 bg-muted/60 px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground/80 shadow-2xs transition-colors group-hover:text-muted-foreground sm:inline-flex shrink-0 whitespace-nowrap leading-none">
+          {isMac ? "⌘K" : "Ctrl\u00A0K"}
         </kbd>
       )}
     </div>

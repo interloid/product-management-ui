@@ -96,12 +96,12 @@ export function ProductTable({
         onContainerScroll={checkScroll}
         style={tableStyle}
         className="w-full table-fixed min-w-160"
-        containerClassName="max-h-[calc(100vh-270px)] overflow-y-auto"
+        containerClassName="max-h-[calc(100vh-320px)] overflow-y-auto"
       >
-        <TableHeader className="sticky top-0 z-20 bg-muted/90 backdrop-blur-md [&_th]:bg-muted/90">
+        <TableHeader className="sticky top-0 z-20 bg-slate-50/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-border/80 [&_th]:bg-slate-50/95 dark:[&_th]:bg-zinc-900/95">
           <TableRow
             className={cn(
-              "bg-muted/90 text-[11px] font-semibold tracking-wider uppercase hover:bg-muted/90",
+              "bg-slate-50/95 dark:bg-zinc-900/95 text-[11px] font-semibold tracking-wider uppercase hover:bg-slate-50/95 dark:hover:bg-zinc-900/95",
               isCompact ? "h-9" : isComfort ? "h-13" : "h-11",
             )}
           >

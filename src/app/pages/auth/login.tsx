@@ -360,7 +360,7 @@ export default function LoginPage({
                           "h-10 pl-3.5! pr-10! text-[13px]! focus-visible:ring-primary/20",
                           showPassword
                             ? "tracking-normal"
-                            : "tracking-[9px] font-bold",
+                            : "tracking-[5px] font-bold",
                           passwordError
                             ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20"
                             : "focus-visible:border-primary",

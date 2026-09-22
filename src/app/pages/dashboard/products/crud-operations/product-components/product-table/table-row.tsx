@@ -91,7 +91,7 @@ export const ProductTableRow = memo(function ProductTableRow({
   }
   return (
     <TableRow
-      className="group/row w-full transition-colors cursor-pointer hover:bg-primary-hover"
+      className="group/row w-full transition-colors cursor-pointer hover:bg-blue-50/60 dark:hover:bg-blue-950/25 border-b border-border/50"
       onClick={onView}
     >
       <TableCell
