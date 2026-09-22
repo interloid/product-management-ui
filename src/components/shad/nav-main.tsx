@@ -15,7 +15,7 @@ export function NavMain({ items }: NavMainProps) {
 
   return (
     <SidebarGroup className="w-full group-data-[collapsible=icon]:px-0 p-0">
-      <SidebarGroupContent className="w-full pt-3! p-2">
+      <SidebarGroupContent className="w-full pt-0! p-2">
         <SidebarMenu className="w-full items-center gap-1">
           {items.map((item) => {
             const Icon = item.icon;

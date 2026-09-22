@@ -17,15 +17,15 @@ export function CustomSidebarTrigger({
       onClick={toggleSidebar}
       aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       className={cn(
-        "flex size-7 shrink-0 items-center justify-center rounded-md border bg-background text-muted-foreground shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground",
+        "flex size-8 shrink-0 items-center justify-center rounded-md border border-border/70 hover:bg-primary-hover shadow-xs transition-all cursor-pointer focus-visible:border-primary! focus-visible:ring-2! focus-visible:ring-primary/20! focus-visible:outline-none",
         className,
       )}
       {...props}
     >
       {isCollapsed ? (
-        <ChevronRight className="size-4" />
+        <ChevronRight className="size-4 stroke-[2.25] text-primary font-extrabold" />
       ) : (
-        <ChevronLeft className="size-4" />
+        <ChevronLeft className="size-4 stroke-[2.25] text-primary font-extrabold" />
       )}
     </button>
   );
